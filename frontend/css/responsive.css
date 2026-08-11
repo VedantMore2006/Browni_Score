@@ -1,0 +1,42 @@
+@media (max-width: 900px) {
+  .app-shell {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    overflow-x: auto;
+  }
+  .sidebar-logo {
+    padding: 0 16px;
+    border-bottom: none;
+    border-right: 1px solid var(--border);
+    margin: 0;
+    white-space: nowrap;
+  }
+  .nav-link {
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+  }
+  .nav-link.active {
+    border-left: none;
+    border-bottom-color: var(--blue);
+  }
+  .main-content {
+    padding: 16px;
+  }
+  .grid-2, .grid-3 {
+    grid-template-columns: 1fr;
+  }
+  .leaderboard-row {
+    grid-template-columns: 30px 40px 1fr auto;
+    font-size: 13px;
+  }
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+}

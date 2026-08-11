@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vitals&amp;Vectors — System Login</title>
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/responsive.css">
+<style>
+  .login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .login-box {
+    width: 380px;
+    padding: 36px;
+  }
+  .login-logo {
+    text-align: center;
+    margin-bottom: 8px;
+    font-size: 26px;
+  }
+  .login-sub {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    margin-bottom: 28px;
+    text-transform: uppercase;
+  }
+  .login-btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body class="scanline-bg">
+  <div class="login-screen">
+    <div class="login-box system-panel">
+      <div class="login-logo display glow-text-blue">VITALS<span class="glow-text-purple">&amp;VECTORS</span></div>
+      <div class="login-sub">// System Access Terminal</div>
+      <form id="login-form">
+        <div class="field">
+          <label for="username">Hunter ID</label>
+          <input type="text" id="username" name="username" required autocomplete="username">
+        </div>
+        <div class="field">
+          <label for="password">Passkey</label>
+          <input type="password" id="password" name="password" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn login-btn" id="login-btn">Enter the System</button>
+        <div class="error-text" id="login-error" style="display:none;"></div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

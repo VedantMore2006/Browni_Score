@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rulebook — Vitals&amp;Vectors</title>
+<link rel="stylesheet" href="css/theme.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <div class="app-shell">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main-content">
+      <div class="topbar">
+        <h1 class="display">System Quest Board</h1>
+        <div class="user-chip" id="user-chip"></div>
+      </div>
+
+      <div class="quest-section">
+        <h3>⚔ Working Hours &amp; Daily Schedule</h3>
+        <ul>
+          <li>Standard lab hours as set by the coordinator/admin roster.</li>
+          <li>Presence is logged daily and feeds the weekly presence streak.</li>
+        </ul>
+      </div>
+
+      <div class="quest-section">
+        <h3>⚔ Reporting &amp; Attendance</h3>
+        <ul>
+          <li>Daily task reporting is required to maintain the task reporting streak.</li>
+          <li>3 flex days per month are tracked and deducted from late-arrival counts before penalising.</li>
+        </ul>
+      </div>
+
+      <div class="quest-section">
+        <h3>⚔ Task Management</h3>
+        <ul>
+          <li>Tasks are assigned by U5 Coordinators or Admin with duration, deadline, and priority.</li>
+          <li>Members mark tasks "Complete"; the assigning coordinator then rates the work.</li>
+          <li>Points are only awarded after coordinator rating — never on self-completion.</li>
+        </ul>
+      </div>
+
+      <div class="quest-section">
+        <h3>⚔ Point Earning Criteria</h3>
+        <ul>
+          <li>Start at 100 pts on member creation.</li>
+          <li>Task rated "Needs Revision": +3 pts</li>
+          <li>Task rated "Meets Expectation": +5 pts</li>
+          <li>Task rated "Exceeds Expectation": +8 pts</li>
+          <li>85% weekly task completion: +20 pts (auto-calculated every Sunday)</li>
+          <li>Presence streak: +10 pts/week</li>
+          <li>Task reporting streak: +10 pts/week</li>
+        </ul>
+      </div>
+
+      <div class="quest-section">
+        <h3>⚔ Point Deduction Criteria</h3>
+        <ul>
+          <li>Deductions logged by coordinator/admin for missed deadlines, poor conduct, or attendance violations.</li>
+          <li>Categories: attendance / task / learning / content / streak / conduct.</li>
+        </ul>
+      </div>
+
+      <div class="quest-section">
+        <h3>⚔ Streak Bonuses</h3>
+        <ul>
+          <li>Presence streak resets to zero if a member misses a single day in the week.</li>
+          <li>Task reporting streak is calculated independently from presence streak.</li>
+        </ul>
+      </div>
+
+      <div class="quest-section">
+        <h3>⚔ Rewards</h3>
+        <ul>
+          <li>Hero of the Week: highest points that week, confirmed by admin.</li>
+          <li>Hero of the Month: 300+ pts threshold, confirmed by admin, shown with SS-rank glow.</li>
+        </ul>
+      </div>
+
+      <div class="quest-section">
+        <h3>⚔ Violations &amp; Consequences</h3>
+        <ul>
+          <li>Members below 100 pts are automatically flagged in the admin dashboard.</li>
+          <li>3rd warning auto-triggers suspension status.</li>
+          <li>Violations reset monthly if compliant.</li>
+        </ul>
+      </div>
+
+      <div class="quest-section">
+        <h3>⚔ Dress Code</h3>
+        <ul>
+          <li>As specified by lab policy — enforced at coordinator/admin discretion.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    (function () {
+      const auth = requireAuth(['member', 'coordinator', 'admin']);
+      if (!auth) return;
+      document.getElementById('sidebar').innerHTML = buildSidebar('/rules.html', auth.role);
+      document.getElementById('user-chip').textContent = `${auth.name} · ${auth.role.toUpperCase()}`;
+    })();
+  </script>
+</body>
+</html>

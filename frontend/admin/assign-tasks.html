@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task Assignment — Vitals&amp;Vectors</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <div class="app-shell">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main-content">
+      <div class="topbar">
+        <h1 class="display">Task Assignment</h1>
+        <div class="user-chip" id="user-chip"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title">Create New Task</div>
+        <form id="assign-task-form" class="grid grid-auto" style="align-items:end;">
+          <div class="field">
+            <label>Title</label>
+            <input type="text" id="task-title" required>
+          </div>
+          <div class="field">
+            <label>Duration (hrs)</label>
+            <input type="number" id="task-duration" step="0.5" min="0" value="1">
+          </div>
+          <div class="field">
+            <label>Deadline</label>
+            <input type="datetime-local" id="task-deadline">
+          </div>
+          <div class="field">
+            <label>Priority</label>
+            <select id="task-priority">
+              <option value="1">1 — High</option>
+              <option value="2" selected>2 — Medium</option>
+              <option value="3">3 — Low</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Assign To</label>
+            <select id="assign-to"></select>
+          </div>
+          <div class="field">
+            <button type="submit" class="btn">Assign Task</button>
+          </div>
+        </form>
+        <div class="error-text" id="assign-task-error" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Active Tasks Across Team</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Assigned To</th>
+              <th>Deadline</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Rate</th>
+            </tr>
+          </thead>
+          <tbody id="active-tasks-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — Vitals&amp;Vectors</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <div class="app-shell">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main-content">
+      <div class="topbar">
+        <h1 class="display">Admin Panel</h1>
+        <div class="user-chip" id="user-chip"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title">Team Overview</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Rank</th>
+              <th>Points</th>
+              <th>Streak</th>
+              <th>Tasks Due Today</th>
+              <th>Status</th>
+              <th>Quick Actions</th>
+            </tr>
+          </thead>
+          <tbody id="team-body"></tbody>
+        </table>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-title">Alerts</div>
+          <div id="alerts-panel"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Weekly &amp; Monthly Heroes</div>
+          <div id="heroes-panel"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick action modal -->
+  <div id="modal-backdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:50; align-items:center; justify-content:center;">
+    <div class="card system-panel" style="width:360px;">
+      <div class="card-title" id="modal-title">Add Points</div>
+      <div class="field">
+        <label>Category</label>
+        <select id="modal-category">
+          <option value="attendance">Attendance</option>
+          <option value="task">Task</option>
+          <option value="learning">Learning</option>
+          <option value="content">Content</option>
+          <option value="streak">Streak</option>
+          <option value="conduct">Conduct</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Points</label>
+        <input type="number" id="modal-points" min="1" value="5">
+      </div>
+      <div class="field">
+        <label>Reason</label>
+        <input type="text" id="modal-reason" placeholder="Reason for this entry">
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn" id="modal-confirm">Confirm</button>
+        <button class="btn btn-danger" id="modal-cancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

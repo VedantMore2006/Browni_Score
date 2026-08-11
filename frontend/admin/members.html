@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Management — Vitals&amp;Vectors</title>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/components.css">
+<link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+  <div class="app-shell">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main-content">
+      <div class="topbar">
+        <h1 class="display">Member Management</h1>
+        <div class="user-chip" id="user-chip"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-title">Add New Member</div>
+        <form id="add-member-form" class="grid grid-auto" style="align-items:end;">
+          <div class="field">
+            <label>Name</label>
+            <input type="text" id="new-name" required>
+          </div>
+          <div class="field">
+            <label>Username</label>
+            <input type="text" id="new-username" required>
+          </div>
+          <div class="field">
+            <label>Password</label>
+            <input type="password" id="new-password" required minlength="8">
+          </div>
+          <div class="field">
+            <label>Role</label>
+            <select id="new-role">
+              <option value="member">Member</option>
+              <option value="coordinator">U5 Coordinator</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="field" style="align-self:end;">
+            <button type="submit" class="btn">Add Member</button>
+          </div>
+        </form>
+        <div class="error-text" id="add-member-error" style="display:none;"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">All Members</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Username</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Joined</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="members-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>
