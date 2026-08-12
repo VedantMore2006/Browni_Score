@@ -18,28 +18,34 @@
       </div>
 
       <div class="grid grid-3" style="margin-bottom: 20px;">
-        <div class="card" id="rank-card">
-          <div class="card-title">Rank Status</div>
+        <div class="card system-window" id="rank-card">
+          <div class="card-title">Hunter Status Window</div>
           <div style="display:flex; align-items:center; gap:16px;">
             <div id="rank-badge-slot"></div>
             <div>
               <div class="stat-value count-up" id="points-total">0</div>
               <div style="color: var(--text-dim); font-size: 13px;" id="rank-label"></div>
+              <div class="equipped-title" id="equipped-title"></div>
             </div>
           </div>
+          <div class="level-row">
+            <span class="level-badge" id="level-badge"></span>
+          </div>
+          <div class="exp-track"><div class="exp-fill" id="exp-fill" style="width:0%"></div></div>
+          <div class="exp-label" id="exp-label"></div>
           <div class="progress-track"><div class="progress-fill" id="rank-progress" style="width:0%"></div></div>
           <div style="color: var(--text-dim); font-size: 12px; margin-top: 6px;" id="rank-next-text"></div>
         </div>
 
-        <div class="card">
-          <div class="card-title">Streaks</div>
+        <div class="card system-window">
+          <div class="card-title">Active Buffs</div>
           <div style="display:flex; flex-direction:column; gap:10px;">
-            <div class="streak-flame" id="presence-streak"><span class="flame-icon">🔥</span> <span></span></div>
-            <div class="streak-flame" id="task-streak"><span class="flame-icon">🔥</span> <span></span></div>
+            <div class="buff-item" id="presence-streak"><span class="buff-icon">⚡</span> <span></span></div>
+            <div class="buff-item" id="task-streak"><span class="buff-icon">🔥</span> <span></span></div>
           </div>
         </div>
 
-        <div class="card">
+        <div class="card system-window">
           <div class="card-title">Mini Leaderboard</div>
           <div id="mini-leaderboard" class="empty-state">Loading...</div>
         </div>
@@ -60,9 +66,14 @@
         </div>
       </div>
 
+      <div class="card system-window" style="margin-bottom: 20px;">
+        <div class="card-title">Unlocked System Titles &amp; Trophies</div>
+        <div class="trophy-grid" id="trophy-cabinet"></div>
+      </div>
+
       <div class="grid grid-2">
-        <div class="card">
-          <div class="card-title">Today's Tasks</div>
+        <div class="card system-window">
+          <div class="card-title">Current Quests</div>
           <div id="today-tasks"></div>
         </div>
         <div class="card">

@@ -90,6 +90,82 @@ function animateCountUp(el, target, duration = 900) {
   requestAnimationFrame(tick);
 }
 
+function getLevel(points) {
+  return Math.floor(points / 50) + 1;
+}
+
+function getExpProgress(points) {
+  return points % 50;
+}
+
+const QUEST_RANK_BY_PRIORITY = { 1: 'S', 2: 'B', 3: 'D' };
+
+function questRank(priority) {
+  return QUEST_RANK_BY_PRIORITY[priority] || 'D';
+}
+
+function taskReward(task) {
+  return task.points_awarded || { S: 8, B: 5, D: 3 }[questRank(task.priority)];
+}
+
+const TROPHY_DEFS = [
+  {
+    id: 'shadow-monarch',
+    icon: '👑',
+    title: "Shadow Monarch",
+    tooltip: 'Reach SS Rank (400+ pts)',
+    check: (m) => m.points_total >= 400,
+  },
+  {
+    id: 'hero-of-week',
+    icon: '🥇',
+    title: "Hero of the Week",
+    tooltip: 'Top scorer of the current week',
+    check: (m, stats) => stats.weeklyRank === 1,
+  },
+  {
+    id: 'unstoppable-streak',
+    icon: '🔥',
+    title: 'Unstoppable Streak',
+    tooltip: 'Presence streak of 4+ weeks',
+    check: (m) => (m.streak_presence || 0) >= 4,
+  },
+  {
+    id: 'task-executioner',
+    icon: '⚔️',
+    title: 'Task Executioner',
+    tooltip: 'Complete 20+ tasks',
+    check: (m, stats) => (stats.tasksCompleted || 0) >= 20,
+  },
+  {
+    id: 'reporting-momentum',
+    icon: '🌅',
+    title: 'Reporting Momentum',
+    tooltip: 'Task reporting streak of 4+ weeks',
+    check: (m) => (m.streak_task_reporting || 0) >= 4,
+  },
+];
+
+function evaluateTrophies(member, stats) {
+  return TROPHY_DEFS.map((def) => ({
+    ...def,
+    unlocked: def.check(member, stats || {}),
+  }));
+}
+
+function trophyCabinetHtml(member, stats) {
+  return evaluateTrophies(member, stats)
+    .map(
+      (t) => `
+      <div class="trophy-card ${t.unlocked ? 'unlocked' : 'locked'}" title="${t.tooltip}">
+        <div class="trophy-icon">${t.unlocked ? t.icon : '🔒'}</div>
+        <div class="trophy-title">${t.title}</div>
+      </div>
+    `
+    )
+    .join('');
+}
+
 function rankBadgeHtml(rank, size) {
   const cls = size === 'sm' ? 'rank-badge rank-badge-sm' : 'rank-badge';
   return `<span class="${cls} rank-${rank}">${rank}</span>`;

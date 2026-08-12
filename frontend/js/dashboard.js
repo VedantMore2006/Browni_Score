@@ -26,6 +26,7 @@
     // Rank card
     document.getElementById('rank-badge-slot').innerHTML = rankBadgeHtml(me.rank);
     document.getElementById('rank-label').textContent = RANK_LABELS[me.rank] || '';
+    document.getElementById('equipped-title').textContent = `« ${RANK_LABELS[me.rank] || 'Novice Hunter'} »`;
     animateCountUp(document.getElementById('points-total'), me.points_total);
     const toNext = pointsToNextRank(me.points_total);
     const pct = Math.max(5, Math.min(100, 100 - (toNext / 50) * 100));
@@ -33,11 +34,24 @@
     document.getElementById('rank-next-text').textContent =
       toNext > 0 ? `${toNext} pts to next rank` : 'Max rank achieved';
 
-    // Streaks
+    // Level / EXP
+    const level = getLevel(me.points_total);
+    const exp = getExpProgress(me.points_total);
+    document.getElementById('level-badge').textContent = `LV. ${level}`;
+    document.getElementById('exp-fill').style.width = `${(exp / 50) * 100}%`;
+    document.getElementById('exp-label').textContent = `${exp} / 50 EXP`;
+
+    // Active buffs (streaks)
     const presenceEl = document.getElementById('presence-streak');
     const taskStreakEl = document.getElementById('task-streak');
-    presenceEl.querySelector('span:last-child').textContent = `Presence Streak: ${me.streak_presence} wk`;
-    taskStreakEl.querySelector('span:last-child').textContent = `Task Reporting Streak: ${me.streak_task_reporting} wk`;
+    presenceEl.querySelector('span:last-child').textContent =
+      me.streak_presence > 0
+        ? `Attendance Synergy — ${me.streak_presence} wk streak`
+        : 'Attendance Synergy — inactive';
+    taskStreakEl.querySelector('span:last-child').textContent =
+      me.streak_task_reporting > 0
+        ? `Reporting Momentum — ${me.streak_task_reporting} wk streak`
+        : 'Reporting Momentum — inactive';
     if (me.streak_presence > 0) presenceEl.classList.add('active');
     if (me.streak_task_reporting > 0) taskStreakEl.classList.add('active');
 
@@ -59,6 +73,15 @@
         ? `<div class="stat-value glow-text-blue">#${idx + 1}</div><div style="color:var(--text-dim); font-size:13px;">of ${weekly.length} hunters this week</div>`
         : '<div class="empty-state">No ranking yet</div>';
 
+    // Trophy cabinet
+    const tasksCompleted = tasks.filter(
+      (t) => t.assigned_to === me.id && (t.status === 'completed' || t.status === 'rated')
+    ).length;
+    document.getElementById('trophy-cabinet').innerHTML = trophyCabinetHtml(me, {
+      weeklyRank: idx >= 0 ? idx + 1 : null,
+      tasksCompleted,
+    });
+
     // Today's tasks
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -72,20 +95,23 @@
 
     const taskContainer = document.getElementById('today-tasks');
     if (todayTasks.length === 0) {
-      taskContainer.innerHTML = '<div class="empty-state">No tasks due today</div>';
+      taskContainer.innerHTML = '<div class="empty-state">No quests due today</div>';
     } else {
       taskContainer.innerHTML = todayTasks
-        .map(
-          (t) => `
-        <div style="display:flex; justify-content:space-between; align-items:center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-          <div>
-            <div>${t.title}</div>
-            <div style="color:var(--text-dim); font-size:12px;">${t.duration_hrs}h · Priority ${t.priority}</div>
+        .map((t) => {
+          const rank = questRank(t.priority);
+          return `
+        <div class="quest-item-card">
+          <div class="quest-rank rank-${rank}">${rank}-RANK</div>
+          <div class="quest-details">
+            <div class="quest-title">${t.title}</div>
+            <div class="quest-meta">${t.duration_hrs}h · Deadline ${formatDate(t.deadline)}</div>
           </div>
+          <div class="quest-reward">+${taskReward(t)} PTS</div>
           ${statusChip(t.status)}
         </div>
-      `
-        )
+      `;
+        })
         .join('');
     }
 

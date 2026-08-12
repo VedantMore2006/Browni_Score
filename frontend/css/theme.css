@@ -2,16 +2,16 @@
 
 :root {
   --bg: #0A0A0F;
-  --panel: #0D0D1A;
-  --panel-alt: #12121f;
-  --border: rgba(79, 195, 247, 0.25);
+  --panel: #181826;
+  --panel-alt: #1F1F30;
+  --border: rgba(79, 195, 247, 0.45);
   --blue: #4FC3F7;
-  --purple: #7C4DFF;
-  --red: #FF1744;
+  --purple: #9A7BFF;
+  --red: #FF5470;
   --teal: #00E5FF;
   --amber: #FFB300;
-  --text: #E8ECF5;
-  --text-dim: #8A93A8;
+  --text: #F5F7FC;
+  --text-dim: #ABB4CC;
 
   --font-display: 'Rajdhani', 'Bebas Neue', sans-serif;
   --font-body: 'Inter', -apple-system, sans-serif;
@@ -64,6 +64,7 @@ a {
   border: 1px solid var(--border);
   padding: 20px;
   position: relative;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
 .panel::before {

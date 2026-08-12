@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Command Centre — Vitals&amp;Vectors</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">
+    <span class="logo-mark">◈</span>
+    <span class="logo-text">V<span class="logo-amp">&amp;</span>V</span>
+  </div>
+  <div class="nav-links" id="nav-links">
+    <a href="#" class="nav-link active">Dashboard</a>
+    <a href="../tasks.html" class="nav-link">Quests</a>
+    <a href="../leaderboard.html" class="nav-link">Rankings</a>
+    <a href="../point-log.html" class="nav-link">Point Log</a>
+    <a href="../rules.html" class="nav-link">System Rules</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-user" id="nav-user">
+      <span class="nav-rank-badge" id="nav-rank">E</span>
+      <span class="nav-name" id="nav-name">Hunter</span>
+    </div>
+    <button class="btn-logout" id="logout-btn">Logout</button>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="page-wrap">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Command Centre</h1>
+      <div class="page-sub" id="page-timestamp">Loading system status...</div>
+    </div>
+    <div class="system-tag">// SYSTEM ONLINE</div>
+  </div>
+
+  <!-- STAT STRIP -->
+  <div class="stat-strip">
+    <div class="stat-card accent-blue">
+      <div class="stat-label">Weekly Position</div>
+      <div class="stat-value" id="stat-position">—</div>
+    </div>
+    <div class="stat-card accent-teal">
+      <div class="stat-label">Points This Week</div>
+      <div class="stat-value positive" id="stat-week">0</div>
+    </div>
+    <div class="stat-card accent-purple">
+      <div class="stat-label">Points This Month</div>
+      <div class="stat-value" id="stat-month">0</div>
+    </div>
+    <div class="stat-card accent-amber">
+      <div class="stat-label">Net This Week</div>
+      <div class="stat-value" id="stat-net">0</div>
+    </div>
+  </div>
+
+  <!-- RANK + STREAK ROW -->
+  <div class="mid-row">
+
+    <!-- RANK CARD -->
+    <div class="card rank-card" id="rank-card">
+      <div class="card-label">Hunter Status</div>
+      <div class="rank-main">
+        <div class="rank-hex" id="rank-hex">E</div>
+        <div class="rank-info">
+          <div class="rank-title" id="rank-title">Unranked Hunter</div>
+          <div class="rank-pts" id="rank-pts">100 pts</div>
+          <div class="rank-bar-wrap">
+            <div class="rank-bar-track">
+              <div class="rank-bar-fill" id="rank-bar" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="rank-next" id="rank-next">50 pts to next rank</div>
+        </div>
+        <div class="rank-total-block">
+          <div class="stat-label">Total Points</div>
+          <div class="rank-total" id="rank-total">100</div>
+        </div>
+      </div>
+      <!-- equipped title -->
+      <div class="equipped-row" id="equipped-row" style="display:none">
+        <span class="equipped-label">Equipped Title</span>
+        <span class="equipped-val" id="equipped-val"></span>
+      </div>
+    </div>
+
+    <!-- STREAK CARD -->
+    <div class="card streak-card">
+      <div class="card-label">Active Buffs</div>
+      <div class="streak-grid">
+        <div class="streak-box">
+          <div class="streak-icon">⚡</div>
+          <div class="streak-num" id="streak-presence">0</div>
+          <div class="streak-sub">Presence Streak</div>
+          <div class="streak-unit">weeks</div>
+        </div>
+        <div class="streak-box">
+          <div class="streak-icon">🔥</div>
+          <div class="streak-num" id="streak-task">0</div>
+          <div class="streak-sub">Task Streak</div>
+          <div class="streak-unit">weeks</div>
+        </div>
+      </div>
+      <div class="buff-list" id="buff-list">
+        <div class="buff-row inactive"><span>⚡</span> Presence streak inactive</div>
+        <div class="buff-row inactive"><span>🔥</span> Task streak inactive</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TEAM HUNTER CHART -->
+  <div class="card chart-card">
+    <div class="chart-header">
+      <div class="card-label">Team Hunter Standings</div>
+      <div class="chart-legend">
+        <span class="legend-dot" style="background:#8A93A8"></span>E
+        <span class="legend-dot" style="background:#CD7F32"></span>D
+        <span class="legend-dot" style="background:#B0B0B0"></span>C
+        <span class="legend-dot" style="background:#4FC3F7"></span>B
+        <span class="legend-dot" style="background:#FFD700"></span>A
+        <span class="legend-dot" style="background:#00E5FF"></span>S
+        <span class="legend-dot" style="background:#9A7BFF"></span>SS
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <canvas id="hunter-chart"></canvas>
+    </div>
+    <!-- Custom tooltip -->
+    <div class="chart-tooltip" id="chart-tooltip">
+      <div class="tooltip-rank" id="tip-rank">E</div>
+      <div class="tooltip-name" id="tip-name">Hunter</div>
+      <div class="tooltip-pts" id="tip-pts">100 pts</div>
+      <div class="tooltip-label" id="tip-label">Unranked Hunter</div>
+    </div>
+  </div>
+
+  <!-- BOTTOM ROW -->
+  <div class="bottom-row">
+
+    <!-- TODAY'S QUESTS -->
+    <div class="card quest-card">
+      <div class="quest-header">
+        <div class="card-label">Today's Quests</div>
+        <a href="../tasks.html" class="btn-secondary">View All</a>
+      </div>
+      <div id="today-tasks">
+        <div class="empty-state">Loading quests...</div>
+      </div>
+    </div>
+
+    <!-- RECENT ACTIVITY -->
+    <div class="card log-card">
+      <div class="quest-header">
+        <div class="card-label">Recent Activity</div>
+        <a href="../point-log.html" class="btn-secondary">View All</a>
+      </div>
+      <div id="recent-log">
+        <div class="empty-state">Loading activity...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TROPHY CABINET -->
+  <div class="card trophy-card">
+    <div class="card-label">Achievement Cabinet</div>
+    <div class="trophy-grid" id="trophy-grid">
+      <!-- populated by JS -->
+    </div>
+  </div>
+
+  <!-- MINI LEADERBOARD -->
+  <div class="card mini-lb-card">
+    <div class="card-label">Hunter Rankings — This Week</div>
+    <div id="mini-leaderboard">
+      <div class="empty-state">Loading rankings...</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="../js/api.js"></script>
+<script src="../js/utils.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

@@ -159,6 +159,7 @@
   background: var(--panel);
   border: 1px solid var(--border);
   padding: 20px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
 .card-title {
@@ -384,4 +385,156 @@ label {
   color: var(--red);
   font-size: 13px;
   margin-top: 8px;
+}
+
+/* ===== System HUD ===== */
+.card.system-window {
+  background: rgba(24, 24, 38, 0.97);
+  border: 1px solid var(--blue);
+  box-shadow: 0 0 18px rgba(79, 195, 247, 0.25), 0 4px 18px rgba(0, 0, 0, 0.4);
+  clip-path: polygon(
+    0 0,
+    calc(100% - 15px) 0, 100% 15px,
+    100% 100%,
+    15px 100%, 0 calc(100% - 15px)
+  );
+  position: relative;
+}
+
+.card.system-window::before {
+  content: "SYSTEM";
+  position: absolute;
+  top: 4px;
+  right: 12px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--blue);
+  opacity: 0.5;
+}
+
+/* Level / EXP */
+.level-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 4px;
+}
+.level-badge {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--teal);
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+}
+.exp-track {
+  height: 6px;
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-top: 8px;
+}
+.exp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--blue));
+  box-shadow: 0 0 8px rgba(0, 229, 255, 0.6);
+  transition: width 0.6s ease;
+}
+.exp-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 4px;
+  letter-spacing: 0.05em;
+}
+
+/* Equipped title */
+.equipped-title {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--purple);
+  text-shadow: 0 0 8px rgba(124, 77, 255, 0.6);
+  margin-top: 4px;
+}
+
+/* Trophy cabinet */
+.trophy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+}
+.trophy-card {
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  padding: 10px;
+  text-align: center;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+.trophy-card.unlocked {
+  border-color: var(--teal);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+}
+.trophy-card.locked {
+  opacity: 0.4;
+  filter: grayscale(1);
+}
+.trophy-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+.trophy-title {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  color: var(--text);
+}
+
+/* Quest board */
+.quest-item-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.quest-rank {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 4px 8px;
+  border: 1px solid currentColor;
+  flex-shrink: 0;
+}
+.quest-rank.rank-S { color: var(--purple); text-shadow: 0 0 6px rgba(124,77,255,0.5); }
+.quest-rank.rank-B { color: var(--blue); text-shadow: 0 0 6px rgba(79,195,247,0.5); }
+.quest-rank.rank-D { color: var(--text-dim); }
+.quest-details { flex: 1; min-width: 0; }
+.quest-title { color: var(--text); }
+.quest-meta { color: var(--text-dim); font-size: 12px; margin-top: 2px; }
+.quest-reward {
+  font-family: var(--font-display);
+  color: var(--teal);
+  text-shadow: 0 0 6px rgba(0,229,255,0.5);
+  flex-shrink: 0;
+  font-size: 13px;
+}
+
+/* Active buffs */
+.buff-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  color: var(--text-dim);
+}
+.buff-item.active {
+  color: var(--teal);
+  text-shadow: 0 0 6px rgba(0,229,255,0.4);
+}
+.buff-icon {
+  filter: drop-shadow(0 0 4px currentColor);
 }

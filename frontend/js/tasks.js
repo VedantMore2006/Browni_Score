@@ -43,7 +43,7 @@
         <td>
           ${
             auth.role === 'member' && t.status === 'pending'
-              ? `<button class="btn" data-complete="${t.id}">Mark Complete</button>`
+              ? `<button class="btn" data-complete="${t.id}">Claim Quest Clear</button>`
               : ''
           }
         </td>
@@ -62,7 +62,7 @@
         } catch (err) {
           alert(err.message);
           btn.disabled = false;
-          btn.textContent = 'Mark Complete';
+          btn.textContent = 'Claim Quest Clear';
         }
       });
     });
