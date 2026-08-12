@@ -160,7 +160,51 @@
   border: 1px solid var(--border);
   padding: 20px;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
+
+/* ADD top accent line pseudo-element */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(79,195,247,0.6), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* ADD card hover */
+.card:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 0 20px rgba(79,195,247,0.15), 0 4px 24px rgba(0,0,0,0.4);
+  transform: translateY(-2px);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card-stat {
+  position: relative;
+  padding-left: 24px;
+}
+
+.card-stat::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 16px; bottom: 16px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+}
+
+.card-stat.accent-blue::after  { background: var(--blue); box-shadow: 0 0 8px rgba(79,195,247,0.5); }
+.card-stat.accent-teal::after  { background: var(--teal); box-shadow: 0 0 8px rgba(0,229,255,0.5); }
+.card-stat.accent-purple::after { background: var(--purple); box-shadow: 0 0 8px rgba(124,77,255,0.5); }
+.card-stat.accent-amber::after { background: var(--amber); box-shadow: 0 0 8px rgba(255,179,0,0.5); }
+
 
 .card-title {
   font-family: var(--font-display);
@@ -190,8 +234,26 @@
 }
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--blue), var(--purple));
+  background: linear-gradient(90deg, var(--blue), var(--teal));
+  box-shadow: 0 0 8px rgba(79,195,247,0.4);
+  border-radius: 3px;
   transition: width 0.6s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: 20px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
 }
 
 /* Streak fire */
@@ -212,23 +274,25 @@
 
 /* Status chips */
 .chip {
-  display: inline-block;
-  padding: 4px 10px;
-  font-size: 12px;
-  font-family: var(--font-display);
-  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  border: 1px solid currentColor;
+  letter-spacing: 0.05em;
+  border: 1px solid;
 }
-.chip-pending { color: var(--text-dim); }
-.chip-in_progress { color: var(--amber); }
-.chip-completed { color: var(--blue); }
-.chip-rated { color: var(--teal); }
-.chip-earn { color: var(--teal); }
-.chip-deduct { color: var(--red); }
-.chip-active { color: var(--teal); }
-.chip-suspended { color: var(--red); }
-.chip-disqualified { color: var(--red); }
+
+.chip-pending   { background: rgba(255,179,0,0.12);  border-color: rgba(255,179,0,0.3);  color: var(--amber); }
+.chip-progress  { background: rgba(79,195,247,0.12); border-color: rgba(79,195,247,0.3); color: var(--blue); }
+.chip-completed { background: rgba(0,229,255,0.12);  border-color: rgba(0,229,255,0.3);  color: var(--teal); }
+.chip-rated     { background: rgba(124,77,255,0.12); border-color: rgba(124,77,255,0.3); color: var(--purple); }
+.chip-suspended { background: rgba(255,23,68,0.12);  border-color: rgba(255,23,68,0.3);  color: var(--red); }
+.chip-active    { background: rgba(0,229,255,0.12);  border-color: rgba(0,229,255,0.3);  color: var(--teal); }
 
 /* Table */
 table {
@@ -538,3 +602,47 @@ label {
 .buff-icon {
   filter: drop-shadow(0 0 4px currentColor);
 }
+
+/* Hero badges */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  animation: pulse-glow 3s infinite;
+}
+
+.hero-badge-week  { background: rgba(255,215,0,0.1);  border: 1px solid rgba(255,215,0,0.4); color: #FFD700; }
+.hero-badge-month { background: rgba(124,77,255,0.1); border: 1px solid rgba(124,77,255,0.4); color: var(--purple); }
+
+/* Toast notifications */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  padding: 12px 20px;
+  border-radius: 8px;
+  max-width: 320px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  border: 1px solid;
+  animation: fadeIn 0.3s ease;
+}
+
+.toast-success { background: rgba(0,229,255,0.1);  border-color: var(--teal);   color: var(--teal); }
+.toast-error   { background: rgba(255,23,68,0.1);  border-color: var(--red);    color: var(--red); }
+.toast-info    { background: rgba(79,195,247,0.1); border-color: var(--blue);   color: var(--blue); }
+

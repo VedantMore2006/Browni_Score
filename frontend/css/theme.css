@@ -1,10 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
 
 :root {
   --bg: #0A0A0F;
-  --panel: #181826;
-  --panel-alt: #1F1F30;
-  --border: rgba(79, 195, 247, 0.45);
+  --panel: #0D0D1A;
+  --panel-alt: #12121F;
+  --border: rgba(79, 195, 247, 0.1);
+  --border-glow: rgba(79, 195, 247, 0.4);
   --blue: #4FC3F7;
   --purple: #9A7BFF;
   --red: #FF5470;
@@ -13,7 +14,7 @@
   --text: #F5F7FC;
   --text-dim: #ABB4CC;
 
-  --font-display: 'Rajdhani', 'Bebas Neue', sans-serif;
+  --font-display: 'Bebas Neue', 'Rajdhani', sans-serif;
   --font-body: 'Inter', -apple-system, sans-serif;
 }
 
@@ -32,9 +33,11 @@ html, body {
 
 body {
   background-image:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(79,195,247,0.05) 0%, transparent 70%),
     linear-gradient(rgba(79, 195, 247, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(79, 195, 247, 0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-size: auto, 50px 50px, 50px 50px;
+  background-attachment: fixed;
 }
 
 h1, h2, h3, h4, .display {
@@ -109,4 +112,7 @@ a {
 ::-webkit-scrollbar-thumb {
   background: var(--panel-alt);
   border: 1px solid var(--border);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--teal);
 }
