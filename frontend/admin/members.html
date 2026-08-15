@@ -5,89 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vitals&Vectors — Member Management</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/global.css">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  --bg:       #0A0A0F;
-  --panel:    #0D0D1A;
-  --elevated: #12121F;
-  --blue:     #4FC3F7;
-  --teal:     #00E5FF;
-  --purple:   #9A7BFF;
-  --red:      #FF1744;
-  --amber:    #FFB300;
-  --gold:     #FFD700;
-  --green:    #00E676;
-  --border:   rgba(79,195,247,0.1);
-  --text:     #E8E8F0;
-  --text2:    #8A8AA3;
-  --text3:    #4A4A6A;
-
-  --rank-e:   #8A93A8;
-  --rank-d:   #CD7F32;
-  --rank-c:   #B0B0B0;
-  --rank-b:   #4FC3F7;
-  --rank-a:   #FFD700;
-  --rank-s:   #00E5FF;
-  --rank-ss:  #9A7BFF;
-}
-
-html, body { height:100%; font-family:'Inter',sans-serif; color:var(--text); background:var(--bg); overflow:hidden; }
-
-body::before {
-  content:''; position:fixed; inset:0;
-  background-image: linear-gradient(rgba(79,195,247,0.025) 1px,transparent 1px), linear-gradient(90deg,rgba(79,195,247,0.025) 1px,transparent 1px);
-  background-size:50px 50px; pointer-events:none; z-index:0;
-}
-body::after {
-  content:''; position:fixed; top:-10%; left:50%; transform:translateX(-50%);
-  width:900px; height:500px;
-  background:radial-gradient(ellipse at center top,rgba(79,195,247,0.06) 0%,transparent 65%);
-  pointer-events:none; z-index:0;
-}
-
-.shell { display:flex; height:100vh; position:relative; z-index:1; }
-
-/* ── SIDEBAR ── */
-.sidebar { width:220px; background:var(--panel); border-right:1px solid var(--border); display:flex; flex-direction:column; flex-shrink:0; transition:width 0.25s ease; overflow:hidden; }
-.sidebar.collapsed { width:56px; }
-.sidebar.collapsed .nav-label,.sidebar.collapsed .logo-sub,.sidebar.collapsed .profile-name,.sidebar.collapsed .profile-role,.sidebar.collapsed .badge-text,.sidebar.collapsed .logo-wordmark { display:none; }
-.sidebar.collapsed .nav-item { justify-content:center; padding:10px 0; }
-.sidebar.collapsed .profile-row { justify-content:center; }
-.sidebar.collapsed .profile-badge { justify-content:center; padding:8px 0; }
-
-.logo-area { padding:20px 16px 16px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:10px; flex-shrink:0; }
-.logo-hex { width:48px; height:48px; flex-shrink:0; }
-.logo-hex svg { width:48px; height:48px; }
-.logo-wordmark { display:flex; flex-direction:column; }
-.logo-vv { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:2px; color:var(--blue); text-shadow:0 0 12px rgba(79,195,247,0.5); line-height:1; }
-.logo-sub { font-size:8px; font-family:'Rajdhani',sans-serif; font-weight:600; letter-spacing:2px; color:var(--text2); text-transform:uppercase; margin-top:2px; }
-
-.nav-menu { flex:1; padding:12px 0; display:flex; flex-direction:column; gap:1px; overflow:hidden; }
-.nav-item { display:flex; align-items:center; gap:10px; padding:10px 16px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:600; letter-spacing:0.5px; color:var(--text2); cursor:pointer; transition:all 0.2s; border-left:3px solid transparent; text-decoration:none; white-space:nowrap; }
-.nav-item:hover { background:rgba(79,195,247,0.04); color:var(--text); }
-.nav-item.active { background:rgba(255,23,68,0.08); border-left-color:var(--red); color:var(--red); }
-.nav-icon { width:18px; height:18px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
-.nav-icon svg { width:16px; height:16px; }
-.nav-admin { color:var(--red) !important; }
-.nav-divider { height:1px; background:var(--border); margin:6px 16px; }
-
-.sidebar-bottom { border-top:1px solid var(--border); padding:12px 14px 10px; flex-shrink:0; }
-.profile-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-.profile-avatar { width:36px; height:36px; border-radius:50%; flex-shrink:0; background:linear-gradient(135deg,#1a3a5c,#0d2240); border:2px solid var(--blue); display:flex; align-items:center; justify-content:center; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:12px; color:var(--blue); box-shadow:0 0 10px rgba(79,195,247,0.25); }
-.profile-info { flex:1; min-width:0; }
-.profile-name { font-size:12px; font-weight:700; color:var(--text); }
-.profile-role { font-size:10px; color:var(--text2); }
-/* SS rank badge — pulsing glow */
-.profile-badge-ss { display:flex; align-items:center; gap:6px; background:rgba(154,123,255,0.1); border:1px solid rgba(154,123,255,0.4); border-radius:4px; padding:6px 10px; margin-bottom:6px; animation:pulse-badge 2s infinite; }
-@keyframes pulse-badge { 0%,100%{box-shadow:0 0 6px rgba(154,123,255,0.3)} 50%{box-shadow:0 0 14px rgba(154,123,255,0.6)} }
-.badge-hex-ss { width:20px; height:20px; clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%); background:linear-gradient(135deg,#7B5CFF,#9A7BFF); display:flex; align-items:center; justify-content:center; font-family:'Rajdhani',sans-serif; font-size:7px; font-weight:700; color:white; }
-.badge-text-ss { font-family:'Rajdhani',sans-serif; font-size:9px; font-weight:700; color:var(--purple); letter-spacing:1px; }
-.nav-logout { display:flex; align-items:center; gap:8px; font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:600; color:var(--text2); cursor:pointer; padding:4px 2px; }
-.nav-logout:hover { color:var(--text); }
-.collapse-btn { display:flex; align-items:center; justify-content:center; margin:8px 14px 2px; border:1px solid var(--border); border-radius:5px; padding:7px; cursor:pointer; color:var(--text2); transition:all 0.2s; }
-.collapse-btn:hover { border-color:rgba(79,195,247,0.4); color:var(--blue); }
+/* Admin panel's own nav item is always the active one here — override the
+   global blue active state to match its red nav-admin identity. */
+.nav-item.active { background: rgba(255, 59, 92, 0.08); border-left-color: var(--red); color: var(--red); }
 
 /* ── MAIN ── */
 .main { flex:1; display:flex; flex-direction:column; min-width:0; overflow:hidden; }
@@ -224,10 +147,6 @@ td { padding:10px 14px; vertical-align:middle; }
 .pg-btn svg { width:13px; height:13px; }
 
 /* scrollbar */
-::-webkit-scrollbar { width:4px; height:4px; }
-::-webkit-scrollbar-track { background:var(--bg); }
-::-webkit-scrollbar-thumb { background:rgba(79,195,247,0.2); border-radius:2px; }
-::-webkit-scrollbar-thumb:hover { background:var(--blue); }
 </style>
 </head>
 <body>
@@ -257,7 +176,7 @@ td { padding:10px 14px; vertical-align:middle; }
       <div class="nav-divider"></div>
       <a class="nav-item" href="../settings.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg></span><span class="nav-label">Settings</span></a>
       <div class="nav-divider"></div>
-      <a class="nav-item nav-admin active" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="nav-label">Admin panel</span></a>
+      <a class="nav-item nav-admin active" href="admin_dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="nav-label">Admin panel</span></a>
     </div>
     <div class="sidebar-bottom">
       <div class="profile-row">

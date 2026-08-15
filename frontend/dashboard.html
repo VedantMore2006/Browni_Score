@@ -6,392 +6,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vitals&Vectors – Command Centre</title>
   <link
-    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700&display=swap"
     rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/global.css">
   <style>
-    *,
-    *::before,
-    *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    :root {
-      --bg-deep: #050a14;
-      --bg-panel: #080f1e;
-      --bg-card: #0b1525;
-      --bg-card2: #0d1a2d;
-      --border-dim: rgba(0, 200, 255, 0.08);
-      --border-glow: rgba(0, 200, 255, 0.25);
-      --cyan: #00c8ff;
-      --cyan-dim: rgba(0, 200, 255, 0.15);
-      --cyan-glow: rgba(0, 200, 255, 0.35);
-      --purple: #9b59ff;
-      --purple-dim: rgba(155, 89, 255, 0.18);
-      --gold: #f5a623;
-      --gold-dim: rgba(245, 166, 35, 0.18);
-      --green: #00e676;
-      --green-dim: rgba(0, 230, 118, 0.15);
-      --red: #ff3b5c;
-      --red-dim: rgba(255, 59, 92, 0.15);
-      --gray: #8899aa;
-      --text-primary: #e8f4ff;
-      --text-secondary: #8899aa;
-      --text-muted: #445566;
-      --nav-w: 200px;
-      --rank-ss: #00e5ff;
-      --rank-s: #9b59ff;
-      --rank-b: #f5a623;
-      --rank-d: #8899aa;
-    }
-
-    body {
-      background: var(--bg-deep);
-      color: var(--text-primary);
-      font-family: 'Rajdhani', sans-serif;
-      display: flex;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    /* ─── SIDEBAR ─────────────────────────────────── */
-    .sidebar {
-      width: var(--nav-w);
-      background: linear-gradient(180deg, #060d1c 0%, #050a14 100%);
-      border-right: 1px solid var(--border-dim);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      position: relative;
-      z-index: 10;
-    }
-
-    .sidebar::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 1px;
-      background: linear-gradient(180deg, transparent, var(--cyan-dim), transparent);
-    }
-
-    .logo-area {
-      padding: 22px 18px 18px;
-      border-bottom: 1px solid var(--border-dim);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo-hex {
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    }
-
-    .logo-hex svg {
-      width: 48px;
-      height: 48px;
-    }
-
-    .logo-text-block {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .logo-vv {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px;
-      color: var(--cyan);
-      letter-spacing: 2px;
-      line-height: 1;
-      text-shadow: 0 0 12px rgba(0, 200, 255, 0.6);
-    }
-
-    .logo-sub {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 9px;
-      font-weight: 600;
-      letter-spacing: 2.5px;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      margin-top: 2px;
-    }
-
-    .nav-menu {
-      flex: 1;
-      padding: 16px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      padding: 10px 18px;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.8px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      position: relative;
-      transition: all 0.2s;
-      border-left: 2px solid transparent;
-      text-decoration: none;
-    }
-
-    .nav-item:hover {
-      color: var(--cyan);
-      background: rgba(0, 200, 255, 0.04);
-    }
-
-    .nav-item.active {
-      color: var(--cyan);
-      background: linear-gradient(90deg, rgba(0, 200, 255, 0.1) 0%, transparent 100%);
-      border-left: 2px solid var(--cyan);
-    }
-
-    .nav-item.active::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-      background: linear-gradient(90deg, rgba(0, 200, 255, 0.08), transparent);
-    }
-
-    .nav-icon {
-      width: 18px;
-      height: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .nav-icon svg {
-      width: 16px;
-      height: 16px;
-    }
-
-    .nav-admin {
-      color: #ff3b5c !important;
-      border-left: 2px solid transparent;
-    }
-
-    .nav-admin:hover {
-      background: rgba(255, 59, 92, 0.06) !important;
-    }
-
-    .nav-divider {
-      height: 1px;
-      background: var(--border-dim);
-      margin: 8px 18px;
-    }
-
-    .sidebar-profile {
-      padding: 14px 14px 10px;
-      border-top: 1px solid var(--border-dim);
-    }
-
-    .profile-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .profile-avatar {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #1a3a5c, #0d2240);
-      border: 2px solid var(--cyan);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700;
-      font-size: 13px;
-      color: var(--cyan);
-      box-shadow: 0 0 10px rgba(0, 200, 255, 0.3), inset 0 0 8px rgba(0, 200, 255, 0.1);
-      flex-shrink: 0;
-    }
-
-    .profile-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .profile-name {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-primary);
-      letter-spacing: 0.5px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .profile-role {
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      letter-spacing: 0.5px;
-    }
-
-    .profile-badge {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      background: linear-gradient(90deg, rgba(155, 89, 255, 0.15), rgba(155, 89, 255, 0.08));
-      border: 1px solid rgba(155, 89, 255, 0.35);
-      border-radius: 4px;
-      padding: 7px 12px;
-      cursor: pointer;
-    }
-
-    .badge-hex {
-      width: 22px;
-      height: 22px;
-      background: var(--purple);
-      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 8px;
-      font-weight: 700;
-      color: white;
-    }
-
-    .badge-text {
-      font-family: 'Orbitron', sans-serif;
-      font-size: 9px;
-      font-weight: 700;
-      color: var(--purple);
-      letter-spacing: 1px;
-    }
-
-    .nav-logout {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      cursor: pointer;
-      letter-spacing: 0.5px;
-      transition: color 0.2s;
-    }
-
-    .nav-logout:hover {
-      color: var(--text-primary);
-    }
-
-    .sidebar-collapse {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 8px 14px 14px;
-      padding: 8px;
-      border: 1px solid var(--border-dim);
-      border-radius: 6px;
-      cursor: pointer;
-      color: var(--text-secondary);
-      transition: all 0.2s;
-    }
-
-    .sidebar-collapse:hover {
-      border-color: var(--cyan-glow);
-      color: var(--cyan);
-    }
-
-    /* ─── MAIN AREA ───────────────────────────────── */
-    .main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-      overflow: hidden;
-    }
-
-    /* ─── TOP BAR ─────────────────────────────────── */
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 28px 14px;
-      border-bottom: 1px solid var(--border-dim);
-      background: linear-gradient(180deg, rgba(0, 200, 255, 0.03) 0%, transparent 100%);
-    }
-
-    .topbar-title {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 36px;
-      letter-spacing: 4px;
-      color: var(--text-primary);
-      text-shadow: 0 0 30px rgba(0, 200, 255, 0.2);
-    }
-
-    .status-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      border: 1px solid rgba(0, 200, 255, 0.2);
-      border-radius: 4px;
-      padding: 6px 14px;
-      font-family: 'Share Tech Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 1px;
-      color: var(--cyan);
-      background: rgba(0, 200, 255, 0.04);
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 8px rgba(0, 230, 118, 0.8);
-      animation: pulse-dot 2s infinite;
-    }
-
-    @keyframes pulse-dot {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0.5;
-      }
-    }
-
-    /* ─── CONTENT ─────────────────────────────────── */
-    .content {
-      flex: 1;
-      padding: 20px 28px 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      overflow-y: auto;
-    }
-
     /* ─── STAT STRIP ──────────────────────────────── */
     .stat-strip {
       display: grid;
@@ -511,23 +130,19 @@
 
     .stat-value.cyan {
       color: var(--cyan);
-      text-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
-    }
+      }
 
     .stat-value.cyan2 {
       color: #00e5ff;
-      text-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
-    }
+      }
 
     .stat-value.purple {
       color: var(--purple);
-      text-shadow: 0 0 20px rgba(155, 89, 255, 0.5);
-    }
+      }
 
     .stat-value.gold {
       color: var(--gold);
-      text-shadow: 0 0 20px rgba(245, 166, 35, 0.5);
-    }
+      }
 
     .stat-sub {
       font-size: 10px;
@@ -550,7 +165,6 @@
       font-size: 28px;
       font-weight: 700;
       color: var(--gold);
-      text-shadow: 0 0 20px rgba(245, 166, 35, 0.5);
       line-height: 1;
     }
 
@@ -628,8 +242,7 @@
       font-size: 22px;
       font-weight: 800;
       color: var(--cyan);
-      text-shadow: 0 0 15px rgba(0, 200, 255, 0.7);
-    }
+      }
 
     .rank-info {
       flex: 1;
@@ -729,7 +342,6 @@
       font-size: 36px;
       font-weight: 800;
       color: var(--cyan);
-      text-shadow: 0 0 25px rgba(0, 200, 255, 0.6);
       letter-spacing: 2px;
     }
 
@@ -1038,33 +650,7 @@
       color: var(--red);
     }
 
-    /* ─── SCROLLBAR ───────────────────────────────── */
-    ::-webkit-scrollbar {
-      width: 4px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--bg-deep);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: rgba(0, 200, 255, 0.2);
-      border-radius: 2px;
-    }
-
     /* ─── ANIMATIONS ──────────────────────────────── */
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
     .stat-card,
     .rank-card,
     .chart-card,
@@ -1108,26 +694,27 @@
 </head>
 
 <body>
+<div class="shell">
 
   <!-- ─── SIDEBAR ───────────────────────────────────── -->
-  <nav class="sidebar">
+  <nav class="sidebar" id="sidebar">
     <div class="logo-area">
       <div class="logo-hex">
         <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
           <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="rgba(0,200,255,0.08)" stroke="rgba(0,200,255,0.5)"
             stroke-width="1.5" />
           <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Bebas Neue, sans-serif"
-            font-size="17" fill="#00c8ff" style="text-shadow: 0 0 10px #00c8ff">V&amp;V</text>
+            font-size="17" fill="#00c8ff">V&amp;V</text>
         </svg>
       </div>
-      <div class="logo-text-block">
+      <div class="logo-wordmark">
         <div class="logo-vv">V&amp;V</div>
         <div class="logo-sub">Vitals&amp;Vectors</div>
       </div>
     </div>
 
     <div class="nav-menu">
-      <a class="nav-item active" href="#">
+      <a class="nav-item active" href="dashboard.html">
         <span class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
             stroke-linejoin="round">
@@ -1137,7 +724,7 @@
             <rect x="3" y="14" width="7" height="7" />
           </svg>
         </span>
-        Dashboard
+        <span class="nav-label">Dashboard</span>
       </a>
       <a class="nav-item" href="tasks.html">
         <span class="nav-icon">
@@ -1147,7 +734,7 @@
             <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
           </svg>
         </span>
-        Tasks
+        <span class="nav-label">Tasks</span>
       </a>
       <a class="nav-item" href="point-log.html">
         <span class="nav-icon">
@@ -1157,7 +744,7 @@
             <polyline points="12 6 12 12 16 14" />
           </svg>
         </span>
-        Point Log
+        <span class="nav-label">Point Log</span>
       </a>
       <a class="nav-item" href="leaderboard.html">
         <span class="nav-icon">
@@ -1168,7 +755,7 @@
             <line x1="6" y1="20" x2="6" y2="14" />
           </svg>
         </span>
-        Leaderboard
+        <span class="nav-label">Leaderboard</span>
       </a>
       <a class="nav-item" href="attendance.html">
         <span class="nav-icon">
@@ -1180,7 +767,7 @@
             <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
         </span>
-        Attendance
+        <span class="nav-label">Attendance</span>
       </a>
       <a class="nav-item" href="rules.html">
         <span class="nav-icon">
@@ -1190,8 +777,9 @@
             <polyline points="14 2 14 8 20 8" />
           </svg>
         </span>
-        Rules
+        <span class="nav-label">Rules</span>
       </a>
+      <div class="nav-divider"></div>
       <a class="nav-item" href="settings.html">
         <span class="nav-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -1201,7 +789,7 @@
             <path d="M15.54 8.46a5 5 0 010 7.07M8.46 8.46a5 5 0 000 7.07" />
           </svg>
         </span>
-        Settings
+        <span class="nav-label">Settings</span>
       </a>
       <div class="nav-divider"></div>
       <a class="nav-item nav-admin" href="admin/admin_dashboard.html">
@@ -1211,11 +799,11 @@
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
         </span>
-        Admin panel
+        <span class="nav-label">Admin panel</span>
       </a>
     </div>
 
-    <div class="sidebar-profile">
+    <div class="sidebar-bottom">
       <div class="profile-row">
         <div class="profile-avatar">AS</div>
         <div class="profile-info">
@@ -1224,13 +812,11 @@
         </div>
       </div>
       <div class="profile-badge">
-        <div class="badge-hex"
-          style="background:var(--purple);clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:7px;font-weight:700;color:white;">
-          S</div>
+        <div class="badge-hex">S</div>
         <span class="badge-text">SILVER HUNTER</span>
       </div>
-      <div class="nav-logout" style="margin-top:8px;">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      <div class="nav-logout">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
           stroke-linecap="round" stroke-linejoin="round">
           <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
           <polyline points="16 17 21 12 16 7" />
@@ -1238,9 +824,9 @@
         </svg>
         Logout
       </div>
-      <div class="sidebar-collapse" style="margin-top:6px;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
+      <div class="collapse-btn" id="collapseBtn">
+        <svg id="collapseIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="11 17 6 12 11 7" />
           <polyline points="18 17 13 12 18 7" />
         </svg>
@@ -1252,9 +838,9 @@
   <div class="main">
     <!-- TOPBAR -->
     <div class="topbar">
-      <h1 class="topbar-title">COMMAND CENTRE</h1>
+      <h1 class="page-title">COMMAND CENTRE</h1>
       <div class="status-badge">
-        <span style="color:var(--text-secondary);letter-spacing:0.5px;font-size:10px;">// </span>SYSTEM ONLINE
+        <span style="color:var(--text2);letter-spacing:0.5px;font-size:10px;">// </span>SYSTEM ONLINE
         <div class="status-dot"></div>
       </div>
     </div>
@@ -1559,8 +1145,19 @@
 
     </div><!-- /content -->
   </div><!-- /main -->
+</div><!-- /shell -->
 
   <script>
+    // ─── SIDEBAR COLLAPSE ─────────────────────────────────
+    document.getElementById('collapseBtn').addEventListener('click', () => {
+      const sb = document.getElementById('sidebar');
+      const ic = document.getElementById('collapseIcon');
+      sb.classList.toggle('collapsed');
+      ic.innerHTML = sb.classList.contains('collapsed')
+        ? '<polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/>'
+        : '<polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/>';
+    });
+
     // ─── CHART ─────────────────────────────────────────────
     const members = [
       { name: 'Riya', initials: 'RV', pts: 420, rank: 'S', color: '#9b59ff' },
