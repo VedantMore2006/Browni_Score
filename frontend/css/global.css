@@ -163,6 +163,10 @@ body::after {
 .nav-icon svg { width: 16px; height: 16px; }
 .nav-admin { color: var(--red) !important; }
 .nav-admin:hover { background: rgba(255, 59, 92, 0.06) !important; }
+.nav-item.nav-admin.active {
+  background: rgba(255, 59, 92, 0.08);
+  border-left-color: var(--red); color: var(--red);
+}
 .nav-divider { height: 1px; background: var(--border); margin: 6px 16px; }
 
 .sidebar-bottom { border-top: 1px solid var(--border); padding: 12px 14px 10px; flex-shrink: 0; }
@@ -228,6 +232,14 @@ body::after {
   font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 1px;
   color: var(--blue); background: rgba(0, 200, 255, 0.04);
 }
+/* .status-pill: same shape, teal-tinted variant used on admin/settings pages */
+.status-pill {
+  display: flex; align-items: center; gap: 7px;
+  border: 1px solid rgba(0, 229, 255, 0.25); border-radius: 4px;
+  padding: 6px 12px;
+  font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  color: var(--teal); background: rgba(0, 229, 255, 0.05);
+}
 .status-dot {
   width: 7px; height: 7px; border-radius: 50%;
   background: var(--green); box-shadow: 0 0 8px rgba(0, 230, 118, 0.8);
@@ -243,6 +255,15 @@ body::after {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+/* Every page fades its content in on load, not just dashboard.html —
+   fixes the "hard reload" feel when navigating between pages. */
+.content { animation: fadeInUp 0.35s ease both; }
+
+/* ─── CROSS-PAGE NAVIGATION ────────────────────── */
+/* Native browser cross-fade between same-origin pages (Chromium today,
+   ignored harmlessly elsewhere — the .content fade-in above covers the
+   fallback case). One rule, applies to every page that links this file. */
+@view-transition { navigation: auto; }
 
 /* ─── SCROLLBAR ───────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }

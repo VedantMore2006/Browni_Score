@@ -1239,17 +1239,50 @@
       }
     };
 
-    const ctx = document.getElementById('teamChart').getContext('2d');
+    // Idempotent: safe even if this script block ever runs more than once
+    // in the same JS realm (e.g. injected navigation in the future).
+    if (!Chart.registry.plugins.get('barValueLabels')) {
+      Chart.register({
+        id: 'barValueLabels',
+        afterDatasetsDraw(chart) {
+          const { ctx, data, scales } = chart;
+          const xScale = scales.x, yScale = scales.y;
+          data.datasets[0].data.forEach((val, i) => {
+            const x = xScale.getPixelForValue(i);
+            const y = yScale.getPixelForValue(val);
+            ctx.save();
+            ctx.font = '700 11px Orbitron, sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.fillText(val, x, y + 6);
+            ctx.restore();
+          });
+        }
+      });
+    }
 
-    // gradient bars
-    const gradients = members.map(m => {
-      const g = ctx.createLinearGradient(0, 0, 0, 220);
-      g.addColorStop(0, m.color);
-      g.addColorStop(1, m.color + '44');
-      return g;
-    });
+    let teamChart = null;
 
-    new Chart(ctx, {
+    function initTeamChart() {
+      const canvas = document.getElementById('teamChart');
+      const ctx = canvas.getContext('2d');
+
+      // Prevent ghost/duplicate charts if this ever runs twice (e.g. bfcache pageshow).
+      if (teamChart) {
+        teamChart.destroy();
+        teamChart = null;
+      }
+
+      // gradient bars
+      const gradients = members.map(m => {
+        const g = ctx.createLinearGradient(0, 0, 0, 220);
+        g.addColorStop(0, m.color);
+        g.addColorStop(1, m.color + '44');
+        return g;
+      });
+
+      teamChart = new Chart(ctx, {
       type: 'bar',
       plugins: [thresholdPlugin, avatarPlugin],
       data: {
@@ -1313,28 +1346,16 @@
           easing: 'easeOutQuart'
         }
       }
-    });
+      });
+    }
 
-    // Bar value labels
-    // (handled by avatarPlugin initials overlay; also add point label above avatar)
-    // Additional: draw point numbers inside bars
-    Chart.register({
-      id: 'barValueLabels',
-      afterDatasetsDraw(chart) {
-        const { ctx, data, scales } = chart;
-        const xScale = scales.x, yScale = scales.y;
-        data.datasets[0].data.forEach((val, i) => {
-          const x = xScale.getPixelForValue(i);
-          const y = yScale.getPixelForValue(val);
-          ctx.save();
-          ctx.font = '700 11px Orbitron, sans-serif';
-          ctx.fillStyle = '#ffffff';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'top';
-          ctx.fillText(val, x, y + 6);
-          ctx.restore();
-        });
-      }
+    initTeamChart();
+
+    // Redraw the chart if this page is restored from the browser's
+    // back/forward cache (bfcache) instead of being freshly loaded —
+    // canvases aren't reliably repainted on bfcache restore otherwise.
+    window.addEventListener('pageshow', (e) => {
+      if (e.persisted) initTeamChart();
     });
 
   </script>

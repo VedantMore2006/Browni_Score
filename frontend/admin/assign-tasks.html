@@ -8,20 +8,12 @@
 <link rel="stylesheet" href="../css/global.css">
 <style>
 
-/* Admin panel's own nav item is always the active one here — override the
-   global blue active state to match its red nav-admin identity. */
-.nav-item.active { background: rgba(255, 59, 92, 0.08); border-left-color: var(--red); color: var(--red); }
-
-/* ── MAIN ── */
-.main { flex:1; display:flex; flex-direction:column; min-width:0; overflow:hidden; }
-
-.topbar { display:flex; align-items:flex-start; justify-content:space-between; padding:20px 24px 14px; border-bottom:1px solid var(--border); flex-shrink:0; }
+/* .nav-item.nav-admin.active, .main, base .topbar/.page-title/.status-pill/
+   .status-dot all come from global.css — only page-specific deltas here. */
+.topbar { align-items:flex-start; }
 .topbar-left { display:flex; flex-direction:column; gap:3px; }
-.page-title { font-family:'Bebas Neue',sans-serif; font-size:2.2rem; letter-spacing:0.05em; color:var(--text); line-height:1; }
+.page-title { line-height:1; }
 .page-subtitle { font-size:13px; color:var(--text2); }
-.status-pill { display:flex; align-items:center; gap:7px; border:1px solid rgba(0,229,255,0.25); border-radius:4px; padding:6px 12px; font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; color:var(--teal); background:rgba(0,229,255,0.05); }
-.status-dot { width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 8px rgba(0,230,118,0.8); animation:pdot 2s infinite; }
-@keyframes pdot { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
 /* ── CONTENT ── */
 .content { flex:1; display:flex; gap:14px; padding:16px 24px 0; overflow:hidden; min-height:0; }
