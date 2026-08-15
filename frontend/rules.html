@@ -3,109 +3,453 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rulebook — Vitals&amp;Vectors</title>
-<link rel="stylesheet" href="css/theme.css">
-<link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/responsive.css">
+<title>Vitals&Vectors — System Rules</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0A0A0F;
+  --panel:    #0D0D1A;
+  --elevated: #12121F;
+  --blue:     #4FC3F7;
+  --teal:     #00E5FF;
+  --purple:   #9A7BFF;
+  --red:      #FF1744;
+  --amber:    #FFB300;
+  --gold:     #FFD700;
+  --green:    #00E676;
+  --border:   rgba(79,195,247,0.1);
+  --text:     #E8E8F0;
+  --text2:    #8A8AA3;
+  --text3:    #4A4A6A;
+}
+
+html, body { height: 100%; font-family: 'Inter', sans-serif; color: var(--text); background: var(--bg); overflow: hidden; }
+
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(79,195,247,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,195,247,0.025) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none; z-index: 0;
+}
+body::after {
+  content: ''; position: fixed; top: -10%; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 500px;
+  background: radial-gradient(ellipse at center top, rgba(79,195,247,0.06) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+
+.shell { display: flex; height: 100vh; position: relative; z-index: 1; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 220px; background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; flex-shrink: 0;
+  transition: width 0.25s ease; overflow: hidden;
+}
+.sidebar.collapsed { width: 56px; }
+.sidebar.collapsed .nav-label,.sidebar.collapsed .logo-sub,
+.sidebar.collapsed .profile-name,.sidebar.collapsed .profile-role,
+.sidebar.collapsed .badge-text,.sidebar.collapsed .logo-wordmark { display: none; }
+.sidebar.collapsed .nav-item { justify-content: center; padding: 10px 0; }
+.sidebar.collapsed .profile-row { justify-content: center; }
+.sidebar.collapsed .profile-badge { justify-content: center; padding: 8px 0; }
+
+.logo-area { padding: 20px 16px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.logo-hex { width: 48px; height: 48px; flex-shrink: 0; }
+.logo-hex svg { width: 48px; height: 48px; }
+.logo-wordmark { display: flex; flex-direction: column; }
+.logo-vv { font-family: 'Bebas Neue',sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--blue); text-shadow: 0 0 12px rgba(79,195,247,0.5); line-height: 1; }
+.logo-sub { font-size: 8px; font-family:'Rajdhani',sans-serif; font-weight:600; letter-spacing:2px; color:var(--text2); text-transform:uppercase; margin-top:2px; }
+
+.nav-menu { flex:1; padding:12px 0; display:flex; flex-direction:column; gap:1px; overflow:hidden; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:10px 16px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:600; letter-spacing:0.5px; color:var(--text2); cursor:pointer; transition:all 0.2s; border-left:3px solid transparent; text-decoration:none; white-space:nowrap; }
+.nav-item:hover { background:rgba(79,195,247,0.04); color:var(--text); }
+.nav-item.active { background:rgba(79,195,247,0.08); border-left-color:var(--blue); color:var(--blue); }
+.nav-icon { width:18px; height:18px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+.nav-icon svg { width:16px; height:16px; }
+.nav-admin { color:var(--red) !important; }
+.nav-admin:hover { background:rgba(255,23,68,0.05) !important; }
+.nav-divider { height:1px; background:var(--border); margin:6px 16px; }
+
+.sidebar-bottom { border-top:1px solid var(--border); padding:12px 14px 10px; flex-shrink:0; }
+.profile-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.profile-avatar { width:36px; height:36px; border-radius:50%; flex-shrink:0; background:linear-gradient(135deg,#1a3a5c,#0d2240); border:2px solid var(--blue); display:flex; align-items:center; justify-content:center; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:12px; color:var(--blue); box-shadow:0 0 10px rgba(79,195,247,0.25); }
+.profile-info { flex:1; min-width:0; }
+.profile-name { font-size:12px; font-weight:700; color:var(--text); }
+.profile-role { font-size:10px; color:var(--text2); }
+.profile-badge { display:flex; align-items:center; gap:6px; background:rgba(154,123,255,0.1); border:1px solid rgba(154,123,255,0.3); border-radius:4px; padding:6px 10px; margin-bottom:6px; }
+.badge-hex { width:18px; height:18px; clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%); background:var(--purple); display:flex; align-items:center; justify-content:center; font-family:'Rajdhani',sans-serif; font-size:7px; font-weight:700; color:white; }
+.badge-text { font-family:'Rajdhani',sans-serif; font-size:9px; font-weight:700; color:var(--purple); letter-spacing:1px; }
+.nav-logout { display:flex; align-items:center; gap:8px; font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:600; color:var(--text2); cursor:pointer; padding:4px 2px; }
+.nav-logout:hover { color:var(--text); }
+.collapse-btn { display:flex; align-items:center; justify-content:center; margin:8px 14px 2px; border:1px solid var(--border); border-radius:5px; padding:7px; cursor:pointer; color:var(--text2); transition:all 0.2s; }
+.collapse-btn:hover { border-color:rgba(79,195,247,0.4); color:var(--blue); }
+
+/* ── MAIN ── */
+.main { flex:1; display:flex; flex-direction:column; min-width:0; overflow:hidden; }
+
+.topbar { padding:20px 28px 12px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.page-title { font-family:'Bebas Neue',sans-serif; font-size:2.4rem; letter-spacing:0.05em; color:var(--text); line-height:1; }
+.page-subtitle { font-size:13px; color:var(--text2); margin-top:3px; }
+
+/* ── CONTENT ── */
+.content { flex:1; padding:18px 28px 20px; overflow-y:auto; }
+
+/* ── RULES GRID ── */
+.rules-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+
+/* rule card */
+.rule-card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:18px 18px 16px;
+  display:flex;
+  gap:16px;
+  position:relative;
+  overflow:hidden;
+  transition:border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  cursor:default;
+}
+.rule-card:hover {
+  border-color:rgba(79,195,247,0.3);
+  box-shadow:0 0 20px rgba(79,195,247,0.07);
+  transform:translateY(-1px);
+}
+/* top accent line appears on hover */
+.rule-card::before {
+  content:''; position:absolute; top:0;left:0;right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent-color,var(--blue)),transparent);
+  opacity:0; transition:opacity 0.2s;
+}
+.rule-card:hover::before { opacity:1; }
+
+/* card 9 spans full width */
+.rule-card.full { grid-column:1 / -1; }
+
+/* icon hex */
+.rule-icon-wrap {
+  flex-shrink:0;
+  width:52px; height:52px;
+  clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);
+  display:flex; align-items:center; justify-content:center;
+  margin-top:2px;
+}
+.rule-icon-wrap svg { width:22px; height:22px; }
+
+/* blue hex */
+.hex-blue   { background:rgba(79,195,247,0.08); border:1px solid rgba(79,195,247,0.25); color:var(--blue); }
+.hex-teal   { background:rgba(0,229,255,0.08);  border:1px solid rgba(0,229,255,0.25);  color:var(--teal); }
+.hex-red    { background:rgba(255,23,68,0.08);  border:1px solid rgba(255,23,68,0.3);   color:var(--red); }
+.hex-amber  { background:rgba(255,179,0,0.08);  border:1px solid rgba(255,179,0,0.3);   color:var(--amber); }
+.hex-purple { background:rgba(154,123,255,0.08);border:1px solid rgba(154,123,255,0.3); color:var(--purple); }
+.hex-gold   { background:rgba(255,215,0,0.08);  border:1px solid rgba(255,215,0,0.3);   color:var(--gold); }
+.hex-green  { background:rgba(0,230,118,0.08);  border:1px solid rgba(0,230,118,0.3);   color:var(--green); }
+
+.rule-body { flex:1; min-width:0; }
+.rule-num-title {
+  display:flex; align-items:baseline; gap:6px;
+  margin-bottom:10px;
+}
+.rule-num {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:0.95rem; letter-spacing:0.05em;
+  color:var(--text2);
+}
+.rule-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1rem; letter-spacing:0.1em;
+  color:var(--blue);
+}
+/* override title color per section */
+.rule-title.red    { color:var(--red); }
+.rule-title.amber  { color:var(--amber); }
+.rule-title.gold   { color:var(--gold); }
+.rule-title.green  { color:var(--green); }
+.rule-title.purple { color:var(--purple); }
+.rule-title.teal   { color:var(--teal); }
+
+.rule-list { list-style:none; display:flex; flex-direction:column; gap:5px; }
+.rule-list li {
+  display:flex; align-items:baseline; gap:6px;
+  font-size:12.5px; line-height:1.45; color:var(--text2);
+}
+.rule-list li::before {
+  content:'▸';
+  color:var(--bullet-color, var(--blue));
+  font-size:10px; flex-shrink:0; margin-top:1px;
+}
+/* bold key values */
+.rule-list li b { color:var(--text); font-weight:600; }
+/* colored inline values */
+.v-teal   { color:var(--teal);   font-weight:600; }
+.v-amber  { color:var(--amber);  font-weight:600; }
+.v-red    { color:var(--red);    font-weight:600; }
+.v-green  { color:var(--green);  font-weight:600; }
+.v-gold   { color:var(--gold);   font-weight:600; }
+
+/* scrollbar */
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:rgba(79,195,247,0.2); border-radius:3px; }
+::-webkit-scrollbar-thumb:hover { background:var(--blue); }
+</style>
 </head>
 <body>
-  <div class="app-shell">
-    <div class="sidebar" id="sidebar"></div>
-    <div class="main-content">
-      <div class="topbar">
-        <h1 class="display">System Quest Board</h1>
-        <div class="user-chip" id="user-chip"></div>
-      </div>
+<div class="shell">
 
-      <div class="quest-section">
-        <h3>⚔ Working Hours &amp; Daily Schedule</h3>
-        <ul>
-          <li>Standard lab hours as set by the coordinator/admin roster.</li>
-          <li>Presence is logged daily and feeds the weekly presence streak.</li>
-        </ul>
+  <!-- ── SIDEBAR ── -->
+  <nav class="sidebar" id="sidebar">
+    <div class="logo-area">
+      <div class="logo-hex">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="rgba(79,195,247,0.08)" stroke="rgba(79,195,247,0.5)" stroke-width="1.5"/>
+          <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Bebas Neue, sans-serif" font-size="17" fill="#4FC3F7">V&amp;V</text>
+        </svg>
       </div>
-
-      <div class="quest-section">
-        <h3>⚔ Reporting &amp; Attendance</h3>
-        <ul>
-          <li>Daily task reporting is required to maintain the task reporting streak.</li>
-          <li>3 flex days per month are tracked and deducted from late-arrival counts before penalising.</li>
-        </ul>
-      </div>
-
-      <div class="quest-section">
-        <h3>⚔ Task Management</h3>
-        <ul>
-          <li>Tasks are assigned by U5 Coordinators or Admin with duration, deadline, and priority.</li>
-          <li>Members mark tasks "Complete"; the assigning coordinator then rates the work.</li>
-          <li>Points are only awarded after coordinator rating — never on self-completion.</li>
-        </ul>
-      </div>
-
-      <div class="quest-section">
-        <h3>⚔ Point Earning Criteria</h3>
-        <ul>
-          <li>Start at 100 pts on member creation.</li>
-          <li>Task rated "Needs Revision": +3 pts</li>
-          <li>Task rated "Meets Expectation": +5 pts</li>
-          <li>Task rated "Exceeds Expectation": +8 pts</li>
-          <li>85% weekly task completion: +20 pts (auto-calculated every Sunday)</li>
-          <li>Presence streak: +10 pts/week</li>
-          <li>Task reporting streak: +10 pts/week</li>
-        </ul>
-      </div>
-
-      <div class="quest-section">
-        <h3>⚔ Point Deduction Criteria</h3>
-        <ul>
-          <li>Deductions logged by coordinator/admin for missed deadlines, poor conduct, or attendance violations.</li>
-          <li>Categories: attendance / task / learning / content / streak / conduct.</li>
-        </ul>
-      </div>
-
-      <div class="quest-section">
-        <h3>⚔ Streak Bonuses</h3>
-        <ul>
-          <li>Presence streak resets to zero if a member misses a single day in the week.</li>
-          <li>Task reporting streak is calculated independently from presence streak.</li>
-        </ul>
-      </div>
-
-      <div class="quest-section">
-        <h3>⚔ Rewards</h3>
-        <ul>
-          <li>Hero of the Week: highest points that week, confirmed by admin.</li>
-          <li>Hero of the Month: 300+ pts threshold, confirmed by admin, shown with SS-rank glow.</li>
-        </ul>
-      </div>
-
-      <div class="quest-section">
-        <h3>⚔ Violations &amp; Consequences</h3>
-        <ul>
-          <li>Members below 100 pts are automatically flagged in the admin dashboard.</li>
-          <li>3rd warning auto-triggers suspension status.</li>
-          <li>Violations reset monthly if compliant.</li>
-        </ul>
-      </div>
-
-      <div class="quest-section">
-        <h3>⚔ Dress Code</h3>
-        <ul>
-          <li>As specified by lab policy — enforced at coordinator/admin discretion.</li>
-        </ul>
+      <div class="logo-wordmark">
+        <div class="logo-vv">V&amp;V</div>
+        <div class="logo-sub">Vitals&amp;Vectors</div>
       </div>
     </div>
-  </div>
+    <div class="nav-menu">
+      <a class="nav-item" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span><span class="nav-label">Dashboard</span></a>
+      <a class="nav-item" href="tasks.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span><span class="nav-label">Tasks</span></a>
+      <a class="nav-item" href="point-log.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="nav-label">Point log</span></a>
+      <a class="nav-item" href="leaderboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span><span class="nav-label">Leaderboard</span></a>
+      <a class="nav-item" href="attendance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="nav-label">Attendance</span></a>
+      <a class="nav-item active" href="rules.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="nav-label">Rules</span></a>
+      <div class="nav-divider"></div>
+      <a class="nav-item" href="settings.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg></span><span class="nav-label">Settings</span></a>
+      <div class="nav-divider"></div>
+      <a class="nav-item nav-admin" href="admin/dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="nav-label">Admin panel</span></a>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="profile-row">
+        <div class="profile-avatar">AS</div>
+        <div class="profile-info">
+          <div class="profile-name">Aarav Singh</div>
+          <div class="profile-role">Coordinator</div>
+        </div>
+      </div>
+      <div class="profile-badge">
+        <div class="badge-hex">S</div>
+        <span class="badge-text">SILVER HUNTER</span>
+      </div>
+      <div class="nav-logout">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout
+      </div>
+      <div class="collapse-btn" id="collapseBtn">
+        <svg id="collapseIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/></svg>
+      </div>
+    </div>
+  </nav>
 
-  <script src="js/api.js"></script>
-  <script src="js/utils.js"></script>
-  <script>
-    (function () {
-      const auth = requireAuth(['member', 'coordinator', 'admin']);
-      if (!auth) return;
-      document.getElementById('sidebar').innerHTML = buildSidebar('/rules.html', auth.role);
-      document.getElementById('user-chip').textContent = `${auth.name} · ${auth.role.toUpperCase()}`;
-    })();
-  </script>
+  <!-- ── MAIN ── -->
+  <div class="main">
+    <div class="topbar">
+      <h1 class="page-title">SYSTEM RULES</h1>
+      <p class="page-subtitle">The rules that govern Vitals&amp;Vectors. Violations have consequences.</p>
+    </div>
+
+    <div class="content">
+      <div class="rules-grid">
+
+        <!-- 1. WORKING HOURS & SCHEDULE -->
+        <div class="rule-card">
+          <div class="rule-icon-wrap hex-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div class="rule-body">
+            <div class="rule-num-title">
+              <span class="rule-num">1.</span>
+              <span class="rule-title">WORKING HOURS &amp; SCHEDULE</span>
+            </div>
+            <ul class="rule-list">
+              <li>Official working hours are <b>09:00 AM – 06:00 PM</b>, Monday to Saturday.</li>
+              <li>Break time: <b>01:00 PM – 01:30 PM</b>.</li>
+              <li>Coordinate with your team before taking extended breaks.</li>
+              <li>Unplanned absence during working hours may lead to deductions.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 2. REPORTING & ATTENDANCE -->
+        <div class="rule-card">
+          <div class="rule-icon-wrap hex-teal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M9 16l2 2 4-4"/></svg>
+          </div>
+          <div class="rule-body">
+            <div class="rule-num-title">
+              <span class="rule-num">2.</span>
+              <span class="rule-title teal">REPORTING &amp; ATTENDANCE</span>
+            </div>
+            <ul class="rule-list" style="--bullet-color:var(--teal)">
+              <li>Daily check-in is mandatory before <b>11:30 AM</b>.</li>
+              <li>Late check-in after <b>11:30 AM</b> without using a flex day will be marked as <span class="v-amber">LATE.</span></li>
+              <li>Three absences in a week without prior notice will result in deductions.</li>
+              <li>Attendance is auto-logged through the V&amp;V system.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 3. TASK MANAGEMENT -->
+        <div class="rule-card">
+          <div class="rule-icon-wrap hex-blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          </div>
+          <div class="rule-body">
+            <div class="rule-num-title">
+              <span class="rule-num">3.</span>
+              <span class="rule-title">TASK MANAGEMENT</span>
+            </div>
+            <ul class="rule-list">
+              <li>All assigned tasks must be acknowledged within <b>2 hours</b>.</li>
+              <li>Submit tasks before the deadline. Late submissions attract deductions.</li>
+              <li>If you face any blockers, inform your coordinator immediately.</li>
+              <li>Quality matters: incomplete or poor quality work will not be accepted.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 4. POINT EARNING -->
+        <div class="rule-card">
+          <div class="rule-icon-wrap hex-teal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          </div>
+          <div class="rule-body">
+            <div class="rule-num-title">
+              <span class="rule-num">4.</span>
+              <span class="rule-title teal">POINT EARNING</span>
+            </div>
+            <ul class="rule-list" style="--bullet-color:var(--teal)">
+              <li>Earn points by completing tasks, attending sessions, and contributing.</li>
+              <li>Bonus points for early submissions and exceptional performance.</li>
+              <li>Helping teammates and sharing resources earns contribution points.</li>
+              <li>Consistent performance leads to <b>streak</b> and <b>milestone bonuses</b>.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 5. POINT DEDUCTIONS -->
+        <div class="rule-card">
+          <div class="rule-icon-wrap hex-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          </div>
+          <div class="rule-body">
+            <div class="rule-num-title">
+              <span class="rule-num">5.</span>
+              <span class="rule-title red">POINT DEDUCTIONS</span>
+            </div>
+            <ul class="rule-list" style="--bullet-color:var(--red)">
+              <li>Late arrivals, early exits, and unplanned leaves will lead to deductions.</li>
+              <li>Missing deadlines or submitting poor quality work will be penalized.</li>
+              <li>Negative behavior or policy violations attract heavy deductions.</li>
+              <li>Deductions are immediate and non-negotiable.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 6. STREAK BONUSES -->
+        <div class="rule-card">
+          <div class="rule-icon-wrap hex-amber">
+            <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2C10 7 5 9 5 14a7 7 0 0014 0c0-5-5-7-7-12z" opacity="0.9"/></svg>
+          </div>
+          <div class="rule-body">
+            <div class="rule-num-title">
+              <span class="rule-num">6.</span>
+              <span class="rule-title amber">STREAK BONUSES</span>
+            </div>
+            <ul class="rule-list" style="--bullet-color:var(--amber)">
+              <li>Maintain daily attendance streaks to earn bonus points.</li>
+              <li>Weekly streak (5 days): <span class="v-teal">+20 pts</span> &nbsp;|&nbsp; Bi-weekly (10 days): <span class="v-teal">+50 pts</span></li>
+              <li>Monthly perfect attendance: <span class="v-green">+100 pts</span></li>
+              <li>Streaks reset on any absence without approved leave.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 7. REWARDS -->
+        <div class="rule-card">
+          <div class="rule-icon-wrap hex-gold">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 010-5H6"/><path d="M18 9h1.5a2.5 2.5 0 000-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0012 0V2z"/></svg>
+          </div>
+          <div class="rule-body">
+            <div class="rule-num-title">
+              <span class="rule-num">7.</span>
+              <span class="rule-title gold">REWARDS</span>
+            </div>
+            <ul class="rule-list" style="--bullet-color:var(--gold)">
+              <li>Top performers will be featured on the Leaderboard.</li>
+              <li>Monthly top performers receive special roles &amp; perks.</li>
+              <li>Consistent contributors may unlock exclusive opportunities.</li>
+              <li>Rewards are performance-based and subject to change.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 8. VIOLATIONS & CONSEQUENCES -->
+        <div class="rule-card">
+          <div class="rule-icon-wrap hex-red">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div class="rule-body">
+            <div class="rule-num-title">
+              <span class="rule-num">8.</span>
+              <span class="rule-title red">VIOLATIONS &amp; CONSEQUENCES</span>
+            </div>
+            <ul class="rule-list" style="--bullet-color:var(--red)">
+              <li>Any misuse of the system or unfair practices will lead to strict action.</li>
+              <li>Repeated violations can result in <b>suspension</b> or <b>removal</b>.</li>
+              <li>Appeals can be made to the admin with valid justification.</li>
+              <li>All decisions by the admin panel are final.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 9. DRESS CODE (full width) -->
+        <div class="rule-card full">
+          <div class="rule-icon-wrap hex-purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/></svg>
+          </div>
+          <div class="rule-body">
+            <div class="rule-num-title">
+              <span class="rule-num">9.</span>
+              <span class="rule-title purple">DRESS CODE</span>
+            </div>
+            <ul class="rule-list" style="--bullet-color:var(--purple)">
+              <li>Wear neat, clean and appropriate attire.</li>
+              <li>Avoid offensive prints, slogans or inappropriate clothing.</li>
+              <li>Follow a professional look during all official sessions.</li>
+              <li>Dress code violations may lead to deductions.</li>
+            </ul>
+          </div>
+        </div>
+
+      </div><!-- /rules-grid -->
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<script>
+document.getElementById('collapseBtn').addEventListener('click', () => {
+  const sb = document.getElementById('sidebar');
+  sb.classList.toggle('collapsed');
+  const ic = document.getElementById('collapseIcon');
+  ic.innerHTML = sb.classList.contains('collapsed')
+    ? '<polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/>'
+    : '<polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/>';
+});
+</script>
 </body>
 </html>

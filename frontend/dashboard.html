@@ -1,91 +1,1746 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard — Vitals&amp;Vectors</title>
-<link rel="stylesheet" href="css/theme.css">
-<link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/responsive.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitals&Vectors – Command Centre</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Share+Tech+Mono&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-deep: #050a14;
+      --bg-panel: #080f1e;
+      --bg-card: #0b1525;
+      --bg-card2: #0d1a2d;
+      --border-dim: rgba(0, 200, 255, 0.08);
+      --border-glow: rgba(0, 200, 255, 0.25);
+      --cyan: #00c8ff;
+      --cyan-dim: rgba(0, 200, 255, 0.15);
+      --cyan-glow: rgba(0, 200, 255, 0.35);
+      --purple: #9b59ff;
+      --purple-dim: rgba(155, 89, 255, 0.18);
+      --gold: #f5a623;
+      --gold-dim: rgba(245, 166, 35, 0.18);
+      --green: #00e676;
+      --green-dim: rgba(0, 230, 118, 0.15);
+      --red: #ff3b5c;
+      --red-dim: rgba(255, 59, 92, 0.15);
+      --gray: #8899aa;
+      --text-primary: #e8f4ff;
+      --text-secondary: #8899aa;
+      --text-muted: #445566;
+      --nav-w: 200px;
+      --rank-ss: #00e5ff;
+      --rank-s: #9b59ff;
+      --rank-b: #f5a623;
+      --rank-d: #8899aa;
+    }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: 'Rajdhani', sans-serif;
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── SIDEBAR ─────────────────────────────────── */
+    .sidebar {
+      width: var(--nav-w);
+      background: linear-gradient(180deg, #060d1c 0%, #050a14 100%);
+      border-right: 1px solid var(--border-dim);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .sidebar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, var(--cyan-dim), transparent);
+    }
+
+    .logo-area {
+      padding: 22px 18px 18px;
+      border-bottom: 1px solid var(--border-dim);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-hex {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .logo-hex svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .logo-text-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-vv {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      color: var(--cyan);
+      letter-spacing: 2px;
+      line-height: 1;
+      text-shadow: 0 0 12px rgba(0, 200, 255, 0.6);
+    }
+
+    .logo-sub {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .nav-menu {
+      flex: 1;
+      padding: 16px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 18px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s;
+      border-left: 2px solid transparent;
+      text-decoration: none;
+    }
+
+    .nav-item:hover {
+      color: var(--cyan);
+      background: rgba(0, 200, 255, 0.04);
+    }
+
+    .nav-item.active {
+      color: var(--cyan);
+      background: linear-gradient(90deg, rgba(0, 200, 255, 0.1) 0%, transparent 100%);
+      border-left: 2px solid var(--cyan);
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+      background: linear-gradient(90deg, rgba(0, 200, 255, 0.08), transparent);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nav-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .nav-admin {
+      color: #ff3b5c !important;
+      border-left: 2px solid transparent;
+    }
+
+    .nav-admin:hover {
+      background: rgba(255, 59, 92, 0.06) !important;
+    }
+
+    .nav-divider {
+      height: 1px;
+      background: var(--border-dim);
+      margin: 8px 18px;
+    }
+
+    .sidebar-profile {
+      padding: 14px 14px 10px;
+      border-top: 1px solid var(--border-dim);
+    }
+
+    .profile-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .profile-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1a3a5c, #0d2240);
+      border: 2px solid var(--cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--cyan);
+      box-shadow: 0 0 10px rgba(0, 200, 255, 0.3), inset 0 0 8px rgba(0, 200, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .profile-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .profile-role {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+    }
+
+    .profile-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      background: linear-gradient(90deg, rgba(155, 89, 255, 0.15), rgba(155, 89, 255, 0.08));
+      border: 1px solid rgba(155, 89, 255, 0.35);
+      border-radius: 4px;
+      padding: 7px 12px;
+      cursor: pointer;
+    }
+
+    .badge-hex {
+      width: 22px;
+      height: 22px;
+      background: var(--purple);
+      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 8px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .badge-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--purple);
+      letter-spacing: 1px;
+    }
+
+    .nav-logout {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: color 0.2s;
+    }
+
+    .nav-logout:hover {
+      color: var(--text-primary);
+    }
+
+    .sidebar-collapse {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px 14px 14px;
+      padding: 8px;
+      border: 1px solid var(--border-dim);
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+
+    .sidebar-collapse:hover {
+      border-color: var(--cyan-glow);
+      color: var(--cyan);
+    }
+
+    /* ─── MAIN AREA ───────────────────────────────── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    /* ─── TOP BAR ─────────────────────────────────── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 28px 14px;
+      border-bottom: 1px solid var(--border-dim);
+      background: linear-gradient(180deg, rgba(0, 200, 255, 0.03) 0%, transparent 100%);
+    }
+
+    .topbar-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      letter-spacing: 4px;
+      color: var(--text-primary);
+      text-shadow: 0 0 30px rgba(0, 200, 255, 0.2);
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(0, 200, 255, 0.2);
+      border-radius: 4px;
+      padding: 6px 14px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 1px;
+      color: var(--cyan);
+      background: rgba(0, 200, 255, 0.04);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(0, 230, 118, 0.8);
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    /* ─── CONTENT ─────────────────────────────────── */
+    .content {
+      flex: 1;
+      padding: 20px 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      overflow-y: auto;
+    }
+
+    /* ─── STAT STRIP ──────────────────────────────── */
+    .stat-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 6px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+    }
+
+    .stat-card.cyan-accent::before {
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    }
+
+    .stat-card.cyan-accent {
+      border-color: rgba(0, 200, 255, 0.18);
+    }
+
+    .stat-card.cyan2-accent::before {
+      background: linear-gradient(90deg, transparent, #00e5ff, transparent);
+    }
+
+    .stat-card.cyan2-accent {
+      border-color: rgba(0, 229, 255, 0.18);
+    }
+
+    .stat-card.purple-accent::before {
+      background: linear-gradient(90deg, transparent, var(--purple), transparent);
+    }
+
+    .stat-card.purple-accent {
+      border-color: rgba(155, 89, 255, 0.22);
+    }
+
+    .stat-card.gold-accent::before {
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .stat-card.gold-accent {
+      border-color: rgba(245, 166, 35, 0.22);
+    }
+
+    .stat-icon-wrap {
+      width: 42px;
+      height: 42px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .stat-icon-wrap.cyan-bg {
+      background: rgba(0, 200, 255, 0.1);
+      border: 1px solid rgba(0, 200, 255, 0.2);
+    }
+
+    .stat-icon-wrap.cyan2-bg {
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+    }
+
+    .stat-icon-wrap.purple-bg {
+      background: rgba(155, 89, 255, 0.12);
+      border: 1px solid rgba(155, 89, 255, 0.25);
+    }
+
+    .stat-icon-wrap.gold-bg {
+      background: rgba(245, 166, 35, 0.12);
+      border: 1px solid rgba(245, 166, 35, 0.25);
+    }
+
+    .stat-icon-wrap svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .stat-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .stat-value.cyan {
+      color: var(--cyan);
+      text-shadow: 0 0 20px rgba(0, 200, 255, 0.5);
+    }
+
+    .stat-value.cyan2 {
+      color: #00e5ff;
+      text-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+    }
+
+    .stat-value.purple {
+      color: var(--purple);
+      text-shadow: 0 0 20px rgba(155, 89, 255, 0.5);
+    }
+
+    .stat-value.gold {
+      color: var(--gold);
+      text-shadow: 0 0 20px rgba(245, 166, 35, 0.5);
+    }
+
+    .stat-sub {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    /* streak card special */
+    .streak-val-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .streak-num {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--gold);
+      text-shadow: 0 0 20px rgba(245, 166, 35, 0.5);
+      line-height: 1;
+    }
+
+    .streak-unit {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gold);
+    }
+
+    /* ─── RANK CARD ───────────────────────────────── */
+    .rank-card {
+      background: linear-gradient(135deg, #0a1628 0%, #0d1a30 50%, #0a1628 100%);
+      border: 1px solid rgba(0, 200, 255, 0.18);
+      border-radius: 6px;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rank-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    }
+
+    .rank-card::after {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, rgba(0, 200, 255, 0.06) 0%, transparent 70%);
+    }
+
+    .rank-hex-outer {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      flex-shrink: 0;
+    }
+
+    .rank-hex-bg {
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, #0a2040, #0d2a50);
+      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(0, 200, 255, 0.2), inset 0 0 20px rgba(0, 200, 255, 0.05);
+    }
+
+    .rank-hex-border {
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      width: 76px;
+      height: 76px;
+      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+      background: linear-gradient(135deg, var(--cyan), rgba(0, 200, 255, 0.3), var(--cyan));
+      z-index: -1;
+    }
+
+    .rank-initial {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--cyan);
+      text-shadow: 0 0 15px rgba(0, 200, 255, 0.7);
+    }
+
+    .rank-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .rank-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px;
+      letter-spacing: 3px;
+      color: var(--text-primary);
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .rank-badge {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .rank-badge-pill {
+      background: rgba(0, 200, 255, 0.12);
+      border: 1px solid rgba(0, 200, 255, 0.25);
+      border-radius: 3px;
+      padding: 1px 6px;
+      font-size: 9px;
+    }
+
+    .rank-progress-wrap {
+      position: relative;
+    }
+
+    .rank-progress-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 5px;
+    }
+
+    .rank-progress-label span {
+      color: var(--cyan);
+    }
+
+    .rank-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: rgba(0, 200, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 200, 255, 0.1);
+    }
+
+    .rank-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), #0088ff);
+      border-radius: 4px;
+      position: relative;
+      box-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+      transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .rank-bar-fill::after {
+      content: '';
+      position: absolute;
+      right: -1px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: white;
+      border-radius: 2px;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    }
+
+    .total-pts-block {
+      text-align: right;
+      margin-left: auto;
+    }
+
+    .total-pts-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .total-pts-value {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--cyan);
+      text-shadow: 0 0 25px rgba(0, 200, 255, 0.6);
+      letter-spacing: 2px;
+    }
+
+    /* ─── MIDDLE ROW ──────────────────────────────── */
+    .middle-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    /* ─── TEAM CHART ──────────────────────────────── */
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 6px;
+      padding: 18px 22px 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chart-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 200, 255, 0.3), transparent);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .card-title span {
+      font-weight: 500;
+      font-size: 12px;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 220px;
+    }
+
+    /* Rank threshold labels */
+    .chart-rank-labels {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 30px;
+      width: 28px;
+      pointer-events: none;
+    }
+
+    /* ─── BOTTOM ROW ──────────────────────────────── */
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    /* ─── QUESTS ──────────────────────────────────── */
+    .quest-card,
+    .activity-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 6px;
+      padding: 16px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quest-card::before,
+    .activity-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 200, 255, 0.25), transparent);
+    }
+
+    .view-all {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--cyan);
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+
+    .view-all:hover {
+      opacity: 1;
+    }
+
+    .quest-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .quest-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      background: rgba(0, 200, 255, 0.03);
+      border: 1px solid rgba(0, 200, 255, 0.07);
+      border-radius: 5px;
+      transition: border-color 0.2s;
+    }
+
+    .quest-item:hover {
+      border-color: rgba(0, 200, 255, 0.15);
+    }
+
+    .quest-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 5px;
+      background: rgba(0, 200, 255, 0.08);
+      border: 1px solid rgba(0, 200, 255, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .quest-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .quest-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .quest-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 0.3px;
+      margin-bottom: 2px;
+    }
+
+    .quest-meta {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .quest-meta span {
+      margin-right: 6px;
+    }
+
+    .status-pill {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .status-pill.inprogress {
+      background: rgba(0, 200, 255, 0.1);
+      border: 1px solid rgba(0, 200, 255, 0.3);
+      color: var(--cyan);
+    }
+
+    .status-pill.pending {
+      background: rgba(245, 166, 35, 0.1);
+      border: 1px solid rgba(245, 166, 35, 0.3);
+      color: var(--gold);
+    }
+
+    .status-pill.completed {
+      background: rgba(0, 230, 118, 0.1);
+      border: 1px solid rgba(0, 230, 118, 0.3);
+      color: var(--green);
+    }
+
+    .quest-empty {
+      text-align: center;
+      padding: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      border-top: 1px solid var(--border-dim);
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .quest-empty::before,
+    .quest-empty::after {
+      content: '✦';
+      font-size: 9px;
+    }
+
+    /* ─── ACTIVITY ────────────────────────────────── */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 4px;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0, 200, 255, 0.05);
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .act-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .act-icon.plus {
+      background: rgba(0, 230, 118, 0.1);
+      border: 1px solid rgba(0, 230, 118, 0.2);
+    }
+
+    .act-icon.minus {
+      background: rgba(255, 59, 92, 0.1);
+      border: 1px solid rgba(255, 59, 92, 0.2);
+    }
+
+    .act-icon.bonus {
+      background: rgba(245, 166, 35, 0.1);
+      border: 1px solid rgba(245, 166, 35, 0.2);
+    }
+
+    .act-icon svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    .act-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .act-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .act-time {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-top: 1px;
+    }
+
+    .act-pts {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .act-pts.pos {
+      color: var(--green);
+    }
+
+    .act-pts.neg {
+      color: var(--red);
+    }
+
+    /* ─── SCROLLBAR ───────────────────────────────── */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-deep);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 200, 255, 0.2);
+      border-radius: 2px;
+    }
+
+    /* ─── ANIMATIONS ──────────────────────────────── */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .stat-card,
+    .rank-card,
+    .chart-card,
+    .quest-card,
+    .activity-card {
+      animation: fadeInUp 0.4s ease both;
+    }
+
+    .stat-card:nth-child(1) {
+      animation-delay: 0.05s;
+    }
+
+    .stat-card:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .stat-card:nth-child(3) {
+      animation-delay: 0.15s;
+    }
+
+    .stat-card:nth-child(4) {
+      animation-delay: 0.2s;
+    }
+
+    .rank-card {
+      animation-delay: 0.25s;
+    }
+
+    .chart-card {
+      animation-delay: 0.3s;
+    }
+
+    .quest-card {
+      animation-delay: 0.35s;
+    }
+
+    .activity-card {
+      animation-delay: 0.4s;
+    }
+  </style>
 </head>
+
 <body>
-  <div class="app-shell">
-    <div class="sidebar" id="sidebar"></div>
-    <div class="main-content">
-      <div class="topbar">
-        <h1 class="display">Command Centre</h1>
-        <div class="user-chip" id="user-chip"></div>
+
+  <!-- ─── SIDEBAR ───────────────────────────────────── -->
+  <nav class="sidebar">
+    <div class="logo-area">
+      <div class="logo-hex">
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="rgba(0,200,255,0.08)" stroke="rgba(0,200,255,0.5)"
+            stroke-width="1.5" />
+          <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Bebas Neue, sans-serif"
+            font-size="17" fill="#00c8ff" style="text-shadow: 0 0 10px #00c8ff">V&amp;V</text>
+        </svg>
       </div>
-
-      <div class="grid grid-3" style="margin-bottom: 20px;">
-        <div class="card system-window" id="rank-card">
-          <div class="card-title">Hunter Status Window</div>
-          <div style="display:flex; align-items:center; gap:16px;">
-            <div id="rank-badge-slot"></div>
-            <div>
-              <div class="stat-value count-up" id="points-total">0</div>
-              <div style="color: var(--text-dim); font-size: 13px;" id="rank-label"></div>
-              <div class="equipped-title" id="equipped-title"></div>
-            </div>
-          </div>
-          <div class="level-row">
-            <span class="level-badge" id="level-badge"></span>
-          </div>
-          <div class="exp-track"><div class="exp-fill" id="exp-fill" style="width:0%"></div></div>
-          <div class="exp-label" id="exp-label"></div>
-          <div class="progress-track"><div class="progress-fill" id="rank-progress" style="width:0%"></div></div>
-          <div style="color: var(--text-dim); font-size: 12px; margin-top: 6px;" id="rank-next-text"></div>
-        </div>
-
-        <div class="card system-window">
-          <div class="card-title">Active Buffs</div>
-          <div style="display:flex; flex-direction:column; gap:10px;">
-            <div class="buff-item" id="presence-streak"><span class="buff-icon">⚡</span> <span></span></div>
-            <div class="buff-item" id="task-streak"><span class="buff-icon">🔥</span> <span></span></div>
-          </div>
-        </div>
-
-        <div class="card system-window">
-          <div class="card-title">Mini Leaderboard</div>
-          <div id="mini-leaderboard" class="empty-state">Loading...</div>
-        </div>
-      </div>
-
-      <div class="grid grid-3" style="margin-bottom: 20px;">
-        <div class="card">
-          <div class="card-title">Earned This Week</div>
-          <div class="stat-value positive" id="earned-week">0</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Net This Week</div>
-          <div class="stat-value" id="net-week">0</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Monthly Total</div>
-          <div class="stat-value" id="monthly-total">0</div>
-        </div>
-      </div>
-
-      <div class="card system-window" style="margin-bottom: 20px;">
-        <div class="card-title">Unlocked System Titles &amp; Trophies</div>
-        <div class="trophy-grid" id="trophy-cabinet"></div>
-      </div>
-
-      <div class="grid grid-2">
-        <div class="card system-window">
-          <div class="card-title">Current Quests</div>
-          <div id="today-tasks"></div>
-        </div>
-        <div class="card">
-          <div class="card-title">Recent Point Log</div>
-          <div id="recent-log"></div>
-        </div>
+      <div class="logo-text-block">
+        <div class="logo-vv">V&amp;V</div>
+        <div class="logo-sub">Vitals&amp;Vectors</div>
       </div>
     </div>
-  </div>
 
-  <script src="js/api.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/dashboard.js"></script>
+    <div class="nav-menu">
+      <a class="nav-item active" href="#">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" />
+            <rect x="14" y="3" width="7" height="7" />
+            <rect x="14" y="14" width="7" height="7" />
+            <rect x="3" y="14" width="7" height="7" />
+          </svg>
+        </span>
+        Dashboard
+      </a>
+      <a class="nav-item" href="tasks.html">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M9 11l3 3L22 4" />
+            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+          </svg>
+        </span>
+        Tasks
+      </a>
+      <a class="nav-item" href="point-log.html">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        </span>
+        Point Log
+      </a>
+      <a class="nav-item" href="leaderboard.html">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10" />
+            <line x1="12" y1="20" x2="12" y2="4" />
+            <line x1="6" y1="20" x2="6" y2="14" />
+          </svg>
+        </span>
+        Leaderboard
+      </a>
+      <a class="nav-item" href="attendance.html">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+        </span>
+        Attendance
+      </a>
+      <a class="nav-item" href="rules.html">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+          </svg>
+        </span>
+        Rules
+      </a>
+      <a class="nav-item" href="settings.html">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14" />
+            <path d="M15.54 8.46a5 5 0 010 7.07M8.46 8.46a5 5 0 000 7.07" />
+          </svg>
+        </span>
+        Settings
+      </a>
+      <div class="nav-divider"></div>
+      <a class="nav-item nav-admin" href="admin/admin_dashboard.html">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+        </span>
+        Admin panel
+      </a>
+    </div>
+
+    <div class="sidebar-profile">
+      <div class="profile-row">
+        <div class="profile-avatar">AS</div>
+        <div class="profile-info">
+          <div class="profile-name">Aarav Singh</div>
+          <div class="profile-role">Coordinator</div>
+        </div>
+      </div>
+      <div class="profile-badge">
+        <div class="badge-hex"
+          style="background:var(--purple);clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',sans-serif;font-size:7px;font-weight:700;color:white;">
+          S</div>
+        <span class="badge-text">SILVER HUNTER</span>
+      </div>
+      <div class="nav-logout" style="margin-top:8px;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        Logout
+      </div>
+      <div class="sidebar-collapse" style="margin-top:6px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="11 17 6 12 11 7" />
+          <polyline points="18 17 13 12 18 7" />
+        </svg>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ─── MAIN ──────────────────────────────────────── -->
+  <div class="main">
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <h1 class="topbar-title">COMMAND CENTRE</h1>
+      <div class="status-badge">
+        <span style="color:var(--text-secondary);letter-spacing:0.5px;font-size:10px;">// </span>SYSTEM ONLINE
+        <div class="status-dot"></div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- STAT STRIP -->
+      <div class="stat-strip">
+        <!-- Weekly Position -->
+        <div class="stat-card cyan-accent">
+          <div class="stat-icon-wrap cyan-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00c8ff" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M5 3l3 6 4-2 4 2 3-6H5z" />
+              <path d="M5 3v10a7 7 0 0014 0V3" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Weekly Position</div>
+            <div class="stat-value cyan">#1</div>
+          </div>
+        </div>
+        <!-- Points This Week -->
+        <div class="stat-card cyan2-accent">
+          <div class="stat-icon-wrap cyan2-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+              <polyline points="17 6 23 6 23 12" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Points This Week</div>
+            <div class="stat-value cyan2">+70</div>
+          </div>
+        </div>
+        <!-- Points This Month -->
+        <div class="stat-card purple-accent">
+          <div class="stat-icon-wrap purple-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#9b59ff" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Points This Month</div>
+            <div class="stat-value purple">320</div>
+          </div>
+        </div>
+        <!-- Streaks -->
+        <div class="stat-card gold-accent">
+          <div class="stat-icon-wrap gold-bg">
+            <svg viewBox="0 0 24 24" fill="#f5a623" stroke="#f5a623" stroke-width="0.5" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M12 2C10 7 5 9 5 14a7 7 0 0014 0c0-5-5-7-7-12z" />
+            </svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Streaks</div>
+            <div class="streak-val-row">
+              <span class="streak-num">4</span><span class="streak-unit" style="color:var(--gold);">W</span>
+            </div>
+            <div class="stat-sub" style="color:var(--gold);opacity:0.7;font-size:9px;letter-spacing:1.2px;">PRESENCE +
+              TASK</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RANK CARD -->
+      <div class="rank-card">
+        <!-- hex avatar -->
+        <div class="rank-hex-outer">
+          <div
+            style="position:absolute;top:-2px;left:-2px;width:76px;height:76px;clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);background:linear-gradient(135deg,rgba(0,200,255,0.6),rgba(0,200,255,0.15));z-index:0;">
+          </div>
+          <div class="rank-hex-bg" style="position:relative;z-index:1;">
+            <span class="rank-initial">S</span>
+          </div>
+          <!-- animated glow ring -->
+          <div
+            style="position:absolute;top:-6px;left:-6px;width:84px;height:84px;clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);background:transparent;border:0;box-shadow:0 0 16px rgba(0,200,255,0.4);z-index:-1;">
+          </div>
+        </div>
+
+        <!-- rank info -->
+        <div class="rank-info">
+          <div class="rank-title">PLATINUM HUNTER</div>
+          <div class="rank-badge">
+            RANK
+            <span class="rank-badge-pill">S</span>
+          </div>
+          <div class="rank-progress-wrap" style="width:340px;max-width:100%;">
+            <div class="rank-progress-label">
+              <span>650 / 1000 pts</span> to next rank <span>(SS)</span>
+            </div>
+            <div class="rank-bar-bg">
+              <div class="rank-bar-fill" style="width:65%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- total points -->
+        <div class="total-pts-block">
+          <div class="total-pts-label">Total Points</div>
+          <div class="total-pts-value">8,450</div>
+        </div>
+      </div>
+
+      <!-- TEAM CHART -->
+      <div class="chart-card">
+        <div class="card-header">
+          <div class="card-title">
+            TEAM HUNTER RANKING <span>(ALL MEMBERS)</span>
+          </div>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="teamChart"></canvas>
+        </div>
+      </div>
+
+      <!-- BOTTOM ROW -->
+      <div class="bottom-row">
+        <!-- TODAY'S QUESTS -->
+        <div class="quest-card">
+          <div class="card-header">
+            <div class="card-title">TODAY'S QUESTS</div>
+            <span class="view-all">View all</span>
+          </div>
+          <div class="quest-list">
+            <!-- Quest 1 -->
+            <div class="quest-item">
+              <div class="quest-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00c8ff" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <polyline points="16 18 22 12 16 6" />
+                  <polyline points="8 6 2 12 8 18" />
+                </svg>
+              </div>
+              <div class="quest-info">
+                <div class="quest-name">Code Review (Module X)</div>
+                <div class="quest-meta">
+                  <span>⏱ 30 min</span>
+                  <span>• Due 11:00 AM</span>
+                </div>
+              </div>
+              <div class="status-pill inprogress">● In Progress</div>
+            </div>
+            <!-- Quest 2 -->
+            <div class="quest-item">
+              <div class="quest-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+              </div>
+              <div class="quest-info">
+                <div class="quest-name">UI/UX Design Update</div>
+                <div class="quest-meta">
+                  <span>⏱ 45 min</span>
+                  <span>• Due 1:00 PM</span>
+                </div>
+              </div>
+              <div class="status-pill pending">● Pending</div>
+            </div>
+            <!-- Quest 3 -->
+            <div class="quest-item">
+              <div class="quest-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                  <path d="M16 3.13a4 4 0 010 7.75" />
+                </svg>
+              </div>
+              <div class="quest-info">
+                <div class="quest-name">Team Standup</div>
+                <div class="quest-meta">
+                  <span>⏱ 15 min</span>
+                  <span>• Due 5:00 PM</span>
+                </div>
+              </div>
+              <div class="status-pill completed">● Completed</div>
+            </div>
+          </div>
+          <div class="quest-empty">No quests due today</div>
+        </div>
+
+        <!-- RECENT ACTIVITY -->
+        <div class="activity-card">
+          <div class="card-header">
+            <div class="card-title">RECENT ACTIVITY</div>
+            <span class="view-all">View all</span>
+          </div>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="act-icon plus">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </div>
+              <div class="act-text">
+                <div class="act-name">Task Completed: Code Review</div>
+                <div class="act-time">10m ago</div>
+              </div>
+              <div class="act-pts pos">+20</div>
+            </div>
+            <div class="activity-item">
+              <div class="act-icon bonus">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </div>
+              <div class="act-text">
+                <div class="act-name">Bonus: Perfect Attendance</div>
+                <div class="act-time">35m ago</div>
+              </div>
+              <div class="act-pts pos">+10</div>
+            </div>
+            <div class="activity-item">
+              <div class="act-icon plus">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </div>
+              <div class="act-text">
+                <div class="act-name">Task Submitted: UI/UX Update</div>
+                <div class="act-time">1h ago</div>
+              </div>
+              <div class="act-pts pos">+15</div>
+            </div>
+            <div class="activity-item">
+              <div class="act-icon minus">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b5c" stroke-width="2.5" stroke-linecap="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </div>
+              <div class="act-text">
+                <div class="act-name">Late Check-in Deduction</div>
+                <div class="act-time">2h ago</div>
+              </div>
+              <div class="act-pts neg">-10</div>
+            </div>
+            <div class="activity-item">
+              <div class="act-icon minus">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b5c" stroke-width="2.5" stroke-linecap="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </div>
+              <div class="act-text">
+                <div class="act-name">Task Missed: Documentation</div>
+                <div class="act-time">3h ago</div>
+              </div>
+              <div class="act-pts neg">-15</div>
+            </div>
+            <div class="activity-item">
+              <div class="act-icon bonus">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round">
+                  <path d="M12 2C10 7 5 9 5 14a7 7 0 0014 0c0-5-5-7-7-12z" />
+                </svg>
+              </div>
+              <div class="act-text">
+                <div class="act-name">Bonus: Weekly Streak</div>
+                <div class="act-time">5h ago</div>
+              </div>
+              <div class="act-pts pos">+30</div>
+            </div>
+            <div class="activity-item">
+              <div class="act-icon plus">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </div>
+              <div class="act-text">
+                <div class="act-name">Task Completed: Bug Fixes</div>
+                <div class="act-time">6h ago</div>
+              </div>
+              <div class="act-pts pos">+10</div>
+            </div>
+            <div class="activity-item">
+              <div class="act-icon minus">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b5c" stroke-width="2.5" stroke-linecap="round">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              </div>
+              <div class="act-text">
+                <div class="act-name">Manual Adjustment</div>
+                <div class="act-time">1d ago</div>
+              </div>
+              <div class="act-pts neg">-5</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+  <script>
+    // ─── CHART ─────────────────────────────────────────────
+    const members = [
+      { name: 'Riya', initials: 'RV', pts: 420, rank: 'S', color: '#9b59ff' },
+      { name: 'Aarav', initials: 'AS', pts: 365, rank: 'S', color: '#00c8ff' },
+      { name: 'Arjun', initials: 'AV', pts: 310, rank: 'B', color: '#f5a623' },
+      { name: 'Pranav', initials: 'PP', pts: 250, rank: 'B', color: '#3a7bd5' },
+      { name: 'Neha', initials: 'NK', pts: 180, rank: 'B', color: '#778899' },
+      { name: 'Aniket', initials: 'AK', pts: 120, rank: 'D', color: '#cc8844' },
+      { name: 'Siddhant', initials: 'SM', pts: 60, rank: 'D', color: '#556677' },
+    ];
+
+    const rankThresholds = [
+      { label: 'SS', val: 450, color: '#00e5ff' },
+      { label: 'S', val: 350, color: '#9b59ff' },
+      { label: 'B', val: 250, color: '#f5a623' },
+      { label: 'D', val: 100, color: '#778899' },
+    ];
+
+    // Custom plugin: circular initials avatars on top of bars + rank threshold lines
+    const avatarPlugin = {
+      id: 'avatarPlugin',
+      afterDatasetsDraw(chart) {
+        const { ctx, data, scales } = chart;
+        const xScale = scales.x, yScale = scales.y;
+        data.datasets[0].data.forEach((val, i) => {
+          const x = xScale.getPixelForValue(i);
+          const y = yScale.getPixelForValue(val);
+          const member = members[i];
+          const r = 14;
+          // circle bg
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(x, y - r - 4, r, 0, Math.PI * 2);
+          ctx.fillStyle = '#0d1a2d';
+          ctx.fill();
+          ctx.strokeStyle = member.color;
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          ctx.restore();
+          // initials
+          ctx.save();
+          ctx.font = 'bold 9px Rajdhani, sans-serif';
+          ctx.fillStyle = member.color;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(member.initials, x, y - r - 4);
+          ctx.restore();
+        });
+      }
+    };
+
+    // Rank threshold dashed lines plugin
+    const thresholdPlugin = {
+      id: 'thresholdPlugin',
+      beforeDatasetsDraw(chart) {
+        const { ctx, chartArea, scales } = chart;
+        const yScale = scales.y;
+        rankThresholds.forEach(t => {
+          const y = yScale.getPixelForValue(t.val);
+          if (y < chartArea.top || y > chartArea.bottom) return;
+          ctx.save();
+          ctx.beginPath();
+          ctx.setLineDash([4, 4]);
+          ctx.moveTo(chartArea.left, y);
+          ctx.lineTo(chartArea.right, y);
+          ctx.strokeStyle = t.color;
+          ctx.lineWidth = 1;
+          ctx.globalAlpha = 0.5;
+          ctx.stroke();
+          // label on right
+          ctx.globalAlpha = 1;
+          ctx.font = '700 10px Orbitron, sans-serif';
+          ctx.fillStyle = t.color;
+          ctx.textAlign = 'right';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(t.label, chartArea.right + 22, y);
+          ctx.restore();
+        });
+      }
+    };
+
+    const ctx = document.getElementById('teamChart').getContext('2d');
+
+    // gradient bars
+    const gradients = members.map(m => {
+      const g = ctx.createLinearGradient(0, 0, 0, 220);
+      g.addColorStop(0, m.color);
+      g.addColorStop(1, m.color + '44');
+      return g;
+    });
+
+    new Chart(ctx, {
+      type: 'bar',
+      plugins: [thresholdPlugin, avatarPlugin],
+      data: {
+        labels: members.map(m => m.name),
+        datasets: [{
+          data: members.map(m => m.pts),
+          backgroundColor: gradients,
+          borderColor: members.map(m => m.color),
+          borderWidth: 1,
+          borderRadius: 4,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: { top: 30, right: 30, bottom: 0, left: 0 } },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(8,15,30,0.95)',
+            borderColor: 'rgba(0,200,255,0.3)',
+            borderWidth: 1,
+            titleColor: '#00c8ff',
+            bodyColor: '#8899aa',
+            titleFont: { family: 'Orbitron', size: 11, weight: '700' },
+            bodyFont: { family: 'Rajdhani', size: 12, weight: '600' },
+            padding: 10,
+            callbacks: {
+              title: items => members[items[0].dataIndex].name,
+              label: item => ` ${item.raw} pts  |  Rank ${members[item.dataIndex].rank}`
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            border: { display: false },
+            ticks: {
+              color: '#8899aa',
+              font: { family: 'Rajdhani', size: 12, weight: '600' },
+            }
+          },
+          y: {
+            min: 0,
+            max: 500,
+            grid: {
+              color: 'rgba(0,200,255,0.05)',
+              drawBorder: false,
+            },
+            border: { display: false, dash: [4, 4] },
+            ticks: {
+              color: '#445566',
+              font: { family: 'Share Tech Mono', size: 10 },
+              stepSize: 50,
+            }
+          }
+        },
+        animation: {
+          duration: 1200,
+          easing: 'easeOutQuart'
+        }
+      }
+    });
+
+    // Bar value labels
+    // (handled by avatarPlugin initials overlay; also add point label above avatar)
+    // Additional: draw point numbers inside bars
+    Chart.register({
+      id: 'barValueLabels',
+      afterDatasetsDraw(chart) {
+        const { ctx, data, scales } = chart;
+        const xScale = scales.x, yScale = scales.y;
+        data.datasets[0].data.forEach((val, i) => {
+          const x = xScale.getPixelForValue(i);
+          const y = yScale.getPixelForValue(val);
+          ctx.save();
+          ctx.font = '700 11px Orbitron, sans-serif';
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.fillText(val, x, y + 6);
+          ctx.restore();
+        });
+      }
+    });
+
+  </script>
 </body>
+
 </html>

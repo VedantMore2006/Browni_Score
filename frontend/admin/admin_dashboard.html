@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitals&Vectors — Admin Panel</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0A0A0F;
+      --panel: #0D0D1A;
+      --elevated: #12121F;
+      --blue: #4FC3F7;
+      --blue-dim: rgba(79, 195, 247, 0.12);
+      --teal: #00E5FF;
+      --teal-dim: rgba(0, 229, 255, 0.1);
+      --purple: #9A7BFF;
+      --red: #FF1744;
+      --red-dim: rgba(255, 23, 68, 0.12);
+      --amber: #FFB300;
+      --gold: #FFD700;
+      --green: #00E676;
+      --border: rgba(79, 195, 247, 0.1);
+      --text: #E8E8F0;
+      --text2: #8A8AA3;
+      --text3: #4A4A6A;
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(rgba(79, 195, 247, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(79, 195, 247, 0.025) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: -10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 500px;
+      background: radial-gradient(ellipse at center top, rgba(79, 195, 247, 0.06) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .shell {
+      display: flex;
+      height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 220px;
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: width 0.25s ease;
+      overflow: hidden;
+    }
+
+    .sidebar.collapsed {
+      width: 56px;
+    }
+
+    .sidebar.collapsed .nav-label,
+    .sidebar.collapsed .logo-sub,
+    .sidebar.collapsed .profile-name,
+    .sidebar.collapsed .profile-role,
+    .sidebar.collapsed .badge-text,
+    .sidebar.collapsed .logo-wordmark {
+      display: none;
+    }
+
+    .sidebar.collapsed .nav-item {
+      justify-content: center;
+      padding: 10px 0;
+    }
+
+    .sidebar.collapsed .profile-row {
+      justify-content: center;
+    }
+
+    .sidebar.collapsed .profile-badge {
+      justify-content: center;
+      padding: 8px 0;
+    }
+
+    .logo-area {
+      padding: 20px 16px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .logo-hex {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+    }
+
+    .logo-hex svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .logo-wordmark {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-vv {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 2px;
+      color: var(--blue);
+      text-shadow: 0 0 12px rgba(79, 195, 247, 0.5);
+      line-height: 1;
+    }
+
+    .logo-sub {
+      font-size: 8px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+      letter-spacing: 2px;
+      color: var(--text2);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .nav-menu {
+      flex: 1;
+      padding: 12px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      overflow: hidden;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-item:hover {
+      background: rgba(79, 195, 247, 0.04);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      background: rgba(255, 23, 68, 0.08);
+      border-left-color: var(--red);
+      color: var(--red);
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-icon svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .nav-admin {
+      color: var(--red) !important;
+    }
+
+    .nav-admin.active {
+      background: rgba(255, 23, 68, 0.1) !important;
+    }
+
+    .nav-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 6px 16px;
+    }
+
+    .sidebar-bottom {
+      border-top: 1px solid var(--border);
+      padding: 12px 14px 10px;
+      flex-shrink: 0;
+    }
+
+    .profile-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .profile-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #1a3a5c, #0d2240);
+      border: 2px solid var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--blue);
+      box-shadow: 0 0 10px rgba(79, 195, 247, 0.25);
+    }
+
+    .profile-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .profile-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .profile-role {
+      font-size: 10px;
+      color: var(--text2);
+    }
+
+    .profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(154, 123, 255, 0.1);
+      border: 1px solid rgba(154, 123, 255, 0.3);
+      border-radius: 4px;
+      padding: 6px 10px;
+      margin-bottom: 6px;
+    }
+
+    .badge-hex {
+      width: 18px;
+      height: 18px;
+      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+      background: var(--purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 7px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .badge-text {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--purple);
+      letter-spacing: 1px;
+    }
+
+    .nav-logout {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      cursor: pointer;
+      padding: 4px 2px;
+    }
+
+    .nav-logout:hover {
+      color: var(--text);
+    }
+
+    .collapse-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px 14px 2px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 7px;
+      cursor: pointer;
+      color: var(--text2);
+      transition: all 0.2s;
+    }
+
+    .collapse-btn:hover {
+      border-color: rgba(79, 195, 247, 0.4);
+      color: var(--blue);
+    }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    /* topbar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      letter-spacing: 0.05em;
+      color: var(--text);
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid rgba(0, 229, 255, 0.25);
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--teal);
+      background: rgba(0, 229, 255, 0.05);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(0, 230, 118, 0.8);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: 0.5
+      }
+    }
+
+    /* content */
+    .content {
+      flex: 1;
+      padding: 14px 22px 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+
+    /* ── ALERT BANNER ── */
+    .alert-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 23, 68, 0.08);
+      border: 1px solid rgba(255, 23, 68, 0.35);
+      border-radius: 6px;
+      padding: 11px 16px;
+      flex-shrink: 0;
+    }
+
+    .alert-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-left svg {
+      width: 16px;
+      height: 16px;
+      color: var(--red);
+      flex-shrink: 0;
+    }
+
+    .alert-text {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .alert-count {
+      color: var(--red);
+    }
+
+    .alert-sep {
+      color: var(--red);
+      margin: 0 4px;
+    }
+
+    .alert-link {
+      color: var(--red);
+      text-decoration: none;
+      letter-spacing: 1px;
+      font-size: 12px;
+    }
+
+    .alert-chevron {
+      color: var(--red);
+      display: flex;
+      align-items: center;
+    }
+
+    .alert-chevron svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ── QUICK STATS ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: rgba(79, 195, 247, 0.25);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+    }
+
+    .stat-card.red-accent::before {
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+    }
+
+    .stat-card.amber-accent::before {
+      background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    }
+
+    .stat-card.blue-accent::before {
+      background: linear-gradient(90deg, transparent, var(--blue), transparent);
+    }
+
+    .stat-icon-ring {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid;
+    }
+
+    .stat-icon-ring svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .stat-icon-ring.red {
+      border-color: var(--red);
+      background: rgba(255, 23, 68, 0.08);
+      color: var(--red);
+    }
+
+    .stat-icon-ring.amber {
+      border-color: var(--amber);
+      background: rgba(255, 179, 0, 0.08);
+      color: var(--amber);
+    }
+
+    .stat-icon-ring.blue {
+      border-color: var(--blue);
+      background: rgba(79, 195, 247, 0.08);
+      color: var(--blue);
+    }
+
+    .stat-info {
+      flex: 1;
+    }
+
+    .stat-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text2);
+      margin-bottom: 4px;
+    }
+
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    .stat-num.red {
+      color: var(--red);
+      text-shadow: 0 0 16px rgba(255, 23, 68, 0.4);
+    }
+
+    .stat-num.amber {
+      color: var(--amber);
+      text-shadow: 0 0 16px rgba(255, 179, 0, 0.4);
+    }
+
+    .stat-num.blue {
+      color: var(--blue);
+      text-shadow: 0 0 16px rgba(79, 195, 247, 0.4);
+    }
+
+    .stat-link {
+      font-size: 11px;
+      color: var(--text2);
+      margin-top: 4px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .stat-link:hover {
+      color: var(--blue);
+    }
+
+    /* ── TEAM OVERVIEW TABLE ── */
+    .overview-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .overview-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+
+    thead tr {
+      background: var(--elevated);
+      border-bottom: 1px solid var(--border);
+    }
+
+    thead th {
+      padding: 9px 12px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text2);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(79, 195, 247, 0.05);
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: rgba(79, 195, 247, 0.03);
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    td {
+      padding: 9px 12px;
+      vertical-align: middle;
+    }
+
+    /* rank hex in table */
+    .rank-pos {
+      width: 28px;
+      height: 28px;
+      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px;
+    }
+
+    .rank-pos.gold {
+      background: rgba(255, 215, 0, 0.15);
+      border: 0;
+      color: var(--gold);
+    }
+
+    .rank-pos.silver {
+      background: rgba(176, 176, 176, 0.12);
+      border: 0;
+      color: #A0A0B0;
+    }
+
+    .rank-pos.bronze {
+      background: rgba(205, 127, 50, 0.15);
+      border: 0;
+      color: #CD7F32;
+    }
+
+    .rank-pos.plain {
+      background: rgba(79, 195, 247, 0.05);
+      border: 0;
+      color: var(--text2);
+      font-size: 12px;
+    }
+
+    .hunter-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .h-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      flex-shrink: 0;
+      border: 1px solid;
+    }
+
+    .h-name {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .you-tag {
+      margin-left: 6px;
+      padding: 1px 7px;
+      background: rgba(79, 195, 247, 0.12);
+      border: 1px solid rgba(79, 195, 247, 0.35);
+      border-radius: 3px;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--blue);
+      font-family: 'Rajdhani', sans-serif;
+    }
+
+    .td-pts {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px;
+      color: var(--teal);
+      letter-spacing: 0.5px;
+    }
+
+    .td-week {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--green);
+    }
+
+    .td-week.neg {
+      color: var(--red);
+    }
+
+    .td-streak {
+      font-size: 12px;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* status chips */
+    .chip-active {
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      color: var(--teal);
+    }
+
+    .chip-warning {
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: rgba(255, 179, 0, 0.1);
+      border: 1px solid rgba(255, 179, 0, 0.4);
+      color: var(--amber);
+    }
+
+    /* action buttons */
+    .actions-cell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-pts-pos {
+      padding: 4px 10px;
+      background: transparent;
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      border-radius: 4px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--teal);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .btn-pts-pos:hover {
+      background: rgba(0, 229, 255, 0.08);
+    }
+
+    .btn-pts-neg {
+      padding: 4px 10px;
+      background: transparent;
+      border: 1px solid rgba(255, 23, 68, 0.35);
+      border-radius: 4px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--red);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .btn-pts-neg:hover {
+      background: rgba(255, 23, 68, 0.08);
+    }
+
+    .btn-warn {
+      padding: 4px 10px;
+      background: transparent;
+      border: 1px solid rgba(255, 179, 0, 0.35);
+      border-radius: 4px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--amber);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .btn-warn:hover {
+      background: rgba(255, 179, 0, 0.08);
+    }
+
+    .btn-overflow {
+      width: 24px;
+      height: 24px;
+      background: none;
+      border: none;
+      color: var(--text2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 3px;
+      transition: color 0.2s;
+    }
+
+    .btn-overflow:hover {
+      color: var(--text);
+    }
+
+    .btn-overflow svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* ── BOTTOM ROW ── */
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+      flex-shrink: 0;
+    }
+
+    .alerts-card,
+    .heroes-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .alerts-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 23, 68, 0.4), transparent);
+    }
+
+    .heroes-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+
+    .section-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    /* alert items */
+    .alert-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .alert-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+    }
+
+    .alert-icon-wrap {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 23, 68, 0.08);
+      border: 1px solid rgba(255, 23, 68, 0.2);
+    }
+
+    .alert-icon-wrap svg {
+      width: 15px;
+      height: 15px;
+      color: var(--red);
+    }
+
+    .alert-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .alert-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .alert-name {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .alert-time {
+      font-size: 11px;
+      color: var(--red);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .alert-desc {
+      font-size: 11px;
+      color: var(--text2);
+      margin-top: 2px;
+    }
+
+    .view-all-link {
+      font-size: 12px;
+      color: var(--red);
+      cursor: pointer;
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: opacity 0.2s;
+    }
+
+    .view-all-link:hover {
+      opacity: 0.8;
+    }
+
+    /* heroes */
+    .hero-week {
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      border-radius: 7px;
+      background: rgba(255, 215, 0, 0.04);
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-week-icon {
+      width: 38px;
+      height: 38px;
+      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+      background: rgba(255, 215, 0, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--gold);
+    }
+
+    .hero-week-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .hero-week-info {
+      flex: 1;
+    }
+
+    .hw-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--text2);
+      text-transform: uppercase;
+    }
+
+    .hw-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.06em;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .hw-pts {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+    }
+
+    /* faint character art */
+    .hero-art {
+      position: absolute;
+      right: -8px;
+      top: -4px;
+      opacity: 0.12;
+    }
+
+    .hero-art svg {
+      width: 80px;
+      height: 70px;
+    }
+
+    .hero-month {
+      border: 1px solid rgba(154, 123, 255, 0.2);
+      border-radius: 7px;
+      background: rgba(154, 123, 255, 0.04);
+      padding: 12px 14px;
+    }
+
+    .hm-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--text2);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hm-label-icon {
+      width: 16px;
+      height: 16px;
+      clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
+      background: rgba(154, 123, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--purple);
+    }
+
+    .hm-label-icon svg {
+      width: 9px;
+      height: 9px;
+    }
+
+    .hm-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(154, 123, 255, 0.08);
+    }
+
+    .hm-row:last-child {
+      border-bottom: none;
+    }
+
+    .hm-name {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .hm-pts {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--purple);
+    }
+
+    .view-lb-link {
+      font-size: 12px;
+      color: var(--blue);
+      cursor: pointer;
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ── RIGHT PANELS ── */
+    .right-panels {
+      width: 290px;
+      flex-shrink: 0;
+      background: var(--panel);
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .rp-section {
+      padding: 18px 18px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rp-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .rp-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      color: var(--text);
+    }
+
+    .rp-close {
+      background: none;
+      border: none;
+      color: var(--text2);
+      cursor: pointer;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      border-radius: 3px;
+      transition: color 0.2s;
+    }
+
+    .rp-close:hover {
+      color: var(--text);
+    }
+
+    .rp-close svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .form-field {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text2);
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      padding: 9px 11px;
+      background: rgba(10, 10, 20, 0.7);
+      border: 1px solid rgba(79, 195, 247, 0.15);
+      border-radius: 5px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: rgba(79, 195, 247, 0.45);
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: var(--text2);
+      opacity: 0.6;
+    }
+
+    .form-textarea {
+      resize: none;
+      height: 72px;
+    }
+
+    .form-select {
+      cursor: pointer;
+    }
+
+    .select-wrap {
+      position: relative;
+    }
+
+    .select-wrap::after {
+      content: '';
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid var(--text2);
+      pointer-events: none;
+    }
+
+    /* spinbox for points */
+    .pts-wrap {
+      position: relative;
+    }
+
+    .pts-wrap .form-input {
+      padding-right: 28px;
+    }
+
+    .pts-spin {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 26px;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid rgba(79, 195, 247, 0.1);
+    }
+
+    .pts-spin button {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      transition: color 0.2s;
+    }
+
+    .pts-spin button:hover {
+      color: var(--blue);
+    }
+
+    .pts-spin button:first-child {
+      border-bottom: 1px solid rgba(79, 195, 247, 0.1);
+    }
+
+    .btn-confirm {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      background: linear-gradient(90deg, #1565C0, #29B6F6, #00E5FF);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      color: #0A0A0F;
+      cursor: pointer;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 16px rgba(0, 229, 255, 0.2);
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+
+    .btn-confirm:hover {
+      box-shadow: 0 4px 24px rgba(0, 229, 255, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .btn-cancel-outline {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid rgba(255, 23, 68, 0.4);
+      border-radius: 5px;
+      background: transparent;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      color: var(--red);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel-outline:hover {
+      background: rgba(255, 23, 68, 0.08);
+    }
+
+    .btn-danger-fill {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      background: var(--red);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      color: white;
+      cursor: pointer;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 16px rgba(255, 23, 68, 0.2);
+      transition: all 0.2s;
+    }
+
+    .btn-danger-fill:hover {
+      box-shadow: 0 4px 24px rgba(255, 23, 68, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .btn-cancel-plain {
+      width: 100%;
+      padding: 11px;
+      border: 1px solid rgba(255, 23, 68, 0.3);
+      border-radius: 5px;
+      background: transparent;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      color: var(--red);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-cancel-plain:hover {
+      background: rgba(255, 23, 68, 0.06);
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(79, 195, 247, 0.2);
+      border-radius: 2px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--blue);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="shell">
+
+    <!-- ── SIDEBAR ── -->
+    <nav class="sidebar" id="sidebar">
+      <div class="logo-area">
+        <div class="logo-hex">
+          <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="rgba(79,195,247,0.08)"
+              stroke="rgba(79,195,247,0.5)" stroke-width="1.5" />
+            <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Bebas Neue, sans-serif"
+              font-size="17" fill="#4FC3F7">V&amp;V</text>
+          </svg>
+        </div>
+        <div class="logo-wordmark">
+          <div class="logo-vv">V&amp;V</div>
+          <div class="logo-sub">Vitals&amp;Vectors</div>
+        </div>
+      </div>
+      <div class="nav-menu">
+        <a class="nav-item" href="../dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg></span><span class="nav-label">Dashboard</span></a>
+        <a class="nav-item" href="../tasks.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4" />
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+            </svg></span><span class="nav-label">Tasks</span></a>
+        <a class="nav-item" href="../point-log.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg></span><span class="nav-label">Point log</span></a>
+        <a class="nav-item" href="../leaderboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg></span><span class="nav-label">Leaderboard</span></a>
+        <a class="nav-item" href="../attendance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg></span><span class="nav-label">Attendance</span></a>
+        <a class="nav-item" href="../rules.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg></span><span class="nav-label">Rules</span></a>
+        <div class="nav-divider"></div>
+        <a class="nav-item" href="../settings.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14" />
+            </svg></span><span class="nav-label">Settings</span></a>
+        <div class="nav-divider"></div>
+        <a class="nav-item nav-admin active" href="dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg></span><span class="nav-label">Admin panel</span></a>
+      </div>
+      <div class="sidebar-bottom">
+        <div class="profile-row">
+          <div class="profile-avatar">AS</div>
+          <div class="profile-info">
+            <div class="profile-name">Aarav Singh</div>
+            <div class="profile-role">Coordinator</div>
+          </div>
+        </div>
+        <div class="profile-badge">
+          <div class="badge-hex">S</div>
+          <span class="badge-text">SILVER HUNTER</span>
+        </div>
+        <div class="nav-logout">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+          Logout
+        </div>
+        <div class="collapse-btn" id="collapseBtn">
+          <svg id="collapseIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="11 17 6 12 11 7" />
+            <polyline points="18 17 13 12 18 7" />
+          </svg>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ── MAIN ── -->
+    <div class="main">
+      <div class="topbar">
+        <h1 class="page-title">ADMIN PANEL</h1>
+        <div class="status-pill">
+          <div class="status-dot"></div>
+          // SYSTEM ONLINE
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- ALERT BANNER -->
+        <div class="alert-banner">
+          <div class="alert-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            <span class="alert-text"><span class="alert-count">3 ACTIVE ALERTS</span><span class="alert-sep"> —
+              </span><a class="alert-link">VIEW BELOW</a></span>
+          </div>
+          <div class="alert-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6" />
+            </svg></div>
+        </div>
+
+        <!-- QUICK STATS -->
+        <div class="stats-row">
+          <div class="stat-card red-accent">
+            <div class="stat-icon-ring red">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                <path d="M16 3.13a4 4 0 010 7.75" />
+              </svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Members Below 100 Pts</div>
+              <div class="stat-num red">5</div>
+              <div class="stat-link">View members →</div>
+            </div>
+          </div>
+          <div class="stat-card amber-accent">
+            <div class="stat-icon-ring amber">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Members With 2 Warnings</div>
+              <div class="stat-num amber">2</div>
+              <div class="stat-link">View members →</div>
+            </div>
+          </div>
+          <div class="stat-card blue-accent">
+            <div class="stat-icon-ring blue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M9 11l3 3L22 4" />
+                <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+              </svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Overdue Tasks</div>
+              <div class="stat-num blue">8</div>
+              <div class="stat-link">View tasks →</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TEAM OVERVIEW -->
+        <div class="overview-card">
+          <div class="overview-header">TEAM OVERVIEW</div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>RANK</th>
+                  <th>NAME</th>
+                  <th>TOTAL PTS</th>
+                  <th>THIS WEEK</th>
+                  <th>STREAK</th>
+                  <th>STATUS</th>
+                  <th>ACTIONS</th>
+                </tr>
+              </thead>
+              <tbody id="teamBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- BOTTOM ROW -->
+        <div class="bottom-row">
+          <!-- ALERTS -->
+          <div class="alerts-card">
+            <div class="section-title">ALERTS</div>
+            <div class="alert-list">
+              <div class="alert-item">
+                <div class="alert-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <line x1="17" y1="11" x2="23" y2="11" />
+                  </svg></div>
+                <div class="alert-body">
+                  <div class="alert-title-row"><span class="alert-name">Pranav Patil has 2 warnings</span><span
+                      class="alert-time">10 min ago</span></div>
+                  <div class="alert-desc">Further violations may lead to suspension.</div>
+                </div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                    <line x1="12" y1="14" x2="12" y2="18" />
+                  </svg></div>
+                <div class="alert-body">
+                  <div class="alert-title-row"><span class="alert-name">8 tasks are overdue</span><span
+                      class="alert-time">25 min ago</span></div>
+                  <div class="alert-desc">These tasks are past their deadlines.</div>
+                </div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <polyline points="19 12 12 19 5 12" />
+                  </svg></div>
+                <div class="alert-body">
+                  <div class="alert-title-row"><span class="alert-name">5 members have below 100 points</span><span
+                      class="alert-time">1 hr ago</span></div>
+                  <div class="alert-desc">Encourage engagement and task completion.</div>
+                </div>
+              </div>
+              <div class="alert-item">
+                <div class="alert-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg></div>
+                <div class="alert-body">
+                  <div class="alert-title-row"><span class="alert-name">3 members have missed check-in today</span><span
+                      class="alert-time">2 hrs ago</span></div>
+                  <div class="alert-desc">Attendance not recorded yet.</div>
+                </div>
+              </div>
+            </div>
+            <div class="view-all-link">View all alerts →</div>
+          </div>
+
+          <!-- HEROES -->
+          <div class="heroes-card">
+            <div class="section-title">HEROES</div>
+            <!-- Hero of Week -->
+            <div class="hero-week">
+              <div class="hero-week-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M5 3l3 6 4-2 4 2 3-6H5z" />
+                  <path d="M5 3v10a7 7 0 0014 0V3" />
+                </svg>
+              </div>
+              <div class="hero-week-info">
+                <div class="hw-label">HERO OF THE WEEK</div>
+                <div class="hw-name">Riya Sharma</div>
+                <div class="hw-pts">12,450 PTS</div>
+              </div>
+              <!-- faint art placeholder -->
+              <div class="hero-art">
+                <svg viewBox="0 0 80 70" fill="none">
+                  <path d="M40 5 L65 20 L65 50 L40 65 L15 50 L15 20 Z" stroke="rgba(255,215,0,0.3)" stroke-width="1"
+                    fill="rgba(255,215,0,0.04)" />
+                  <path d="M40 15 L55 25 L55 45 L40 55 L25 45 L25 25 Z" stroke="rgba(255,215,0,0.2)" stroke-width="0.8"
+                    fill="none" />
+                </svg>
+              </div>
+            </div>
+            <!-- Hero of Month -->
+            <div class="hero-month">
+              <div class="hm-label">
+                <div class="hm-label-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                    <polygon
+                      points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                  </svg></div>
+                HERO OF THE MONTH
+              </div>
+              <div class="hm-row"><span class="hm-name">Riya Sharma</span><span class="hm-pts">12,450 PTS</span></div>
+              <div class="hm-row"><span class="hm-name">Aarav Singh</span><span class="hm-pts">7,650 PTS</span></div>
+              <div class="hm-row"><span class="hm-name">Arjun Verma</span><span class="hm-pts">5,980 PTS</span></div>
+              <div class="hm-row"><span class="hm-name">Neha Kulkarni</span><span class="hm-pts">4,210 PTS</span></div>
+            </div>
+            <div class="view-lb-link">View all leaderboard →</div>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+
+    <!-- ── RIGHT PANELS ── -->
+    <div class="right-panels">
+      <!-- ADD / DEDUCT POINTS -->
+      <div class="rp-section">
+        <div class="rp-header">
+          <span class="rp-title">ADD / DEDUCT POINTS</span>
+          <button class="rp-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg></button>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Member</label>
+          <input type="text" class="form-input" value="Riya Sharma">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Category</label>
+          <div class="select-wrap">
+            <select class="form-select">
+              <option>Select category</option>
+              <option>Attendance</option>
+              <option>Task</option>
+              <option>Learning</option>
+              <option>Content</option>
+              <option>Streak</option>
+              <option>Conduct</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Points</label>
+          <div class="pts-wrap">
+            <input type="number" class="form-input" placeholder="Enter points (e.g. 10 or -5)">
+            <div class="pts-spin">
+              <button>▲</button>
+              <button>▼</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Reason</label>
+          <textarea class="form-textarea" placeholder="Enter reason for adding or deducting points..."></textarea>
+        </div>
+        <button class="btn-confirm">CONFIRM</button>
+        <button class="btn-cancel-outline">CANCEL</button>
+      </div>
+
+      <!-- ISSUE WARNING -->
+      <div class="rp-section">
+        <div class="rp-header">
+          <span class="rp-title">ISSUE WARNING</span>
+          <button class="rp-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg></button>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Member</label>
+          <input type="text" class="form-input" value="Aniket Kamble">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Reason</label>
+          <textarea class="form-textarea" placeholder="Enter reason for warning..."></textarea>
+        </div>
+        <button class="btn-danger-fill">ISSUE WARNING</button>
+        <button class="btn-cancel-plain">CANCEL</button>
+      </div>
+    </div>
+
+  </div><!-- /shell -->
+
+  <script>
+    const TEAM = [
+      { pos: 1, posType: 'gold', initials: 'RV', name: 'Riya Sharma', you: false, pts: '12,450', week: '+1,250', streak: '4w', status: 'active', color: '#FFD700' },
+      { pos: 2, posType: 'silver', initials: 'AS', name: 'Aarav Singh', you: true, pts: '7,650', week: '+620', streak: '3w', status: 'active', color: '#4FC3F7' },
+      { pos: 3, posType: 'bronze', initials: 'AV', name: 'Arjun Verma', you: false, pts: '5,980', week: '+410', streak: '2w', status: 'active', color: '#CD7F32' },
+      { pos: 4, posType: 'plain', initials: 'PP', name: 'Pranav Patil', you: false, pts: '4,820', week: '+180', streak: '1w', status: 'active', color: '#4FC3F7' },
+      { pos: 5, posType: 'plain', initials: 'NK', name: 'Neha Kulkarni', you: false, pts: '4,210', week: '+300', streak: '2w', status: 'active', color: '#00E5FF' },
+      { pos: 6, posType: 'plain', initials: 'AK', name: 'Aniket Kamble', you: false, pts: '3,780', week: '+90', streak: '2w', status: 'warning', color: '#4FC3F7' },
+      { pos: 7, posType: 'plain', initials: 'SM', name: 'Siddhant More', you: false, pts: '3,450', week: '+120', streak: '1w', status: 'active', color: '#8A93A8' },
+      { pos: 8, posType: 'plain', initials: 'SP', name: 'Sneha Pawar', you: false, pts: '2,300', week: '-20', streak: '0w', status: 'warning', color: '#CD7F32' },
+    ];
+
+    function renderTeam() {
+      const body = document.getElementById('teamBody');
+      body.innerHTML = TEAM.map(m => {
+        const posHtml = `<div class="rank-pos ${m.posType}">${m.pos}</div>`;
+        const weekCls = m.week.startsWith('-') ? 'td-week neg' : 'td-week';
+        const statusHtml = m.status === 'active'
+          ? '<span class="chip-active">ACTIVE</span>'
+          : '<span class="chip-warning">WARNING</span>';
+        return `<tr>
+      <td>${posHtml}</td>
+      <td>
+        <div class="hunter-cell">
+          <div class="h-avatar" style="border-color:${m.color};color:${m.color};background:${m.color}15">${m.initials}</div>
+          <span class="h-name">${m.name}</span>
+          ${m.you ? '<span class="you-tag">YOU</span>' : ''}
+        </div>
+      </td>
+      <td class="td-pts">${m.pts}</td>
+      <td class="${weekCls}">${m.week}</td>
+      <td class="td-streak">🔥 ${m.streak}</td>
+      <td>${statusHtml}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="btn-pts-pos" onclick="openAddPoints('${m.name}')">+ Points</button>
+          <button class="btn-pts-neg" onclick="openDeductPoints('${m.name}')">- Points</button>
+          <button class="btn-warn" onclick="openWarn('${m.name}')">Warn</button>
+          <button class="btn-overflow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+        </div>
+      </td>
+    </tr>`;
+      }).join('');
+    }
+
+    function openAddPoints(name) {
+      document.querySelector('.rp-section:first-child .form-input').value = name;
+    }
+    function openDeductPoints(name) {
+      document.querySelector('.rp-section:first-child .form-input').value = name;
+    }
+    function openWarn(name) {
+      document.querySelector('.rp-section:last-child .form-input').value = name;
+    }
+
+    document.getElementById('collapseBtn').addEventListener('click', () => {
+      const sb = document.getElementById('sidebar');
+      sb.classList.toggle('collapsed');
+      const ic = document.getElementById('collapseIcon');
+      ic.innerHTML = sb.classList.contains('collapsed')
+        ? '<polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/>'
+        : '<polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/>';
+    });
+
+    renderTeam();
+  </script>
+</body>
+
+</html>
