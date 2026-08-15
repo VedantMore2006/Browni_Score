@@ -18,10 +18,12 @@ pip install -r requirements.txt
 ```bash
 # Backend (from backend/)
 conda activate vitals_vectors
+cd backend
 uvicorn main:app --reload --port 8000
 # API docs: http://localhost:8000/docs
 
 # Frontend (from frontend/, separate terminal)
+cd frontend
 python -m http.server --bind localhost 3000 
 # Open: http://localhost:3000/index.html
 ```
