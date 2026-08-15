@@ -130,19 +130,19 @@
 
     .stat-value.cyan {
       color: var(--cyan);
-      }
+    }
 
     .stat-value.cyan2 {
       color: #00e5ff;
-      }
+    }
 
     .stat-value.purple {
       color: var(--purple);
-      }
+    }
 
     .stat-value.gold {
       color: var(--gold);
-      }
+    }
 
     .stat-sub {
       font-size: 10px;
@@ -242,7 +242,7 @@
       font-size: 22px;
       font-weight: 800;
       color: var(--cyan);
-      }
+    }
 
     .rank-info {
       flex: 1;
@@ -254,8 +254,9 @@
       font-size: 26px;
       letter-spacing: 3px;
       color: var(--text-primary);
-      line-height: 1;
+      line-height: 1.2;
       margin-bottom: 2px;
+      padding-bottom: 4px;
     }
 
     .rank-badge {
@@ -360,6 +361,10 @@
       padding: 18px 22px 14px;
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      min-height: 380px;
     }
 
     .chart-card::before {
@@ -397,7 +402,8 @@
 
     .chart-wrap {
       position: relative;
-      height: 220px;
+      flex: 1;
+      min-height: 260px;
     }
 
     /* Rank threshold labels */
@@ -415,6 +421,8 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 18px;
+      flex-shrink: 0;
+      height: 240px;
     }
 
     /* ─── QUESTS ──────────────────────────────────── */
@@ -426,6 +434,9 @@
       padding: 16px 18px;
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
 
     .quest-card::before,
@@ -458,6 +469,9 @@
       flex-direction: column;
       gap: 8px;
       margin-top: 4px;
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
     }
 
     .quest-item {
@@ -568,6 +582,9 @@
       flex-direction: column;
       gap: 0;
       margin-top: 4px;
+      flex: 1;
+      overflow-y: auto;
+      min-height: 0;
     }
 
     .activity-item {
@@ -694,458 +711,450 @@
 </head>
 
 <body>
-<div class="shell">
+  <div class="shell">
 
-  <!-- ─── SIDEBAR ───────────────────────────────────── -->
-  <nav class="sidebar" id="sidebar">
-    <div class="logo-area">
-      <div class="logo-hex">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="24,2 44,13 44,35 24,46 4,35 4,13" fill="rgba(0,200,255,0.08)" stroke="rgba(0,200,255,0.5)"
-            stroke-width="1.5" />
-          <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-family="Bebas Neue, sans-serif"
-            font-size="17" fill="#00c8ff">V&amp;V</text>
-        </svg>
-      </div>
-      <div class="logo-wordmark">
-        <div class="logo-vv">V&amp;V</div>
-        <div class="logo-sub">Vitals&amp;Vectors</div>
-      </div>
-    </div>
-
-    <div class="nav-menu">
-      <a class="nav-item active" href="dashboard.html">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <rect x="3" y="3" width="7" height="7" />
-            <rect x="14" y="3" width="7" height="7" />
-            <rect x="14" y="14" width="7" height="7" />
-            <rect x="3" y="14" width="7" height="7" />
-          </svg>
-        </span>
-        <span class="nav-label">Dashboard</span>
-      </a>
-      <a class="nav-item" href="tasks.html">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path d="M9 11l3 3L22 4" />
-            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
-          </svg>
-        </span>
-        <span class="nav-label">Tasks</span>
-      </a>
-      <a class="nav-item" href="point-log.html">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10" />
-            <polyline points="12 6 12 12 16 14" />
-          </svg>
-        </span>
-        <span class="nav-label">Point Log</span>
-      </a>
-      <a class="nav-item" href="leaderboard.html">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <line x1="18" y1="20" x2="18" y2="10" />
-            <line x1="12" y1="20" x2="12" y2="4" />
-            <line x1="6" y1="20" x2="6" y2="14" />
-          </svg>
-        </span>
-        <span class="nav-label">Leaderboard</span>
-      </a>
-      <a class="nav-item" href="attendance.html">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-            <line x1="16" y1="2" x2="16" y2="6" />
-            <line x1="8" y1="2" x2="8" y2="6" />
-            <line x1="3" y1="10" x2="21" y2="10" />
-          </svg>
-        </span>
-        <span class="nav-label">Attendance</span>
-      </a>
-      <a class="nav-item" href="rules.html">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
-            <polyline points="14 2 14 8 20 8" />
-          </svg>
-        </span>
-        <span class="nav-label">Rules</span>
-      </a>
-      <div class="nav-divider"></div>
-      <a class="nav-item" href="settings.html">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <circle cx="12" cy="12" r="3" />
-            <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14" />
-            <path d="M15.54 8.46a5 5 0 010 7.07M8.46 8.46a5 5 0 000 7.07" />
-          </svg>
-        </span>
-        <span class="nav-label">Settings</span>
-      </a>
-      <div class="nav-divider"></div>
-      <a class="nav-item nav-admin" href="admin/admin_dashboard.html">
-        <span class="nav-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-          </svg>
-        </span>
-        <span class="nav-label">Admin panel</span>
-      </a>
-    </div>
-
-    <div class="sidebar-bottom">
-      <div class="profile-row">
-        <div class="profile-avatar">AS</div>
-        <div class="profile-info">
-          <div class="profile-name">Aarav Singh</div>
-          <div class="profile-role">Coordinator</div>
+    <!-- ─── SIDEBAR ───────────────────────────────────── -->
+    <nav class="sidebar" id="sidebar">
+      <div class="logo-area">
+        <div class="logo-wordmark">
+          <div class="logo-vv">V&amp;V</div>
+          <div class="logo-sub">Vitals&amp;Vectors</div>
         </div>
       </div>
-      <div class="profile-badge">
-        <div class="badge-hex">S</div>
-        <span class="badge-text">SILVER HUNTER</span>
-      </div>
-      <div class="nav-logout">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-          stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-          <polyline points="16 17 21 12 16 7" />
-          <line x1="21" y1="12" x2="9" y2="12" />
-        </svg>
-        Logout
-      </div>
-      <div class="collapse-btn" id="collapseBtn">
-        <svg id="collapseIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="11 17 6 12 11 7" />
-          <polyline points="18 17 13 12 18 7" />
-        </svg>
-      </div>
-    </div>
-  </nav>
 
-  <!-- ─── MAIN ──────────────────────────────────────── -->
-  <div class="main">
-    <!-- TOPBAR -->
-    <div class="topbar">
-      <h1 class="page-title">COMMAND CENTRE</h1>
-      <div class="status-badge">
-        <span style="color:var(--text2);letter-spacing:0.5px;font-size:10px;">// </span>SYSTEM ONLINE
-        <div class="status-dot"></div>
-      </div>
-    </div>
-
-    <!-- CONTENT -->
-    <div class="content">
-
-      <!-- STAT STRIP -->
-      <div class="stat-strip">
-        <!-- Weekly Position -->
-        <div class="stat-card cyan-accent">
-          <div class="stat-icon-wrap cyan-bg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#00c8ff" stroke-width="2" stroke-linecap="round"
+      <div class="nav-menu">
+        <a class="nav-item active" href="dashboard.html">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round">
-              <path d="M5 3l3 6 4-2 4 2 3-6H5z" />
-              <path d="M5 3v10a7 7 0 0014 0V3" />
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
             </svg>
-          </div>
-          <div class="stat-info">
-            <div class="stat-label">Weekly Position</div>
-            <div class="stat-value cyan">#1</div>
+          </span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a class="nav-item" href="tasks.html">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4" />
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+            </svg>
+          </span>
+          <span class="nav-label">Tasks</span>
+        </a>
+        <a class="nav-item" href="point-log.html">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          </span>
+          <span class="nav-label">Point Log</span>
+        </a>
+        <a class="nav-item" href="leaderboard.html">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg>
+          </span>
+          <span class="nav-label">Leaderboard</span>
+        </a>
+        <a class="nav-item" href="attendance.html">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+          </span>
+          <span class="nav-label">Attendance</span>
+        </a>
+        <a class="nav-item" href="rules.html">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+          </span>
+          <span class="nav-label">Rules</span>
+        </a>
+        <div class="nav-divider"></div>
+        <a class="nav-item" href="settings.html">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14" />
+              <path d="M15.54 8.46a5 5 0 010 7.07M8.46 8.46a5 5 0 000 7.07" />
+            </svg>
+          </span>
+          <span class="nav-label">Settings</span>
+        </a>
+        <div class="nav-divider"></div>
+        <a class="nav-item nav-admin" href="admin/admin_dashboard.html">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg>
+          </span>
+          <span class="nav-label">Admin panel</span>
+        </a>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="profile-row">
+          <div class="profile-avatar">AS</div>
+          <div class="profile-info">
+            <div class="profile-name">Aarav Singh</div>
+            <div class="profile-role">Coordinator</div>
           </div>
         </div>
-        <!-- Points This Week -->
-        <div class="stat-card cyan2-accent">
-          <div class="stat-icon-wrap cyan2-bg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-              <polyline points="17 6 23 6 23 12" />
-            </svg>
-          </div>
-          <div class="stat-info">
-            <div class="stat-label">Points This Week</div>
-            <div class="stat-value cyan2">+70</div>
-          </div>
+        <div class="profile-badge">
+          <div class="badge-hex">S</div>
+          <span class="badge-text">SILVER HUNTER</span>
         </div>
-        <!-- Points This Month -->
-        <div class="stat-card purple-accent">
-          <div class="stat-icon-wrap purple-bg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#9b59ff" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <polygon
-                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-            </svg>
-          </div>
-          <div class="stat-info">
-            <div class="stat-label">Points This Month</div>
-            <div class="stat-value purple">320</div>
-          </div>
+        <div class="nav-logout">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg><span class="nav-logout-label">Logout</span>
         </div>
-        <!-- Streaks -->
-        <div class="stat-card gold-accent">
-          <div class="stat-icon-wrap gold-bg">
-            <svg viewBox="0 0 24 24" fill="#f5a623" stroke="#f5a623" stroke-width="0.5" stroke-linecap="round"
-              stroke-linejoin="round">
-              <path d="M12 2C10 7 5 9 5 14a7 7 0 0014 0c0-5-5-7-7-12z" />
-            </svg>
-          </div>
-          <div class="stat-info">
-            <div class="stat-label">Streaks</div>
-            <div class="streak-val-row">
-              <span class="streak-num">4</span><span class="streak-unit" style="color:var(--gold);">W</span>
+        <div class="collapse-btn" id="collapseBtn">
+          <svg id="collapseIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <line x1="9" y1="3" x2="9" y2="21" />
+            <polyline points="16 15 13 12 16 9" />
+          </svg>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ─── MAIN ──────────────────────────────────────── -->
+    <div class="main">
+      <!-- TOPBAR -->
+      <div class="topbar">
+        <h1 class="page-title">COMMAND CENTRE</h1>
+        <div class="status-badge">
+          <span style="color:var(--text2);letter-spacing:0.5px;font-size:10px;">// </span>SYSTEM ONLINE
+          <div class="status-dot"></div>
+        </div>
+      </div>
+
+      <!-- CONTENT -->
+      <div class="content">
+
+        <!-- STAT STRIP -->
+        <div class="stat-strip">
+          <!-- Weekly Position -->
+          <div class="stat-card cyan-accent">
+            <div class="stat-icon-wrap cyan-bg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#00c8ff" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M5 3l3 6 4-2 4 2 3-6H5z" />
+                <path d="M5 3v10a7 7 0 0014 0V3" />
+              </svg>
             </div>
-            <div class="stat-sub" style="color:var(--gold);opacity:0.7;font-size:9px;letter-spacing:1.2px;">PRESENCE +
-              TASK</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- RANK CARD -->
-      <div class="rank-card">
-        <!-- hex avatar -->
-        <div class="rank-hex-outer">
-          <div
-            style="position:absolute;top:-2px;left:-2px;width:76px;height:76px;clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);background:linear-gradient(135deg,rgba(0,200,255,0.6),rgba(0,200,255,0.15));z-index:0;">
-          </div>
-          <div class="rank-hex-bg" style="position:relative;z-index:1;">
-            <span class="rank-initial">S</span>
-          </div>
-          <!-- animated glow ring -->
-          <div
-            style="position:absolute;top:-6px;left:-6px;width:84px;height:84px;clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);background:transparent;border:0;box-shadow:0 0 16px rgba(0,200,255,0.4);z-index:-1;">
-          </div>
-        </div>
-
-        <!-- rank info -->
-        <div class="rank-info">
-          <div class="rank-title">PLATINUM HUNTER</div>
-          <div class="rank-badge">
-            RANK
-            <span class="rank-badge-pill">S</span>
-          </div>
-          <div class="rank-progress-wrap" style="width:340px;max-width:100%;">
-            <div class="rank-progress-label">
-              <span>650 / 1000 pts</span> to next rank <span>(SS)</span>
+            <div class="stat-info">
+              <div class="stat-label">Weekly Position</div>
+              <div class="stat-value cyan">#1</div>
             </div>
-            <div class="rank-bar-bg">
-              <div class="rank-bar-fill" style="width:65%;"></div>
+          </div>
+          <!-- Points This Week -->
+          <div class="stat-card cyan2-accent">
+            <div class="stat-icon-wrap cyan2-bg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                <polyline points="17 6 23 6 23 12" />
+              </svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Points This Week</div>
+              <div class="stat-value cyan2">+70</div>
+            </div>
+          </div>
+          <!-- Points This Month -->
+          <div class="stat-card purple-accent">
+            <div class="stat-icon-wrap purple-bg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#9b59ff" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <polygon
+                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+              </svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Points This Month</div>
+              <div class="stat-value purple">320</div>
+            </div>
+          </div>
+          <!-- Streaks -->
+          <div class="stat-card gold-accent">
+            <div class="stat-icon-wrap gold-bg">
+              <svg viewBox="0 0 24 24" fill="#f5a623" stroke="#f5a623" stroke-width="0.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M12 2C10 7 5 9 5 14a7 7 0 0014 0c0-5-5-7-7-12z" />
+              </svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Streaks</div>
+              <div class="streak-val-row">
+                <span class="streak-num">4</span><span class="streak-unit" style="color:var(--gold);">W</span>
+              </div>
+              <div class="stat-sub" style="color:var(--gold);opacity:0.7;font-size:9px;letter-spacing:1.2px;">PRESENCE +
+                TASK</div>
             </div>
           </div>
         </div>
 
-        <!-- total points -->
-        <div class="total-pts-block">
-          <div class="total-pts-label">Total Points</div>
-          <div class="total-pts-value">8,450</div>
-        </div>
-      </div>
+        <!-- RANK CARD -->
+        <div class="rank-card" style="flex-wrap: wrap; min-height: 120px;">
+          <!-- hex avatar -->
+          <div class="rank-hex-outer">
+            <div
+              style="position:absolute;top:-2px;left:-2px;width:76px;height:76px;clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);background:linear-gradient(135deg,rgba(0,200,255,0.6),rgba(0,200,255,0.15));z-index:0;">
+            </div>
+            <div class="rank-hex-bg" style="position:relative;z-index:1;">
+              <span class="rank-initial">S</span>
+            </div>
+            <!-- animated glow ring -->
+            <div
+              style="position:absolute;top:-6px;left:-6px;width:84px;height:84px;clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);background:transparent;border:0;box-shadow:0 0 16px rgba(0,200,255,0.4);z-index:-1;">
+            </div>
+          </div>
 
-      <!-- TEAM CHART -->
-      <div class="chart-card">
-        <div class="card-header">
-          <div class="card-title">
-            TEAM HUNTER RANKING <span>(ALL MEMBERS)</span>
+          <!-- rank info -->
+          <div class="rank-info" style="flex: 1 1 300px;">
+            <div class="rank-title" style="white-space: normal; word-break: break-word;">PLATINUM HUNTER</div>
+            <div class="rank-badge">
+              RANK
+              <span class="rank-badge-pill">S</span>
+            </div>
+            <div class="rank-progress-wrap" style="width:100%; max-width:500px;">
+              <div class="rank-progress-label">
+                <span>650 / 1000 pts</span> to next rank <span>(SS)</span>
+              </div>
+              <div class="rank-bar-bg">
+                <div class="rank-bar-fill" style="width:65%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- total points -->
+          <div class="total-pts-block" style="flex: 0 0 auto;">
+            <div class="total-pts-label">Total Points</div>
+            <div class="total-pts-value">8,450</div>
           </div>
         </div>
-        <div class="chart-wrap">
-          <canvas id="teamChart"></canvas>
-        </div>
-      </div>
 
-      <!-- BOTTOM ROW -->
-      <div class="bottom-row">
-        <!-- TODAY'S QUESTS -->
-        <div class="quest-card">
+        <!-- TEAM CHART -->
+        <div class="chart-card">
           <div class="card-header">
-            <div class="card-title">TODAY'S QUESTS</div>
-            <span class="view-all">View all</span>
-          </div>
-          <div class="quest-list">
-            <!-- Quest 1 -->
-            <div class="quest-item">
-              <div class="quest-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#00c8ff" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <polyline points="16 18 22 12 16 6" />
-                  <polyline points="8 6 2 12 8 18" />
-                </svg>
-              </div>
-              <div class="quest-info">
-                <div class="quest-name">Code Review (Module X)</div>
-                <div class="quest-meta">
-                  <span>⏱ 30 min</span>
-                  <span>• Due 11:00 AM</span>
-                </div>
-              </div>
-              <div class="status-pill inprogress">● In Progress</div>
-            </div>
-            <!-- Quest 2 -->
-            <div class="quest-item">
-              <div class="quest-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <circle cx="8.5" cy="8.5" r="1.5" />
-                  <polyline points="21 15 16 10 5 21" />
-                </svg>
-              </div>
-              <div class="quest-info">
-                <div class="quest-name">UI/UX Design Update</div>
-                <div class="quest-meta">
-                  <span>⏱ 45 min</span>
-                  <span>• Due 1:00 PM</span>
-                </div>
-              </div>
-              <div class="status-pill pending">● Pending</div>
-            </div>
-            <!-- Quest 3 -->
-            <div class="quest-item">
-              <div class="quest-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2" stroke-linecap="round"
-                  stroke-linejoin="round">
-                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <path d="M23 21v-2a4 4 0 00-3-3.87" />
-                  <path d="M16 3.13a4 4 0 010 7.75" />
-                </svg>
-              </div>
-              <div class="quest-info">
-                <div class="quest-name">Team Standup</div>
-                <div class="quest-meta">
-                  <span>⏱ 15 min</span>
-                  <span>• Due 5:00 PM</span>
-                </div>
-              </div>
-              <div class="status-pill completed">● Completed</div>
+            <div class="card-title">
+              TEAM HUNTER RANKING <span>(ALL MEMBERS)</span>
             </div>
           </div>
-          <div class="quest-empty">No quests due today</div>
-        </div>
-
-        <!-- RECENT ACTIVITY -->
-        <div class="activity-card">
-          <div class="card-header">
-            <div class="card-title">RECENT ACTIVITY</div>
-            <span class="view-all">View all</span>
-          </div>
-          <div class="activity-list">
-            <div class="activity-item">
-              <div class="act-icon plus">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round">
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-              </div>
-              <div class="act-text">
-                <div class="act-name">Task Completed: Code Review</div>
-                <div class="act-time">10m ago</div>
-              </div>
-              <div class="act-pts pos">+20</div>
-            </div>
-            <div class="activity-item">
-              <div class="act-icon bonus">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg>
-              </div>
-              <div class="act-text">
-                <div class="act-name">Bonus: Perfect Attendance</div>
-                <div class="act-time">35m ago</div>
-              </div>
-              <div class="act-pts pos">+10</div>
-            </div>
-            <div class="activity-item">
-              <div class="act-icon plus">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round">
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-              </div>
-              <div class="act-text">
-                <div class="act-name">Task Submitted: UI/UX Update</div>
-                <div class="act-time">1h ago</div>
-              </div>
-              <div class="act-pts pos">+15</div>
-            </div>
-            <div class="activity-item">
-              <div class="act-icon minus">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b5c" stroke-width="2.5" stroke-linecap="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-              </div>
-              <div class="act-text">
-                <div class="act-name">Late Check-in Deduction</div>
-                <div class="act-time">2h ago</div>
-              </div>
-              <div class="act-pts neg">-10</div>
-            </div>
-            <div class="activity-item">
-              <div class="act-icon minus">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b5c" stroke-width="2.5" stroke-linecap="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-              </div>
-              <div class="act-text">
-                <div class="act-name">Task Missed: Documentation</div>
-                <div class="act-time">3h ago</div>
-              </div>
-              <div class="act-pts neg">-15</div>
-            </div>
-            <div class="activity-item">
-              <div class="act-icon bonus">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round">
-                  <path d="M12 2C10 7 5 9 5 14a7 7 0 0014 0c0-5-5-7-7-12z" />
-                </svg>
-              </div>
-              <div class="act-text">
-                <div class="act-name">Bonus: Weekly Streak</div>
-                <div class="act-time">5h ago</div>
-              </div>
-              <div class="act-pts pos">+30</div>
-            </div>
-            <div class="activity-item">
-              <div class="act-icon plus">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round">
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-              </div>
-              <div class="act-text">
-                <div class="act-name">Task Completed: Bug Fixes</div>
-                <div class="act-time">6h ago</div>
-              </div>
-              <div class="act-pts pos">+10</div>
-            </div>
-            <div class="activity-item">
-              <div class="act-icon minus">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b5c" stroke-width="2.5" stroke-linecap="round">
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                </svg>
-              </div>
-              <div class="act-text">
-                <div class="act-name">Manual Adjustment</div>
-                <div class="act-time">1d ago</div>
-              </div>
-              <div class="act-pts neg">-5</div>
-            </div>
+          <div class="chart-wrap">
+            <canvas id="teamChart"></canvas>
           </div>
         </div>
-      </div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /shell -->
+        <!-- BOTTOM ROW -->
+        <div class="bottom-row">
+          <!-- TODAY'S QUESTS -->
+          <div class="quest-card">
+            <div class="card-header">
+              <div class="card-title">TODAY'S QUESTS</div>
+              <span class="view-all">View all</span>
+            </div>
+            <div class="quest-list">
+              <!-- Quest 1 -->
+              <div class="quest-item">
+                <div class="quest-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#00c8ff" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6" />
+                    <polyline points="8 6 2 12 8 18" />
+                  </svg>
+                </div>
+                <div class="quest-info">
+                  <div class="quest-name">Code Review (Module X)</div>
+                  <div class="quest-meta">
+                    <span>⏱ 30 min</span>
+                    <span>• Due 11:00 AM</span>
+                  </div>
+                </div>
+                <div class="status-pill inprogress">● In Progress</div>
+              </div>
+              <!-- Quest 2 -->
+              <div class="quest-item">
+                <div class="quest-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
+                </div>
+                <div class="quest-info">
+                  <div class="quest-name">UI/UX Design Update</div>
+                  <div class="quest-meta">
+                    <span>⏱ 45 min</span>
+                    <span>• Due 1:00 PM</span>
+                  </div>
+                </div>
+                <div class="status-pill pending">● Pending</div>
+              </div>
+              <!-- Quest 3 -->
+              <div class="quest-item">
+                <div class="quest-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                    <path d="M16 3.13a4 4 0 010 7.75" />
+                  </svg>
+                </div>
+                <div class="quest-info">
+                  <div class="quest-name">Team Standup</div>
+                  <div class="quest-meta">
+                    <span>⏱ 15 min</span>
+                    <span>• Due 5:00 PM</span>
+                  </div>
+                </div>
+                <div class="status-pill completed">● Completed</div>
+              </div>
+            </div>
+            <div class="quest-empty">No quests due today</div>
+          </div>
+
+          <!-- RECENT ACTIVITY -->
+          <div class="activity-card">
+            <div class="card-header">
+              <div class="card-title">RECENT ACTIVITY</div>
+              <span class="view-all">View all</span>
+            </div>
+            <div class="activity-list">
+              <div class="activity-item">
+                <div class="act-icon plus">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </div>
+                <div class="act-text">
+                  <div class="act-name">Task Completed: Code Review</div>
+                  <div class="act-time">10m ago</div>
+                </div>
+                <div class="act-pts pos">+20</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon bonus">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                </div>
+                <div class="act-text">
+                  <div class="act-name">Bonus: Perfect Attendance</div>
+                  <div class="act-time">35m ago</div>
+                </div>
+                <div class="act-pts pos">+10</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon plus">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </div>
+                <div class="act-text">
+                  <div class="act-name">Task Submitted: UI/UX Update</div>
+                  <div class="act-time">1h ago</div>
+                </div>
+                <div class="act-pts pos">+15</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon minus">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b5c" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </div>
+                <div class="act-text">
+                  <div class="act-name">Late Check-in Deduction</div>
+                  <div class="act-time">2h ago</div>
+                </div>
+                <div class="act-pts neg">-10</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon minus">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b5c" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </div>
+                <div class="act-text">
+                  <div class="act-name">Task Missed: Documentation</div>
+                  <div class="act-time">3h ago</div>
+                </div>
+                <div class="act-pts neg">-15</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon bonus">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round">
+                    <path d="M12 2C10 7 5 9 5 14a7 7 0 0014 0c0-5-5-7-7-12z" />
+                  </svg>
+                </div>
+                <div class="act-text">
+                  <div class="act-name">Bonus: Weekly Streak</div>
+                  <div class="act-time">5h ago</div>
+                </div>
+                <div class="act-pts pos">+30</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon plus">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </div>
+                <div class="act-text">
+                  <div class="act-name">Task Completed: Bug Fixes</div>
+                  <div class="act-time">6h ago</div>
+                </div>
+                <div class="act-pts pos">+10</div>
+              </div>
+              <div class="activity-item">
+                <div class="act-icon minus">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b5c" stroke-width="2.5" stroke-linecap="round">
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </div>
+                <div class="act-text">
+                  <div class="act-name">Manual Adjustment</div>
+                  <div class="act-time">1d ago</div>
+                </div>
+                <div class="act-pts neg">-5</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /shell -->
 
   <script>
     // ─── SIDEBAR COLLAPSE ─────────────────────────────────
@@ -1154,8 +1163,8 @@
       const ic = document.getElementById('collapseIcon');
       sb.classList.toggle('collapsed');
       ic.innerHTML = sb.classList.contains('collapsed')
-        ? '<polyline points="13 17 18 12 13 7"/><polyline points="6 17 11 12 6 7"/>'
-        : '<polyline points="11 17 6 12 11 7"/><polyline points="18 17 13 12 18 7"/>';
+        ? '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="14 9 17 12 14 15"/>'
+        : '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
     });
 
     // ─── CHART ─────────────────────────────────────────────
@@ -1283,69 +1292,69 @@
       });
 
       teamChart = new Chart(ctx, {
-      type: 'bar',
-      plugins: [thresholdPlugin, avatarPlugin],
-      data: {
-        labels: members.map(m => m.name),
-        datasets: [{
-          data: members.map(m => m.pts),
-          backgroundColor: gradients,
-          borderColor: members.map(m => m.color),
-          borderWidth: 1,
-          borderRadius: 4,
-          borderSkipped: false,
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        layout: { padding: { top: 30, right: 30, bottom: 0, left: 0 } },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: 'rgba(8,15,30,0.95)',
-            borderColor: 'rgba(0,200,255,0.3)',
+        type: 'bar',
+        plugins: [thresholdPlugin, avatarPlugin],
+        data: {
+          labels: members.map(m => m.name),
+          datasets: [{
+            data: members.map(m => m.pts),
+            backgroundColor: gradients,
+            borderColor: members.map(m => m.color),
             borderWidth: 1,
-            titleColor: '#00c8ff',
-            bodyColor: '#8899aa',
-            titleFont: { family: 'Orbitron', size: 11, weight: '700' },
-            bodyFont: { family: 'Rajdhani', size: 12, weight: '600' },
-            padding: 10,
-            callbacks: {
-              title: items => members[items[0].dataIndex].name,
-              label: item => ` ${item.raw} pts  |  Rank ${members[item.dataIndex].rank}`
-            }
-          }
+            borderRadius: 4,
+            borderSkipped: false,
+          }]
         },
-        scales: {
-          x: {
-            grid: { display: false },
-            border: { display: false },
-            ticks: {
-              color: '#8899aa',
-              font: { family: 'Rajdhani', size: 12, weight: '600' },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: { padding: { top: 30, right: 30, bottom: 0, left: 0 } },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(8,15,30,0.95)',
+              borderColor: 'rgba(0,200,255,0.3)',
+              borderWidth: 1,
+              titleColor: '#00c8ff',
+              bodyColor: '#8899aa',
+              titleFont: { family: 'Orbitron', size: 11, weight: '700' },
+              bodyFont: { family: 'Rajdhani', size: 12, weight: '600' },
+              padding: 10,
+              callbacks: {
+                title: items => members[items[0].dataIndex].name,
+                label: item => ` ${item.raw} pts  |  Rank ${members[item.dataIndex].rank}`
+              }
             }
           },
-          y: {
-            min: 0,
-            max: 500,
-            grid: {
-              color: 'rgba(0,200,255,0.05)',
-              drawBorder: false,
+          scales: {
+            x: {
+              grid: { display: false },
+              border: { display: false },
+              ticks: {
+                color: '#8899aa',
+                font: { family: 'Rajdhani', size: 12, weight: '600' },
+              }
             },
-            border: { display: false, dash: [4, 4] },
-            ticks: {
-              color: '#445566',
-              font: { family: 'Share Tech Mono', size: 10 },
-              stepSize: 50,
+            y: {
+              min: 0,
+              max: 500,
+              grid: {
+                color: 'rgba(0,200,255,0.05)',
+                drawBorder: false,
+              },
+              border: { display: false, dash: [4, 4] },
+              ticks: {
+                color: '#445566',
+                font: { family: 'Share Tech Mono', size: 10 },
+                stepSize: 50,
+              }
             }
+          },
+          animation: {
+            duration: 1200,
+            easing: 'easeOutQuart'
           }
-        },
-        animation: {
-          duration: 1200,
-          easing: 'easeOutQuart'
         }
-      }
       });
     }
 

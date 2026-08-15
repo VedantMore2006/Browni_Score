@@ -116,22 +116,26 @@ body::after {
 .sidebar.collapsed { width: var(--sidebar-c); }
 .sidebar.collapsed .nav-label,
 .sidebar.collapsed .logo-sub,
-.sidebar.collapsed .profile-name,
-.sidebar.collapsed .profile-role,
+.sidebar.collapsed .profile-info,
 .sidebar.collapsed .badge-text,
-.sidebar.collapsed .logo-wordmark { display: none; }
+.sidebar.collapsed .nav-logout-label { display: none; }
 .sidebar.collapsed .nav-item { justify-content: center; padding: 10px 0; }
-.sidebar.collapsed .profile-row { justify-content: center; }
+.sidebar.collapsed .logo-area { padding: 20px 8px 16px; justify-content: center; }
+.sidebar.collapsed .logo-wordmark { align-items: center; }
+.sidebar.collapsed .profile-row { justify-content: center; margin-bottom: 8px; }
 .sidebar.collapsed .profile-badge { justify-content: center; padding: 8px 0; }
+.sidebar.collapsed .nav-logout { justify-content: center; }
+.sidebar.collapsed .sidebar-bottom { padding: 12px 8px 10px; }
+.sidebar.collapsed .collapse-btn { margin: 8px auto 2px; }
 
+/* Text-only wordmark — no hex icon here, so it starts flush at the
+   sidebar's left padding (and centers itself when collapsed, above). */
 .logo-area {
   padding: 20px 16px 16px;
   border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center;
   flex-shrink: 0;
 }
-.logo-hex { width: 48px; height: 48px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
-.logo-hex svg { width: 48px; height: 48px; }
 .logo-wordmark { display: flex; flex-direction: column; }
 .logo-vv {
   font-family: 'Bebas Neue', sans-serif;
@@ -182,17 +186,16 @@ body::after {
 .profile-info { flex: 1; min-width: 0; }
 .profile-name { font-size: 12px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .profile-role { font-size: 10px; color: var(--text2); }
+/* No pill/box here — just the rank letter and label sitting plainly in the row. */
 .profile-badge {
   display: flex; align-items: center; gap: 6px;
-  background: rgba(155, 89, 255, 0.1); border: 1px solid rgba(155, 89, 255, 0.3);
-  border-radius: 4px; padding: 6px 10px; cursor: pointer; margin-bottom: 6px;
+  cursor: pointer; margin-bottom: 6px;
 }
 .badge-hex {
-  width: 18px; height: 18px;
-  clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);
-  background: var(--purple);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Rajdhani', sans-serif; font-size: 7px; font-weight: 700; color: white;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.04em;
+  color: var(--purple); text-shadow: 0 0 8px rgba(155, 89, 255, 0.5);
+  line-height: 1;
 }
 .badge-text { font-family: 'Rajdhani', sans-serif; font-size: 9px; font-weight: 700; color: var(--purple); letter-spacing: 1px; }
 .nav-logout {
@@ -204,11 +207,11 @@ body::after {
 .collapse-btn {
   display: flex; align-items: center; justify-content: center;
   margin: 8px 14px 2px;
-  border: 1px solid var(--border); border-radius: 5px;
+  border: none; border-radius: 5px;
   padding: 7px; cursor: pointer; color: var(--text2);
   transition: all 0.2s;
 }
-.collapse-btn:hover { border-color: var(--blue-glow); color: var(--blue); }
+.collapse-btn:hover { color: var(--blue); }
 
 /* ─── MAIN AREA ───────────────────────────────── */
 .main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
