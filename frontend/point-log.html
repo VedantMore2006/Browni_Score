@@ -30,6 +30,50 @@
 }
 .filter-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
 
+/* ── MEMBER SELECTOR ── */
+.member-selector { display:flex; gap:6px; flex-wrap:wrap; padding:4px 0; }
+.member-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px 5px 6px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.member-pill:hover {
+  border-color: rgba(79,195,247,0.4);
+  color: var(--text);
+}
+.member-pill.active {
+  border-color: var(--blue);
+  background: rgba(79,195,247,0.08);
+  color: var(--blue);
+}
+.member-pill.all-members { padding: 5px 14px; }
+.member-avatar-sm {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(79,195,247,0.12);
+  border: 1px solid rgba(79,195,247,0.3);
+  color: var(--blue);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 /* ── STAT CARDS ── */
 .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
 
@@ -82,6 +126,34 @@ td { padding:13px 16px; color:var(--text); vertical-align:middle; }
 .td-reason { font-size:13px; color:var(--text); }
 .td-loggedby { font-size:13px; color:var(--text2); }
 
+/* member column */
+.td-member { display:flex; align-items:center; gap:8px; }
+.member-avatar-tbl {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(79,195,247,0.1);
+  border: 1px solid rgba(79,195,247,0.3);
+  color: var(--blue);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.member-name-tbl {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+}
+.member-name-tbl:hover {
+  color: var(--blue);
+  text-decoration: underline;
+}
+
 /* category chips */
 .cat-chip { display:inline-flex; align-items:center; justify-content:center; padding:3px 12px; border-radius:4px; font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.4px; border:1px solid; white-space:nowrap; }
 .cat-attendance { background:rgba(255,179,0,0.12);   border-color:rgba(255,179,0,0.5);   color:var(--amber); }
@@ -103,6 +175,7 @@ td { padding:13px 16px; color:var(--text); vertical-align:middle; }
 .pg-btn:hover { border-color:rgba(79,195,247,0.4); color:var(--blue); }
 .pg-btn.active { background:rgba(79,195,247,0.12); border-color:var(--blue); color:var(--blue); }
 .pg-btn svg { width:14px; height:14px; }
+.pg-btn:disabled { opacity:0.35; cursor:not-allowed; }
 .pg-ellipsis { color:var(--text2); font-size:13px; padding:0 4px; }
 
 /* scrollbar */
@@ -181,12 +254,13 @@ td { padding:13px 16px; color:var(--text); vertical-align:middle; }
   <div class="main">
     <div class="topbar">
       <h1 class="page-title">POINT HISTORY</h1>
+      <div style="font-size:13px; color:var(--text2); margin-top:2px;">Public record of all team point activity</div>
     </div>
 
     <div class="content">
 
       <!-- FILTER BAR -->
-      <div class="filter-bar">
+      <div class="filter-bar" id="filterBar">
         <button class="filter-chip active" onclick="setFilter('all',this)">
           <div class="filter-dot" style="background:var(--blue)"></div> All
         </button>
@@ -210,6 +284,9 @@ td { padding:13px 16px; color:var(--text); vertical-align:middle; }
         </button>
       </div>
 
+      <!-- MEMBER SELECTOR -->
+      <div class="member-selector" id="memberSelector"></div>
+
       <!-- STAT CARDS -->
       <div class="stat-row">
         <!-- Earned -->
@@ -218,8 +295,8 @@ td { padding:13px 16px; color:var(--text); vertical-align:middle; }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
           </div>
           <div class="stat-info">
-            <div class="stat-label">Total Earned This Month</div>
-            <div class="stat-value earn">+3,250</div>
+            <div class="stat-label" id="lblEarn">Total Earned (All Members)</div>
+            <div class="stat-value earn" id="valEarn">+0</div>
           </div>
           <canvas class="sparkline" id="sparkEarn"></canvas>
         </div>
@@ -229,8 +306,8 @@ td { padding:13px 16px; color:var(--text); vertical-align:middle; }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
           </div>
           <div class="stat-info">
-            <div class="stat-label">Total Deducted This Month</div>
-            <div class="stat-value deduct">-450</div>
+            <div class="stat-label" id="lblDeduct">Total Deducted (All Members)</div>
+            <div class="stat-value deduct" id="valDeduct">-0</div>
           </div>
           <canvas class="sparkline" id="sparkDeduct"></canvas>
         </div>
@@ -240,8 +317,8 @@ td { padding:13px 16px; color:var(--text); vertical-align:middle; }
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/><circle cx="12" cy="12" r="3"/></svg>
           </div>
           <div class="stat-info">
-            <div class="stat-label">Net Balance</div>
-            <div class="stat-value net">+2,800</div>
+            <div class="stat-label" id="lblNet">Net (All Members)</div>
+            <div class="stat-value net" id="valNet">+0</div>
           </div>
           <canvas class="sparkline" id="sparkNet"></canvas>
         </div>
@@ -254,6 +331,7 @@ td { padding:13px 16px; color:var(--text); vertical-align:middle; }
             <thead>
               <tr>
                 <th>DATE &amp; TIME</th>
+                <th>MEMBER</th>
                 <th>CATEGORY</th>
                 <th>POINTS</th>
                 <th>REASON</th>
@@ -265,22 +343,8 @@ td { padding:13px 16px; color:var(--text); vertical-align:middle; }
         </div>
         <!-- PAGINATION -->
         <div class="pagination-row">
-          <span class="pagination-info" id="pageInfo">Showing 1 to 10 of 68 entries</span>
-          <div class="pagination-controls">
-            <button class="pg-btn" onclick="changePage(-1)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <button class="pg-btn active" id="pg1" onclick="setPage(1)">1</button>
-            <button class="pg-btn" id="pg2" onclick="setPage(2)">2</button>
-            <button class="pg-btn" id="pg3" onclick="setPage(3)">3</button>
-            <button class="pg-btn" id="pg4" onclick="setPage(4)">4</button>
-            <button class="pg-btn" id="pg5" onclick="setPage(5)">5</button>
-            <span class="pg-ellipsis">...</span>
-            <button class="pg-btn" id="pg7" onclick="setPage(7)">7</button>
-            <button class="pg-btn" onclick="changePage(1)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
-          </div>
+          <span class="pagination-info" id="pageInfo">Showing 1 to 10 of 64 entries</span>
+          <div class="pagination-controls" id="pgControls"></div>
         </div>
       </div>
 
@@ -290,76 +354,263 @@ td { padding:13px 16px; color:var(--text); vertical-align:middle; }
 
 <script>
 // ── DATA ──────────────────────────────────────────────
-const ALL_LOGS = [
-  { datetime:'16 May 2025, 10:35 AM', cat:'attendance', pts:+10, reason:'Present for daily attendance',       by:'System'       },
-  { datetime:'16 May 2025, 09:20 AM', cat:'task',       pts:+15, reason:'Completed: UI/UX Design Update',    by:'Santosh Bothe'},
-  { datetime:'16 May 2025, 08:15 AM', cat:'learning',   pts:+20, reason:'Completed: React Basics Course',    by:'Arjun Verma'  },
-  { datetime:'15 May 2025, 06:45 PM', cat:'content',    pts:+10, reason:'Shared helpful resource in group',  by:'Aarav Singh'  },
-  { datetime:'15 May 2025, 05:10 PM', cat:'task',       pts:+8,  reason:'Completed: Bug Fixes',              by:'Neha Kulkarni'},
-  { datetime:'15 May 2025, 02:30 PM', cat:'conduct',    pts:-10, reason:'Late submission penalty',           by:'Santosh Bothe'},
-  { datetime:'15 May 2025, 11:00 AM', cat:'attendance', pts:-5,  reason:'Late arrival',                      by:'System'       },
-  { datetime:'14 May 2025, 09:40 PM', cat:'streak',     pts:+30, reason:'Weekly streak bonus (4 weeks)',     by:'System'       },
-  { datetime:'14 May 2025, 07:25 PM', cat:'content',    pts:+5,  reason:'Created and shared study notes',    by:'Aarav Singh'  },
-  { datetime:'14 May 2025, 04:15 PM', cat:'task',       pts:-8,  reason:'Task incomplete (UI Polish)',        by:'Santosh Bothe'},
+const ALL_MEMBERS = [
+  'Deepavali', 'Santosh', 'Debaditya', 'Swapnil', 'Ganesh', 'Nikita',
+  'Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Prem',
+  'Komal', 'Shreya', 'Vishal', 'Suraj', 'Krishna', 'SAB'
 ];
 
-const TOTAL = 68;
+const ALL_LOGS = [
+  // Ganesh
+  { id:1,  member:'Ganesh',    datetime:'2026-08-16, 09:30 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting — full week streak',          by:'System'    },
+  { id:2,  member:'Ganesh',    datetime:'2026-08-15, 06:00 PM', cat:'task',       type:'earn',   pts:8,   reason:'Task rated: Exceeds expectation — MindSpace UI', by:'Deepavali' },
+  { id:3,  member:'Ganesh',    datetime:'2026-08-15, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
+  { id:4,  member:'Ganesh',    datetime:'2026-08-14, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week presence streak bonus',                by:'System'    },
+
+  // Deepavali
+  { id:5,  member:'Deepavali', datetime:'2026-08-16, 10:00 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:6,  member:'Deepavali', datetime:'2026-08-15, 05:45 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — NutriSure API',  by:'Santosh'   },
+  { id:7,  member:'Deepavali', datetime:'2026-08-14, 11:30 AM', cat:'attendance', type:'deduct', pts:-10, reason:'Late arrival — outside 9:30–11:30 AM window',    by:'System'    },
+  { id:8,  member:'Deepavali', datetime:'2026-08-13, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week task reporting streak bonus',          by:'System'    },
+
+  // Santosh
+  { id:9,  member:'Santosh',   datetime:'2026-08-16, 09:45 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:10, member:'Santosh',   datetime:'2026-08-15, 03:00 PM', cat:'task',       type:'earn',   pts:8,   reason:'Task rated: Exceeds expectation — SoloBeauty',   by:'Ganesh'    },
+  { id:11, member:'Santosh',   datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Led learning session — Technical',               by:'System'    },
+  { id:12, member:'Santosh',   datetime:'2026-08-13, 04:00 PM', cat:'conduct',    type:'deduct', pts:-20, reason:'Non-compliance after 3rd warning',               by:'Admin'     },
+
+  // Debaditya
+  { id:13, member:'Debaditya', datetime:'2026-08-16, 10:10 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:14, member:'Debaditya', datetime:'2026-08-15, 06:15 PM', cat:'task',       type:'earn',   pts:8,   reason:'Task rated: Exceeds expectation — LinkedIn posts',by:'Swapnil'   },
+  { id:15, member:'Debaditya', datetime:'2026-08-15, 02:30 PM', cat:'content',    type:'earn',   pts:5,   reason:'Content post published — LinkedIn',              by:'System'    },
+  { id:16, member:'Debaditya', datetime:'2026-08-14, 04:30 PM', cat:'streak',     type:'earn',   pts:20,  reason:'85% weekly task completion bonus',               by:'System'    },
+
+  // Swapnil
+  { id:17, member:'Swapnil',   datetime:'2026-08-16, 09:55 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:18, member:'Swapnil',   datetime:'2026-08-15, 05:00 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — SkillSense',     by:'Nikita'    },
+  { id:19, member:'Swapnil',   datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
+  { id:20, member:'Swapnil',   datetime:'2026-08-13, 09:00 AM', cat:'attendance', type:'deduct', pts:-5,  reason:'Missed alternate-day task sync (4:00–4:30 PM)',   by:'System'    },
+
+  // Nikita
+  { id:21, member:'Nikita',    datetime:'2026-08-16, 10:20 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:22, member:'Nikita',    datetime:'2026-08-15, 04:30 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — Fun Day logistics',by:'Deepavali'},
+  { id:23, member:'Nikita',    datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
+  { id:24, member:'Nikita',    datetime:'2026-08-14, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week presence streak bonus',                by:'System'    },
+
+  // Vedant
+  { id:25, member:'Vedant',    datetime:'2026-08-16, 10:30 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:26, member:'Vedant',    datetime:'2026-08-15, 05:30 PM', cat:'task',       type:'earn',   pts:8,   reason:'Task rated: Exceeds expectation — MindSpace onboarding',by:'Ganesh'},
+  { id:27, member:'Vedant',    datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
+  { id:28, member:'Vedant',    datetime:'2026-08-13, 11:45 AM', cat:'attendance', type:'deduct', pts:-10, reason:'Late arrival — outside reporting window',        by:'System'    },
+
+  // Nakul
+  { id:29, member:'Nakul',     datetime:'2026-08-16, 10:05 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:30, member:'Nakul',     datetime:'2026-08-15, 04:00 PM', cat:'task',       type:'earn',   pts:3,   reason:'Task rated: Needs revision — Session timeout fix',by:'Ganesh'   },
+  { id:31, member:'Nakul',     datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
+  { id:32, member:'Nakul',     datetime:'2026-08-13, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week task reporting streak bonus',          by:'System'    },
+
+  // Ashutosh
+  { id:33, member:'Ashutosh',  datetime:'2026-08-16, 09:40 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:34, member:'Ashutosh',  datetime:'2026-08-15, 06:00 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — Website backend', by:'Debaditya' },
+  { id:35, member:'Ashutosh',  datetime:'2026-08-14, 02:30 PM', cat:'content',    type:'earn',   pts:5,   reason:'Content post published — Instagram',             by:'System'    },
+  { id:36, member:'Ashutosh',  datetime:'2026-08-13, 05:00 PM', cat:'learning',   type:'deduct', pts:-15, reason:'Missed learning hour (2:00–2:30 PM)',            by:'System'    },
+
+  // Prerna
+  { id:37, member:'Prerna',    datetime:'2026-08-16, 10:45 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:38, member:'Prerna',    datetime:'2026-08-15, 03:30 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — E-Zest logistics',by:'Santosh'  },
+  { id:39, member:'Prerna',    datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
+  { id:40, member:'Prerna',    datetime:'2026-08-14, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week presence streak bonus',                by:'System'    },
+
+  // Prem
+  { id:41, member:'Prem',      datetime:'2026-08-16, 11:00 AM', cat:'attendance', type:'deduct', pts:-10, reason:'Late arrival — outside 9:30–11:30 AM window',    by:'System'    },
+  { id:42, member:'Prem',      datetime:'2026-08-15, 05:15 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — NutriSure tracking',by:'Deepavali'},
+  { id:43, member:'Prem',      datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
+  { id:44, member:'Prem',      datetime:'2026-08-13, 04:30 PM', cat:'task',       type:'earn',   pts:5,   reason:'Daily check-in completed',                       by:'Deepavali' },
+
+  // Komal
+  { id:45, member:'Komal',     datetime:'2026-08-16, 09:50 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:46, member:'Komal',     datetime:'2026-08-15, 04:45 PM', cat:'task',       type:'earn',   pts:3,   reason:'Task rated: Needs revision — Course drag-and-drop',by:'Swapnil' },
+  { id:47, member:'Komal',     datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
+  { id:48, member:'Komal',     datetime:'2026-08-13, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week task reporting streak bonus',          by:'System'    },
+
+  // Shreya
+  { id:49, member:'Shreya',    datetime:'2026-08-16, 10:15 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:50, member:'Shreya',    datetime:'2026-08-15, 05:00 PM', cat:'task',       type:'earn',   pts:3,   reason:'Task rated: Needs revision — LMS progress dashboard',by:'Swapnil'},
+  { id:51, member:'Shreya',    datetime:'2026-08-14, 04:30 PM', cat:'attendance', type:'deduct', pts:-5,  reason:'Missed alternate-day task sync',                 by:'System'    },
+  { id:52, member:'Shreya',    datetime:'2026-08-13, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
+
+  // Vishal
+  { id:53, member:'Vishal',    datetime:'2026-08-16, 09:35 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:54, member:'Vishal',    datetime:'2026-08-15, 04:00 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — Meal recommendation',by:'Deepavali'},
+  { id:55, member:'Vishal',    datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
+  { id:56, member:'Vishal',    datetime:'2026-08-14, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week presence streak bonus',                by:'System'    },
+
+  // Suraj
+  { id:57, member:'Suraj',     datetime:'2026-08-16, 10:00 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:58, member:'Suraj',     datetime:'2026-08-15, 05:30 PM', cat:'task',       type:'earn',   pts:8,   reason:'Task rated: Exceeds expectation — LinkedIn posts', by:'Debaditya' },
+  { id:59, member:'Suraj',     datetime:'2026-08-15, 02:30 PM', cat:'content',    type:'earn',   pts:5,   reason:'Content post published — X / Twitter',           by:'System'    },
+  { id:60, member:'Suraj',     datetime:'2026-08-14, 11:00 AM', cat:'attendance', type:'deduct', pts:-10, reason:'Absent without prior notice',                    by:'System'    },
+
+  // Nandini
+  { id:61, member:'Nandini',   datetime:'2026-08-16, 09:55 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
+  { id:62, member:'Nandini',   datetime:'2026-08-15, 04:30 PM', cat:'task',       type:'earn',   pts:8,   reason:'Task rated: Exceeds expectation — Dashboard wireframes',by:'Ganesh'},
+  { id:63, member:'Nandini',   datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
+  { id:64, member:'Nandini',   datetime:'2026-08-14, 04:30 PM', cat:'streak',     type:'earn',   pts:20,  reason:'85% weekly task completion bonus',               by:'System'    },
+];
+
 const PER_PAGE = 10;
 let currentPage = 1;
-let activeFilter = 'all';
+let activeCategory = 'all';
+let activeMember = null;
 
-// ── CHIPS ─────────────────────────────────────────────
+// ── HELPERS ───────────────────────────────────────────
+function initials(name) {
+  const parts = name.trim().split(' ');
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return name.slice(0, 2).toUpperCase();
+}
+
 function catChip(cat) {
-  const label = cat.charAt(0).toUpperCase() + cat.slice(1);
-  return `<span class="cat-chip cat-${cat}">${label}</span>`;
-}
-function ptsCell(pts) {
-  const cls = pts >= 0 ? 'pts-earn' : 'pts-deduct';
-  const sign = pts >= 0 ? '+' : '';
-  return `<span class="${cls}">${sign}${pts}</span>`;
+  const map = {
+    attendance: ['cat-attendance', 'ATTENDANCE'],
+    task:       ['cat-task',       'TASK'],
+    learning:   ['cat-learning',   'LEARNING'],
+    content:    ['cat-content',    'CONTENT'],
+    streak:     ['cat-streak',     'STREAK'],
+    conduct:    ['cat-conduct',    'CONDUCT'],
+  };
+  const [cls, label] = map[cat] || ['cat-task', cat.toUpperCase()];
+  return `<span class="cat-chip ${cls}">${label}</span>`;
 }
 
-// ── RENDER ────────────────────────────────────────────
-function renderLogs() {
-  const filtered = activeFilter === 'all' ? ALL_LOGS : ALL_LOGS.filter(l => l.cat === activeFilter);
+function ptsCell(log) {
+  if (log.type === 'earn')
+    return `<span class="pts-earn">+${log.pts}</span>`;
+  return `<span class="pts-deduct">${log.pts}</span>`;
+}
+
+function computeStats(logs) {
+  const earned   = logs.filter(l => l.type === 'earn').reduce((s,l) => s + l.pts, 0);
+  const deducted = logs.filter(l => l.type === 'deduct').reduce((s,l) => s + Math.abs(l.pts), 0);
+  const net      = earned - deducted;
+  return { earned, deducted, net };
+}
+
+// ── MEMBER SELECTOR ───────────────────────────────────
+function renderMemberSelector() {
+  const wrap = document.getElementById('memberSelector');
+  let html = `<button class="member-pill all-members ${activeMember === null ? 'active' : ''}" onclick="setMember(null)">ALL MEMBERS</button>`;
+  html += ALL_MEMBERS.map(m =>
+    `<button class="member-pill ${activeMember === m ? 'active' : ''}" onclick="setMember('${m}')">
+      <span class="member-avatar-sm">${initials(m)}</span>${m}
+    </button>`
+  ).join('');
+  wrap.innerHTML = html;
+}
+
+function setMember(name) {
+  activeMember = name;
+  currentPage = 1;
+  renderMemberSelector();
+  render();
+}
+
+// ── CATEGORY FILTER ───────────────────────────────────
+function setFilter(cat, el) {
+  activeCategory = cat;
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentPage = 1;
+  render();
+}
+
+// ── FILTERING ─────────────────────────────────────────
+function getFiltered() {
+  return ALL_LOGS.filter(l => {
+    const catMatch = activeCategory === 'all' || l.cat === activeCategory;
+    const memMatch = activeMember === null || l.member === activeMember;
+    return catMatch && memMatch;
+  });
+}
+
+// ── STATS ─────────────────────────────────────────────
+function updateStats(stats) {
+  const who = activeMember === null ? 'All Members' : activeMember;
+  document.getElementById('lblEarn').textContent   = `Total Earned (${who})`;
+  document.getElementById('lblDeduct').textContent = `Total Deducted (${who})`;
+  document.getElementById('lblNet').textContent    = `Net (${who})`;
+  document.getElementById('valEarn').textContent   = `+${stats.earned}`;
+  document.getElementById('valDeduct').textContent = `-${stats.deducted}`;
+  document.getElementById('valNet').textContent    = `${stats.net >= 0 ? '+' : ''}${stats.net}`;
+}
+
+// ── TABLE RENDER ──────────────────────────────────────
+function renderTable(logs) {
   const body = document.getElementById('logBody');
-  body.innerHTML = filtered.map(l => `
+  if (!logs.length) {
+    body.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text2);">No entries found</td></tr>`;
+    return;
+  }
+  body.innerHTML = logs.map(l => `
     <tr>
       <td><span class="td-datetime">${l.datetime}</span></td>
+      <td>
+        <div class="td-member">
+          <span class="member-avatar-tbl">${initials(l.member)}</span>
+          <span class="member-name-tbl" onclick="setMember('${l.member}')">${l.member}</span>
+        </div>
+      </td>
       <td>${catChip(l.cat)}</td>
-      <td>${ptsCell(l.pts)}</td>
+      <td>${ptsCell(l)}</td>
       <td><span class="td-reason">${l.reason}</span></td>
       <td><span class="td-loggedby">${l.by}</span></td>
     </tr>
   `).join('');
-  const count = filtered.length;
-  document.getElementById('pageInfo').textContent = `Showing 1 to ${Math.min(PER_PAGE, count)} of ${TOTAL} entries`;
-}
-
-// ── FILTER ────────────────────────────────────────────
-function setFilter(cat, el) {
-  activeFilter = cat;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  currentPage = 1;
-  renderLogs();
 }
 
 // ── PAGINATION ────────────────────────────────────────
-const PAGES = [1,2,3,4,5,7];
+function updatePagination(total) {
+  const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+  if (currentPage > totalPages) currentPage = totalPages;
+  const start = total === 0 ? 0 : (currentPage - 1) * PER_PAGE + 1;
+  const end   = Math.min(currentPage * PER_PAGE, total);
+  document.getElementById('pageInfo').textContent =
+    total === 0 ? 'No entries found' : `Showing ${start} to ${end} of ${total} entries`;
+
+  const pgC = document.getElementById('pgControls');
+  let html = `<button class="pg-btn" onclick="changePage(-1)" ${currentPage===1?'disabled':''}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>`;
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<button class="pg-btn ${i===currentPage?'active':''}" onclick="setPage(${i})">${i}</button>`;
+  }
+  html += `<button class="pg-btn" onclick="changePage(1)" ${currentPage===totalPages?'disabled':''}>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+  </button>`;
+  pgC.innerHTML = html;
+}
+
 function setPage(p) {
   currentPage = p;
-  PAGES.forEach(n => {
-    const el = document.getElementById(`pg${n}`);
-    if (el) el.classList.toggle('active', n === p);
-  });
-  const start = (p - 1) * PER_PAGE + 1;
-  const end   = Math.min(p * PER_PAGE, TOTAL);
-  document.getElementById('pageInfo').textContent = `Showing ${start} to ${end} of ${TOTAL} entries`;
+  render();
 }
 function changePage(dir) {
-  const maxPage = 7;
-  setPage(Math.max(1, Math.min(maxPage, currentPage + dir)));
+  render(currentPage + dir);
+}
+
+// ── MASTER RENDER ─────────────────────────────────────
+function render(forcePage) {
+  if (forcePage !== undefined) {
+    const filtered = getFiltered();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+    currentPage = Math.max(1, Math.min(totalPages, forcePage));
+  }
+  const filtered = getFiltered();
+  const stats = computeStats(filtered);
+  updateStats(stats);
+  const paginated = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+  renderTable(paginated);
+  updatePagination(filtered.length);
 }
 
 // ── SIDEBAR COLLAPSE ──────────────────────────────────
@@ -407,7 +658,8 @@ function drawSparkline(id, data, color) {
 }
 
 // ── INIT ─────────────────────────────────────────────
-renderLogs();
+renderMemberSelector();
+render();
 setTimeout(() => {
   drawSparkline('sparkEarn',   [10,40,25,60,80,55,90,70,100,85,110], '#00E5FF');
   drawSparkline('sparkDeduct', [5,15,8,25,10,30,20,35,15,40,25],     '#FF1744');
