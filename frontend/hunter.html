@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vitals&Vectors — Task Overview</title>
+<title>Vitals&Vectors — Hunter Profile</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/global.css">
 <style>
@@ -71,58 +71,46 @@ body::after { content: ''; position: fixed; top: -10%; left: 50%; transform: tra
   border: 1px solid;
 }
 
-.tasks-layout { display: flex; flex: 1; min-height: 0; }
+.topbar { display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1px solid var(--border); background:var(--panel); }
+.page-title { font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:0.08em; margin:0; display:flex; align-items:center; gap:16px; }
+.btn-back { font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:700; letter-spacing:1px; color:var(--text2); text-decoration:none; text-transform:uppercase; transition:color 0.2s; }
+.btn-back:hover { color:var(--text); }
 
-.tasks-main { flex: 1; padding: 24px; display: flex; flex-direction: column; overflow-y: auto; }
-.stats-bar { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-.stat-card {
-  flex: 1; min-width: 150px; background: var(--panel); border: 1px solid var(--border);
-  border-left: 3px solid var(--blue); border-radius: 6px; padding: 16px;
-}
-.stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.05em; color: var(--text); }
-.stat-lbl { font-size: 11px; color: var(--text2); text-transform: uppercase; font-weight: 600; margin-top: 4px; }
+.content-scroll { flex:1; overflow-y:auto; padding:24px; display:flex; flex-direction:column; gap:24px; }
 
-.table-card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+.profile-card { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:24px; display:flex; flex-direction:column; gap:24px; }
+.prof-top { display:flex; align-items:center; gap:20px; }
+.prof-avatar { width:72px; height:72px; border-radius:50%; border:2px solid var(--blue); box-shadow:0 0 15px var(--blue-glow); display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:2.5rem; color:var(--text); background:rgba(79,195,247,0.1); }
+.prof-name { font-family:'Bebas Neue',sans-serif; font-size:2.5rem; letter-spacing:0.05em; margin:0 0 4px; }
+.prof-role { color:var(--text2); font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:1px; }
+.prof-stats { display:flex; border-top:1px solid var(--border); padding-top:24px; gap:40px; }
+.ps-item { display:flex; flex-direction:column; }
+.ps-val { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; color:var(--text); }
+.ps-lbl { font-size:11px; color:var(--text2); text-transform:uppercase; font-weight:600; }
+
+.projects-row { display:flex; flex-wrap:wrap; gap:12px; }
+.proj-pill { display:inline-flex; flex-direction:column; padding:10px 16px; border-radius:8px; border:1px solid; cursor:pointer; transition:transform 0.2s; }
+.proj-pill:hover { transform:translateY(-2px); }
+.pp-name { font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:700; margin-bottom:4px; }
+.pp-lead { font-size:11px; opacity:0.8; }
+
+.table-card { background:var(--panel); border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+.tabs { display:flex; border-bottom:1px solid var(--border); background:var(--elevated); }
+.tab { padding:12px 20px; font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text2); cursor:pointer; border-bottom:2px solid transparent; }
+.tab.active { color:var(--blue); border-bottom-color:var(--blue); background:rgba(79,195,247,0.05); }
+
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
-thead tr { background: var(--elevated); border-bottom: 1px solid var(--border); }
+thead tr { border-bottom: 1px solid var(--border); }
 thead th { padding: 12px 14px; font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text2); text-align: left; white-space: nowrap; }
-thead th:first-child { text-align: center; width: 50px; }
 tbody tr { border-bottom: 1px solid rgba(79,195,247,0.05); }
 tbody tr:hover { background: rgba(79,195,247,0.03); }
 td { padding: 13px 14px; color: var(--text); vertical-align: middle; }
-td:first-child { text-align: center; color: var(--text2); font-size: 12px; }
 
-.pagination-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--border); background: var(--elevated); }
-.pg-info { font-size: 12px; color: var(--text2); }
-.pg-controls { display: flex; gap: 4px; }
-.pg-btn { width: 28px; height: 28px; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--text2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; font-weight: 600; }
-.pg-btn:hover { border-color: var(--blue); color: var(--blue); }
-.pg-btn.active { background: rgba(79,195,247,0.12); border-color: var(--blue); color: var(--blue); }
+.pts-card { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:20px; }
+.pc-title { font-family:'Rajdhani',sans-serif; font-size:14px; font-weight:700; letter-spacing:1px; margin-bottom:12px; }
+.pc-desc { font-size:13px; color:var(--text2); }
 
-.dist-card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; }
-.dist-title { font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--text2); margin-bottom:14px; }
-.dist-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; cursor:pointer; padding:4px; border-radius:4px; transition:background 0.15s; }
-.dist-row:hover { background: rgba(79,195,247,0.05); }
-.dist-row:last-child { margin-bottom:0; }
-.dist-label { width:150px; flex-shrink:0; font-size:12px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.dist-bar-track { flex:1; height:8px; background:rgba(255,255,255,0.04); border-radius:4px; overflow:hidden; }
-.dist-bar-fill { height:100%; border-radius:4px; transition:width 0.3s ease; }
-.dist-count { width:28px; text-align:right; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:12px; color:var(--text2); flex-shrink:0; }
-
-.project-detail-panel { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:18px 20px; margin-bottom:16px; display:flex; align-items:flex-start; gap:18px; position:relative; overflow:hidden; }
-.project-detail-panel::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--pd-color, var(--blue)); }
-.pd-badge { width:52px; height:52px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:1.6rem; flex-shrink:0; border:1px solid; }
-.pd-body { flex:1; min-width:0; }
-.pd-name { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:0.04em; color:var(--text); }
-.pd-lead { font-size:12px; color:var(--text2); margin-top:2px; }
-.pd-members { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
-.pd-member-chip { display:inline-flex; align-items:center; gap:5px; padding:3px 9px 3px 3px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid var(--border); font-size:11px; color:var(--text2); }
-.pd-member-avatar { width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; background:rgba(79,195,247,0.15); color:var(--blue); flex-shrink:0; }
-.pd-stats { display:flex; gap:18px; margin-top:12px; flex-wrap:wrap; }
-.pd-stat-val { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--text); }
-.pd-stat-lbl { font-size:10px; color:var(--text2); text-transform:uppercase; letter-spacing:0.8px; }
-.pd-link { font-size:11px; color:var(--blue); text-decoration:none; white-space:nowrap; flex-shrink:0; align-self:flex-start; margin-top:4px; }
-.pd-link:hover { text-decoration:underline; }
+#errorState { padding:60px; text-align:center; color:var(--text2); font-size:16px; display:none; }
 </style>
 </head>
 <body>
@@ -140,7 +128,7 @@ td:first-child { text-align: center; color: var(--text2); font-size: 12px; }
         <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
         <span class="nav-label">Dashboard</span>
       </a>
-      <a class="nav-item active" href="tasks.html">
+      <a class="nav-item" href="tasks.html">
         <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span>
         <span class="nav-label">Tasks</span>
       </a>
@@ -192,46 +180,53 @@ td:first-child { text-align: center; color: var(--text2); font-size: 12px; }
   </nav>
 
   <div class="main">
-    <div class="topbar" style="display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1px solid var(--border); background:var(--panel);">
-      <h1 class="page-title" style="font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:0.08em; margin:0;">TASK OVERVIEW</h1>
+    <div class="topbar">
+      <h1 class="page-title"><a href="tasks.html" class="btn-back">← All Tasks</a> <span id="pt-name">MEMBER</span></h1>
       <div style="font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; background:rgba(0,229,255,0.1); color:var(--teal); padding:4px 10px; border-radius:12px; border:1px solid rgba(0,229,255,0.3); display:flex; align-items:center; gap:6px;">
         <div style="width:6px; height:6px; background:var(--teal); border-radius:50%; box-shadow:0 0 6px var(--teal);"></div> // SYSTEM ONLINE
       </div>
     </div>
     
-    <div class="tasks-layout">
-      <!-- MAIN CONTENT -->
-      <div class="tasks-main">
-        <div class="stats-bar">
-          <div class="stat-card" style="border-left-color:var(--blue)"><div class="stat-val" id="st-total">0</div><div class="stat-lbl">Total Tasks</div></div>
-          <div class="stat-card" style="border-left-color:var(--amber)"><div class="stat-val" id="st-prog">0</div><div class="stat-lbl">In Progress</div></div>
-          <div class="stat-card" style="border-left-color:var(--teal)"><div class="stat-val" id="st-comp">0</div><div class="stat-lbl">Completed</div></div>
-          <div class="stat-card" style="border-left-color:var(--purple)"><div class="stat-val" id="st-await">0</div><div class="stat-lbl">Awaiting Rating</div></div>
-          <div class="stat-card" style="border-left-color:#FF9100"><div class="stat-val" id="st-duetoday">0</div><div class="stat-lbl">Due Today</div></div>
-          <div class="stat-card" style="border-left-color:var(--red)"><div class="stat-val" id="st-overdue">0</div><div class="stat-lbl">Overdue</div></div>
-        </div>
-
-        <div id="projectDetailPanel" class="project-detail-panel" style="display:none;"></div>
-
-        <div class="dist-card">
-          <div class="dist-title">Tasks by Project</div>
-          <div id="distBody"></div>
-        </div>
-
-        <div class="table-card">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th><th>TASK</th><th>PROJECT</th><th>ASSIGNED TO</th><th>LEAD</th><th>DEADLINE</th><th>PRIORITY</th><th>STATUS</th><th>POINTS</th>
-              </tr>
-            </thead>
-            <tbody id="taskBody"></tbody>
-          </table>
-          <div class="pagination-row">
-            <span class="pg-info" id="pgInfo">Showing 0 to 0 of 0 tasks</span>
-            <div class="pg-controls" id="pgControls"></div>
+    <div id="errorState">Hunter not found or has no tasks assigned yet. <a href="tasks.html" style="color:var(--blue)">Go back</a></div>
+    
+    <div class="content-scroll" id="mainContent">
+      <div class="profile-card">
+        <div class="prof-top">
+          <div class="prof-avatar" id="p-av"></div>
+          <div>
+            <h2 class="prof-name" id="p-name"></h2>
+            <div class="prof-role" id="p-role"></div>
           </div>
         </div>
+        <div class="prof-stats">
+          <div class="ps-item"><span class="ps-val" id="ps-ass">0</span><span class="ps-lbl">Tasks Assigned</span></div>
+          <div class="ps-item"><span class="ps-val" id="ps-comp">0</span><span class="ps-lbl">Completed</span></div>
+          <div class="ps-item"><span class="ps-val" id="ps-rat">0</span><span class="ps-lbl">Rated</span></div>
+          <div class="ps-item"><span class="ps-val" id="ps-pts" style="color:var(--teal)">0</span><span class="ps-lbl">Total Points from Tasks</span></div>
+        </div>
+      </div>
+      
+      <div class="projects-row" id="projRow"></div>
+      
+      <div class="table-card">
+        <div class="tabs" id="tabs">
+          <div class="tab active" data-val="all">All</div>
+          <div class="tab" data-val="pending">Pending</div>
+          <div class="tab" data-val="in_progress">In Progress</div>
+          <div class="tab" data-val="completed">Completed</div>
+          <div class="tab" data-val="rated">Rated</div>
+        </div>
+        <table>
+          <thead>
+            <tr><th>#</th><th>TASK TITLE</th><th>PROJECT</th><th>LEAD</th><th>DEADLINE</th><th>PRIORITY</th><th>STATUS</th><th>RATING</th><th>POINTS</th></tr>
+          </thead>
+          <tbody id="tBody"></tbody>
+        </table>
+      </div>
+      
+      <div class="pts-card">
+        <div class="pc-title" id="pc-tit"></div>
+        <div class="pc-desc" id="pc-desc"></div>
       </div>
     </div>
   </div>
@@ -300,154 +295,106 @@ function showToast(msg, type = 'info') {
 }
 
 
-const TODAY = '2026-08-16';
+const params = new URLSearchParams(window.location.search);
+const memberName = decodeURIComponent(params.get('name') || '');
+const memberTasks = ALL_TASKS.filter(t => t.assignedTo === memberName);
+const isU5 = U5_LEADS.includes(memberName);
 
-let currentPage = 1;
-const PER_PAGE = 10;
-let filteredTasks = ALL_TASKS;
-let activeDetailProject = null;
-
-function init() {
-  renderDistribution();
-  updateTable();
-}
-
-function renderDistribution() {
-  const counts = PROJECTS.map(p => ({ p, count: ALL_TASKS.filter(t => t.projectId === p.id).length }))
-    .filter(x => x.count > 0)
-    .sort((a, b) => b.count - a.count);
-  const max = Math.max(...counts.map(x => x.count), 1);
-  document.getElementById('distBody').innerHTML = counts.map(x => `
-    <div class="dist-row" onclick="toggleProjectDetail('${x.p.id}')">
-      <div class="dist-label" style="color:${x.p.color}">${x.p.name}</div>
-      <div class="dist-bar-track"><div class="dist-bar-fill" style="width:${(x.count / max * 100)}%; background:${x.p.color}"></div></div>
-      <div class="dist-count">${x.count}</div>
-    </div>
-  `).join('');
-}
-
-function toggleProjectDetail(projectId) {
-  activeDetailProject = activeDetailProject === projectId ? null : projectId;
-  renderProjectDetail();
-}
-
-function renderProjectDetail() {
-  const panel = document.getElementById('projectDetailPanel');
-  const p = PROJECTS.find(pr => pr.id === activeDetailProject);
-  if (!p) { panel.style.display = 'none'; return; }
-
-  const pTasks = ALL_TASKS.filter(t => t.projectId === p.id);
-  const pending = pTasks.filter(t => t.status === 'pending').length;
-  const inProg = pTasks.filter(t => t.status === 'in_progress').length;
-  const done = pTasks.filter(t => t.status === 'completed' || t.status === 'rated').length;
-
-  panel.style.setProperty('--pd-color', p.color);
-  panel.style.display = 'flex';
-  panel.innerHTML = `
-    <div class="pd-badge" style="background:${p.color}26; border-color:${p.color}; color:${p.color}">${p.lead.charAt(0)}</div>
-    <div class="pd-body">
-      <div class="pd-name">${p.name}</div>
-      <div class="pd-lead">Lead: ${p.lead}</div>
-      <div class="pd-members">${p.members.length ? p.members.map(m => `<span class="pd-member-chip"><span class="pd-member-avatar">${m.charAt(0)}</span>${m}</span>`).join('') : '<span style="font-size:11px;color:var(--text3)">No members assigned</span>'}</div>
-      <div class="pd-stats">
-        <div class="pd-stat"><div class="pd-stat-val">${pTasks.length}</div><div class="pd-stat-lbl">Total</div></div>
-        <div class="pd-stat"><div class="pd-stat-val" style="color:var(--amber)">${pending}</div><div class="pd-stat-lbl">Pending</div></div>
-        <div class="pd-stat"><div class="pd-stat-val" style="color:var(--blue)">${inProg}</div><div class="pd-stat-lbl">In Progress</div></div>
-        <div class="pd-stat"><div class="pd-stat-val" style="color:var(--teal)">${done}</div><div class="pd-stat-lbl">Done</div></div>
-      </div>
-    </div>
-    <a class="pd-link" href="project.html?id=${p.id}">View full project &rarr;</a>
-  `;
-}
-
-function getP(t) {
-  if(t===1) return 'high'; if(t===2) return 'medium'; return 'low';
-}
-
-function updateTable() {
-  filteredTasks = ALL_TASKS;
-
-  // Stats
-  document.getElementById('st-total').innerText = ALL_TASKS.length;
-  document.getElementById('st-prog').innerText = ALL_TASKS.filter(t=>t.status==='in_progress').length;
-  document.getElementById('st-comp').innerText = ALL_TASKS.filter(t=>t.status==='completed' && !t.rating).length;
-  document.getElementById('st-await').innerText = ALL_TASKS.filter(t=>t.status==='completed' && !t.rating).length;
-  const openTasks = ALL_TASKS.filter(t => t.status !== 'completed' && t.status !== 'rated');
-  document.getElementById('st-duetoday').innerText = openTasks.filter(t => t.deadline === TODAY).length;
-  document.getElementById('st-overdue').innerText = openTasks.filter(t => t.deadline < TODAY).length;
-
-  renderProjectDetail();
-  renderTable();
-}
-
-function renderTable() {
-  const tbody = document.getElementById('taskBody');
-  const pgInfo = document.getElementById('pgInfo');
-  const pgC = document.getElementById('pgControls');
-
-  const totalPages = Math.ceil(filteredTasks.length / PER_PAGE);
-  if(currentPage > totalPages) currentPage = totalPages;
-  const start = (currentPage - 1) * PER_PAGE;
-  const end = Math.min(start + PER_PAGE, filteredTasks.length);
-  const pageTasks = filteredTasks.slice(start, end);
+if(memberTasks.length === 0) {
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('errorState').style.display = 'block';
+  document.getElementById('pt-name').innerText = memberName || 'UNKNOWN';
+} else {
+  document.getElementById('pt-name').innerText = memberName;
+  document.getElementById('p-name').innerText = memberName;
+  document.getElementById('p-av').innerText = memberName.charAt(0);
+  document.getElementById('p-role').innerText = isU5 ? 'U5 Coordinator' : 'Team Member';
   
-  pgInfo.innerText = `Showing ${start + 1} to ${end} of ${filteredTasks.length} tasks`;
+  const compTasks = memberTasks.filter(t => t.status==='completed' || t.status==='rated');
+  const ratTasks = memberTasks.filter(t => t.rating);
+  const totPts = ratTasks.reduce((sum, t) => sum + t.points, 0);
   
-  let pgHtml = `<button class="pg-btn" onclick="setPage(${currentPage-1})" ${currentPage===1?'disabled':''}>&lt;</button>`;
-  for(let i=1; i<=totalPages; i++) {
-    pgHtml += `<button class="pg-btn ${i===currentPage?'active':''}" onclick="setPage(${i})">${i}</button>`;
+  document.getElementById('ps-ass').innerText = memberTasks.length;
+  document.getElementById('ps-comp').innerText = compTasks.length;
+  document.getElementById('ps-rat').innerText = ratTasks.length;
+  document.getElementById('ps-pts').innerText = totPts;
+  
+  // Projects
+  const uProjs = [...new Set(memberTasks.map(t=>t.projectId))];
+  const pRow = document.getElementById('projRow');
+  uProjs.forEach(pid => {
+    const p = PROJECTS.find(x => x.id === pid);
+    if(p) {
+      pRow.innerHTML += `<div class="proj-pill" style="background:${p.color}26; border-color:${p.color}" onclick="window.location.href='project.html?id=${pid}'">
+        <span class="pp-name" style="color:${p.color}">${p.name}</span>
+        <span class="pp-lead" style="color:${p.color}">Lead: ${p.lead}</span>
+      </div>`;
+    }
+  });
+  
+  // Table
+  let currentTab = 'all';
+  function renderTable() {
+    const tbody = document.getElementById('tBody');
+    const filtered = currentTab === 'all' ? memberTasks : memberTasks.filter(t => t.status === currentTab || (currentTab==='completed' && t.status==='rated'));
+    
+    tbody.innerHTML = filtered.map((t, idx) => {
+      const p = PROJECTS.find(pr => pr.id === t.projectId);
+      
+      let prioHtml = '';
+      if(t.priority===1) prioHtml = `<span class="chip chip-high">High</span>`;
+      else if(t.priority===2) prioHtml = `<span class="chip chip-medium">Medium</span>`;
+      else prioHtml = `<span class="chip chip-low">Low</span>`;
+      
+      let statHtml = '';
+      if(t.status==='pending') statHtml = `<span class="chip chip-pending">Pending</span>`;
+      else if(t.status==='in_progress') statHtml = `<span class="chip chip-progress">In Progress</span>`;
+      else if(t.status==='completed' && !t.rating) statHtml = `<span class="chip chip-completed">Completed</span>`;
+      else if(t.status==='rated') statHtml = `<span class="chip chip-rated">Rated</span>`;
+      
+      let ratHtml = '<span style="color:var(--text3)">—</span>';
+      if(t.rating) {
+        const lbl = t.rating === 'exceeds' ? 'Exceeds Expectation' : t.rating === 'meets' ? 'Meets Expectation' : 'Needs Revision';
+        const cls = t.rating === 'exceeds' ? 'rating-exceeds' : t.rating === 'meets' ? 'rating-meets' : 'rating-revision';
+        ratHtml = `<span class="${cls}">${lbl}</span>`;
+      }
+      
+      let ptsHtml = '<span style="color:var(--text3)">—</span>';
+      if(t.rating) ptsHtml = `<span style="color:var(--teal);font-weight:700;">+${t.points}</span>`;
+      
+      return `<tr>
+        <td style="text-align:center;color:var(--text2)">${idx + 1}</td>
+        <td style="font-weight:bold">${t.title}</td>
+        <td><div class="pill-proj" style="background:${p.color}26; color:${p.color}; border-color:${p.color}; font-size:10px; padding:2px 8px;" onclick="window.location.href='project.html?id=${p.id}'">${p.name}</div></td>
+        <td style="color:var(--text2)">${t.lead}</td>
+        <td>${new Date(t.deadline).toLocaleDateString('en-GB', {day:'numeric', month:'short'})}</td>
+        <td>${prioHtml}</td>
+        <td>${statHtml}</td>
+        <td>${ratHtml}</td>
+        <td>${ptsHtml}</td>
+      </tr>`;
+    }).join('');
   }
-  pgHtml += `<button class="pg-btn" onclick="setPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>&gt;</button>`;
-  pgC.innerHTML = pgHtml;
   
-  tbody.innerHTML = pageTasks.map((t, idx) => {
-    const p = PROJECTS.find(pr => pr.id === t.projectId);
-    
-    let prioHtml = '';
-    if(t.priority===1) prioHtml = `<span class="chip chip-high">High</span>`;
-    else if(t.priority===2) prioHtml = `<span class="chip chip-medium">Medium</span>`;
-    else prioHtml = `<span class="chip chip-low">Low</span>`;
-    
-    let statHtml = '';
-    if(t.status==='pending') statHtml = `<span class="chip chip-pending">Pending</span>`;
-    else if(t.status==='in_progress') statHtml = `<span class="chip chip-progress">In Progress</span>`;
-    else if(t.status==='completed' && !t.rating) statHtml = `<span class="chip chip-completed">Completed</span>`;
-    else if(t.status==='rated') statHtml = `<span class="chip chip-rated">Rated</span>`;
-    
-    let ptsHtml = '<span style="color:var(--text3)">—</span>';
-    if(t.status==='completed' && !t.rating) ptsHtml = '<span style="color:var(--amber)">⏳</span>';
-    else if(t.rating) ptsHtml = `<span style="color:var(--teal);font-weight:700;">+${t.points}</span>`;
-    
-    const isPast = t.deadline < TODAY;
-    const dlColor = isPast ? 'var(--red)' : 'var(--text2)';
-    
-    return `<tr>
-      <td>${start + idx + 1}</td>
-      <td><div style="font-weight:bold;color:white;">${t.title}</div><div style="font-size:11px;color:var(--text2)">${t.duration}h</div></td>
-      <td><div class="pill-proj" style="background:${p.color}26; color:${p.color}; border-color:${p.color}" onclick="window.location.href='project.html?id=${p.id}'">${p.name}</div></td>
-      <td>
-        <div class="avatar-chip" onclick="window.location.href='hunter.html?name=' + encodeURIComponent('${t.assignedTo}')">
-          <div class="avatar-circle" style="background:${p.color}33; border-color:${p.color}; color:${p.color}">${t.assignedTo.charAt(0)}</div>
-          ${t.assignedTo}
-        </div>
-      </td>
-      <td style="color:var(--text2)">${t.lead}</td>
-      <td style="color:${dlColor}">${new Date(t.deadline).toLocaleDateString('en-GB', {day:'numeric', month:'short'})}</td>
-      <td>${prioHtml}</td>
-      <td>${statHtml}</td>
-      <td style="text-align:center">${ptsHtml}</td>
-    </tr>`;
-  }).join('');
-}
-
-function setPage(p) {
-  const totalPages = Math.ceil(filteredTasks.length / PER_PAGE);
-  if(p < 1 || p > totalPages) return;
-  currentPage = p;
+  document.querySelectorAll('.tab').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      currentTab = el.dataset.val;
+      renderTable();
+    });
+  });
+  
   renderTable();
+  
+  // Points Summary
+  const ex = ratTasks.filter(t=>t.rating==='exceeds').length;
+  const me = ratTasks.filter(t=>t.rating==='meets').length;
+  const nr = ratTasks.filter(t=>t.rating==='needs_revision').length;
+  
+  document.getElementById('pc-tit').innerText = `Points earned from tasks this member: ${totPts}`;
+  document.getElementById('pc-desc').innerText = `Breakdown: Exceeds ×${ex} (+8 each) | Meets ×${me} (+5 each) | Needs Revision ×${nr} (+3 each)`;
 }
-
-init();
 </script>
 </body>
 </html>

@@ -244,26 +244,47 @@ td:first-child { text-align:center; color:var(--text2); font-size:12px; }
           <span class="assign-title">ASSIGN QUEST</span>
         </div>
 
+        
         <div class="form-field">
-          <label class="form-label">Title</label>
-          <input type="text" class="form-input" placeholder="Enter quest title" id="fTitle">
+          <label class="form-label">PROJECT</label>
+          <div class="select-wrap">
+            <select class="form-select" id="fProject" onchange="onProjectSelect()">
+              <option value="" disabled selected>Select project</option>
+            </select>
+          </div>
         </div>
         <div class="form-field">
-          <label class="form-label">Duration (HRS)</label>
+          <label class="form-label">TASK LEAD (AUTO-ASSIGNED)</label>
+          <input type="text" class="form-input" id="fLead" placeholder="Selected project lead" readonly style="opacity:0.7;">
+        </div>
+        <div class="form-field">
+          <label class="form-label">TASK TITLE</label>
+          <input type="text" class="form-input" placeholder="Describe the task clearly" id="fTitle">
+        </div>
+        <div class="form-field">
+          <label class="form-label">ASSIGN TO</label>
+          <div class="select-wrap">
+            <select class="form-select" id="fAssignTo" disabled>
+              <option value="" disabled selected>Select project first</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">DURATION (HOURS)</label>
           <div class="input-icon-wrap">
             <input type="number" class="form-input" placeholder="e.g. 3" id="fDuration" min="0.5" step="0.5">
             <span class="input-suffix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
           </div>
         </div>
         <div class="form-field">
-          <label class="form-label">Deadline (Date &amp; Time)</label>
+          <label class="form-label">DEADLINE</label>
           <div class="input-icon-wrap">
             <input type="datetime-local" class="form-input" id="fDeadline" placeholder="YYYY-MM-DD  hh:mm">
             <span class="input-suffix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
           </div>
         </div>
         <div class="form-field">
-          <label class="form-label">Priority</label>
+          <label class="form-label">PRIORITY</label>
           <div class="select-wrap">
             <select class="form-select" id="fPriority">
               <option value="" disabled selected>Select priority</option>
@@ -273,26 +294,9 @@ td:first-child { text-align:center; color:var(--text2); font-size:12px; }
             </select>
           </div>
         </div>
-        <div class="form-field">
-          <label class="form-label">Assign To</label>
-          <div class="select-wrap">
-            <select class="form-select" id="fAssignTo">
-              <option value="" disabled selected>Select member</option>
-              <option>Riya Sharma</option>
-              <option>Aarav Singh</option>
-              <option>Arjun Verma</option>
-              <option>Pranav Patil</option>
-              <option>Neha Kulkarni</option>
-              <option>Aniket Kamble</option>
-              <option>Siddhant More</option>
-              <option>Sneha Pawar</option>
-              <option>Ritik Kadam</option>
-              <option>Mayur Bhosale</option>
-            </select>
-          </div>
-        </div>
 
         <button class="btn-assign" onclick="assignTask()">ASSIGN TASK</button>
+    
       </div>
 
       <!-- ACTIVE QUESTS -->
@@ -310,6 +314,12 @@ td:first-child { text-align:center; color:var(--text2); font-size:12px; }
               <input type="text" class="search-input" placeholder="Search quests..." oninput="filterQuests(this.value)">
             </div>
           </div>
+          <div class="tabs" style="display:flex; border-bottom:1px solid var(--border); background:var(--elevated); font-size:12px; font-family:'Rajdhani',sans-serif; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text2);">
+            <div class="tab active" data-val="all" style="padding:10px 16px; cursor:pointer; border-bottom:2px solid transparent; color:var(--blue); border-bottom-color:var(--blue); background:rgba(79,195,247,0.05);" onclick="switchTab(this)">All</div>
+            <div class="tab" data-val="awaiting" style="padding:10px 16px; cursor:pointer; border-bottom:2px solid transparent;" onclick="switchTab(this)">Awaiting Rating</div>
+            <div class="tab" data-val="rated" style="padding:10px 16px; cursor:pointer; border-bottom:2px solid transparent;" onclick="switchTab(this)">Rated</div>
+          </div>
+    
 
           <div class="table-wrap">
             <table>
@@ -398,100 +408,175 @@ td:first-child { text-align:center; color:var(--text2); font-size:12px; }
 </div>
 
 <script>
-const RANK_COLORS = { e:'#8A93A8', d:'#CD7F32', c:'#B0B0B0', b:'#4FC3F7', a:'#FFD700', s:'#00E5FF', ss:'#9A7BFF' };
 
-const QUESTS = [
-  { id:1,  title:'Design System UI Kit',      initials:'RV', name:'Riya Sharma',   rank:'a', deadline:'2026-08-20 18:00', priority:'high',   status:'in_progress', canRate:false },
-  { id:2,  title:'Weekly Report & Metrics',   initials:'AS', name:'Aarav Singh',   rank:'s', deadline:'2026-08-17 23:59', priority:'medium', status:'pending',     canRate:false },
-  { id:3,  title:'User Research Survey',      initials:'NK', name:'Neha Kulkarni', rank:'b', deadline:'2026-08-16 17:00', priority:'low',    status:'completed',   canRate:true  },
-  { id:4,  title:'Landing Page Redesign',     initials:'AK', name:'Aniket Kamble', rank:'b', deadline:'2026-08-15 21:00', priority:'high',   status:'completed',   canRate:true  },
-  { id:5,  title:'Content Strategy Plan',     initials:'SM', name:'Siddhant More', rank:'s', deadline:'2026-08-14 18:00', priority:'medium', status:'in_progress', canRate:false },
-  { id:6,  title:'Attendance System Audit',   initials:'PP', name:'Pranav Patil',  rank:'c', deadline:'2026-08-13 23:59', priority:'low',    status:'pending',     canRate:false },
-  { id:7,  title:'Performance Analytics',     initials:'AV', name:'Arjun Verma',   rank:'b', deadline:'2026-08-19 12:00', priority:'high',   status:'completed',   canRate:true  },
-  { id:8,  title:'Bug Fixes — Phase 2',       initials:'RK', name:'Ritik Kadam',   rank:'d', deadline:'2026-08-18 20:00', priority:'medium', status:'in_progress', canRate:false },
-  { id:9,  title:'Feature Documentation',     initials:'SP', name:'Sneha Pawar',   rank:'c', deadline:'2026-08-21 10:00', priority:'low',    status:'pending',     canRate:false },
-  { id:10, title:'Database Optimization',     initials:'MB', name:'Mayur Bhosale', rank:'e', deadline:'2026-08-22 23:59', priority:'medium', status:'pending',     canRate:false },
+const PROJECTS = [
+  { id: 'mindspace', name: 'MindSpace', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Swapnil'], color: '#4FC3F7' },
+  { id: 'neurovi', name: 'NeuroVisualisAI', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Swapnil'], color: '#4FC3F7' },
+  { id: 'nutrisure', name: 'NutriSure', lead: 'Deepavali', members: ['Vishal', 'Vedant', 'Prem'], color: '#00E5FF' },
+  { id: 'solobeauty', name: 'SoloBeauty', lead: 'Santosh', members: ['Prem', 'Prerna'], color: '#9A7BFF' },
+  { id: 'skillsense', name: 'SkillSense', lead: 'Swapnil', members: ['Komal', 'Deepavali', 'Ashutosh', 'Shreya', 'Prem'], color: '#FFB300' },
+  { id: 'lms', name: 'LMS', lead: 'Swapnil', members: ['Prem', 'Swapnil', 'Komal', 'Shreya'], color: '#FFB300' },
+  { id: 'website', name: 'Website', lead: 'Debaditya', members: ['Suraj', 'Ashutosh'], color: '#FF1744' },
+  { id: 'socialmedia', name: 'LinkedIn / Social Media', lead: 'Debaditya', members: ['Ashutosh', 'Suraj'], color: '#FF1744' },
+  { id: 'ezest', name: 'E-Zest', lead: 'Santosh', members: ['Ganesh', 'Vedant', 'Nikita', 'Nakul', 'Prerna', 'Ashutosh', 'Swapnil', 'Nandini'], color: '#9A7BFF' },
+  { id: 'funday', name: 'Fun Day', lead: 'Nikita', members: ['Deepavali', 'Prerna'], color: '#00E5FF' },
+  { id: 'demoday', name: 'Demo Day', lead: 'Deepavali', members: ['Prerna'], color: '#00E5FF' },
+  { id: 'learningtime', name: 'Learning Time', lead: 'Vedant', members: [], color: '#4FC3F7' },
+  { id: 'premises', name: 'Premises', lead: 'Deepavali', members: ['Prem'], color: '#00E5FF' },
+];
+const ALL_TASKS = [
+  { id:1,  projectId:'mindspace',   title:'Implement user onboarding flow',    lead:'Ganesh',    assignedTo:'Vedant',   duration:3,   deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,          points:0  },
+  { id:2,  projectId:'mindspace',   title:'Fix session timeout bug',            lead:'Ganesh',    assignedTo:'Nakul',    duration:1,   deadline:'2026-08-16', priority:1, status:'completed',   rating:null,          points:0  },
+  { id:3,  projectId:'mindspace',   title:'Design dashboard wireframes',        lead:'Ganesh',    assignedTo:'Nandini',  duration:4,   deadline:'2026-08-18', priority:2, status:'rated',       rating:'exceeds',     points:8  },
+  { id:4,  projectId:'neurovi',     title:'Train classification model v2',      lead:'Ganesh',    assignedTo:'Ashutosh', duration:6,   deadline:'2026-08-22', priority:1, status:'in_progress', rating:null,          points:0  },
+  { id:5,  projectId:'neurovi',     title:'Write model evaluation report',      lead:'Ganesh',    assignedTo:'Vedant',   duration:2,   deadline:'2026-08-19', priority:2, status:'pending',     rating:null,          points:0  },
+  { id:6,  projectId:'nutrisure',   title:'Build nutrition tracking API',       lead:'Deepavali', assignedTo:'Prem',     duration:5,   deadline:'2026-08-21', priority:1, status:'in_progress', rating:null,          points:0  },
+  { id:7,  projectId:'nutrisure',   title:'Create meal recommendation logic',   lead:'Deepavali', assignedTo:'Vishal',   duration:3,   deadline:'2026-08-17', priority:2, status:'rated',       rating:'meets',       points:5  },
+  { id:8,  projectId:'solobeauty',  title:'Product catalogue UI',               lead:'Santosh',   assignedTo:'Prem',     duration:4,   deadline:'2026-08-20', priority:2, status:'pending',     rating:null,          points:0  },
+  { id:9,  projectId:'skillsense',  title:'Course module drag-and-drop',        lead:'Swapnil',   assignedTo:'Komal',    duration:3,   deadline:'2026-08-18', priority:1, status:'completed',   rating:null,          points:0  },
+  { id:10, projectId:'skillsense',  title:'Integrate payment gateway',          lead:'Swapnil',   assignedTo:'Ashutosh', duration:2,   deadline:'2026-08-23', priority:1, status:'pending',     rating:null,          points:0  },
+  { id:11, projectId:'lms',         title:'Student progress dashboard',         lead:'Swapnil',   assignedTo:'Shreya',   duration:4,   deadline:'2026-08-19', priority:2, status:'rated',       rating:'needs_revision', points:3 },
+  { id:12, projectId:'website',     title:'SEO meta tags for all pages',        lead:'Debaditya', assignedTo:'Suraj',    duration:1,   deadline:'2026-08-16', priority:2, status:'completed',   rating:null,          points:0  },
+  { id:13, projectId:'website',     title:'Contact form backend integration',   lead:'Debaditya', assignedTo:'Ashutosh', duration:2,   deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,          points:0  },
+  { id:14, projectId:'socialmedia', title:'Draft 4 LinkedIn posts for August',  lead:'Debaditya', assignedTo:'Suraj',    duration:2,   deadline:'2026-08-17', priority:2, status:'rated',       rating:'exceeds',     points:8  },
+  { id:15, projectId:'ezest',       title:'Workshop logistics planning',         lead:'Santosh',   assignedTo:'Prerna',   duration:3,   deadline:'2026-08-22', priority:2, status:'pending',     rating:null,          points:0  },
+  { id:16, projectId:'funday',      title:'Finalize venue and schedule',        lead:'Nikita',    assignedTo:'Deepavali',duration:1,   deadline:'2026-08-18', priority:1, status:'in_progress', rating:null,          points:0  },
+  { id:17, projectId:'demoday',     title:'Prepare stakeholder presentations',  lead:'Deepavali', assignedTo:'Prerna',   duration:5,   deadline:'2026-08-25', priority:1, status:'pending',     rating:null,          points:0  },
+  { id:18, projectId:'premises',    title:'Test attendance sync feature',       lead:'Deepavali', assignedTo:'Prem',     duration:2,   deadline:'2026-08-19', priority:1, status:'completed',   rating:null,          points:0  },
 ];
 
-function priorityChip(p) {
-  if (p === 'high')   return '<span class="chip chip-high">HIGH</span>';
-  if (p === 'medium') return '<span class="chip chip-medium">MEDIUM</span>';
-  return                     '<span class="chip chip-low">LOW</span>';
-}
-function statusChip(s) {
-  if (s === 'in_progress') return '<span class="chip chip-progress">IN PROGRESS</span>';
-  if (s === 'pending')     return '<span class="chip chip-pending">PENDING</span>';
-  if (s === 'completed')   return '<span class="chip chip-completed">COMPLETED</span>';
-  return '';
-}
-function rateCell(canRate) {
-  if (!canRate) return '<span class="rate-dash">—</span>';
-  return `<select class="rate-select" onchange="handleRate(this)">
-    <option value="">Rate task...</option>
-    <option value="3">Needs revision (+3 pts)</option>
-    <option value="5">Meets expectation (+5 pts)</option>
-    <option value="8">Exceeds expectation (+8 pts)</option>
-  </select>`;
+
+function showToast(msg) {
+  let c = document.getElementById('toast-container');
+  if (!c) { c = document.createElement('div'); c.id = 'toast-container'; c.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;'; document.body.appendChild(c); }
+  const t = document.createElement('div');
+  t.style.cssText = `padding:12px 20px;border-radius:6px;font-family:'Inter',sans-serif;font-size:13px;border:1px solid #4FC3F7;color:#4FC3F7;background:rgba(79,195,247,0.1);animation:fadeIn 0.3s ease;max-width:340px;`;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
 }
 
-let allQuests = [...QUESTS];
+let currentTab = 'all';
+let searchQuery = '';
+let activeQuests = [...ALL_TASKS];
 
-function renderQuests(data) {
-  const body = document.getElementById('questsBody');
-  body.innerHTML = data.map(q => {
-    const c = RANK_COLORS[q.rank];
-    return `<tr>
-      <td>${q.id}</td>
-      <td class="td-title">${q.title}</td>
-      <td><div class="assignee-cell">
-        <div class="h-avatar" style="border-color:${c};color:${c};background:${c}18">${q.initials}</div>
-        <span class="h-name">${q.name}</span>
-      </div></td>
-      <td class="td-deadline">${q.deadline}</td>
-      <td>${priorityChip(q.priority)}</td>
-      <td>${statusChip(q.status)}</td>
-      <td>${rateCell(q.canRate)}</td>
-    </tr>`;
-  }).join('');
+function init() {
+  const pSelect = document.getElementById('fProject');
+  PROJECTS.forEach(p => {
+    pSelect.innerHTML += `<option value="${p.id}">${p.name}</option>`;
+  });
+  renderQuests();
 }
 
-function filterQuests(q) {
-  const filtered = QUESTS.filter(t => t.title.toLowerCase().includes(q.toLowerCase()) || t.name.toLowerCase().includes(q.toLowerCase()));
-  renderQuests(filtered);
-}
-
-function handleRate(sel) {
-  if (!sel.value) return;
-  document.getElementById('ratePopup').style.display = 'block';
-  setTimeout(() => sel.value = '', 100);
-}
-
-function setPage(p) {
-  [1,2].forEach(n => document.getElementById(`pg${n}`).classList.toggle('active', n===p));
-  const start = (p-1)*10+1, end = Math.min(p*10, 18);
-  document.getElementById('pgInfo').textContent = `Showing ${start} to ${end} of 18 quests`;
+function onProjectSelect() {
+  const pid = document.getElementById('fProject').value;
+  const p = PROJECTS.find(x => x.id === pid);
+  if(p) {
+    document.getElementById('fLead').value = p.lead;
+    const aSelect = document.getElementById('fAssignTo');
+    aSelect.disabled = false;
+    aSelect.innerHTML = '<option value="" disabled selected>Select member</option>' + p.members.map(m => `<option value="${m}">${m}</option>`).join('');
+  }
 }
 
 function assignTask() {
-  const title = document.getElementById('fTitle').value.trim();
-  if (!title) return;
-  document.getElementById('fTitle').value='';
-  document.getElementById('fDuration').value='';
-  document.getElementById('fDeadline').value='';
-  document.getElementById('fPriority').selectedIndex=0;
-  document.getElementById('fAssignTo').selectedIndex=0;
+  showToast("Task assignment will connect to backend in the next phase.");
+  document.getElementById('fProject').selectedIndex = 0;
+  document.getElementById('fLead').value = '';
+  document.getElementById('fTitle').value = '';
+  document.getElementById('fAssignTo').innerHTML = '<option value="" disabled selected>Select project first</option>';
+  document.getElementById('fAssignTo').disabled = true;
+  document.getElementById('fDuration').value = '';
+  document.getElementById('fDeadline').value = '';
+  document.getElementById('fPriority').selectedIndex = 0;
 }
 
-document.getElementById('collapseBtn').addEventListener('click', () => {
-  const sb = document.getElementById('sidebar');
-  sb.classList.toggle('collapsed');
-  const ic = document.getElementById('collapseIcon');
-  ic.innerHTML = sb.classList.contains('collapsed')
-    ? '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="14 9 17 12 14 15"/>'
-    : '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
-});
+function switchTab(el) {
+  document.querySelectorAll('.tab').forEach(t => {
+    t.style.color = 'var(--text2)';
+    t.style.borderBottomColor = 'transparent';
+    t.style.background = 'transparent';
+  });
+  el.style.color = 'var(--blue)';
+  el.style.borderBottomColor = 'var(--blue)';
+  el.style.background = 'rgba(79,195,247,0.05)';
+  currentTab = el.dataset.val;
+  renderQuests();
+}
 
-renderQuests(QUESTS);
+function filterQuests(q) {
+  searchQuery = q.toLowerCase();
+  renderQuests();
+}
+
+function priorityChip(p) {
+  if(p===1) return '<span class="chip chip-high">HIGH</span>';
+  if(p===2) return '<span class="chip chip-medium">MEDIUM</span>';
+  return '<span class="chip chip-low">LOW</span>';
+}
+
+function statusChip(s, r) {
+  if(s==='in_progress') return '<span class="chip chip-progress">IN PROGRESS</span>';
+  if(s==='pending')     return '<span class="chip chip-pending">PENDING</span>';
+  if(s==='completed' && !r) return '<span class="chip chip-completed">COMPLETED</span>';
+  if(s==='rated')       return '<span class="chip chip-rated" style="background:rgba(154,123,255,0.1);border-color:rgba(154,123,255,0.4);color:var(--purple);">RATED</span>';
+  return '';
+}
+
+function rateCell(t) {
+  if(t.status === 'completed' && !t.rating) {
+    return `<select class="rate-select" onchange="handleRate(this, ${t.id})">
+      <option value="">Rate task...</option>
+      <option value="3">Needs revision (+3 pts)</option>
+      <option value="5">Meets expectation (+5 pts)</option>
+      <option value="8">Exceeds expectation (+8 pts)</option>
+    </select>`;
+  }
+  if(t.rating) return `<span style="color:var(--purple); font-weight:bold;">${t.rating==='exceeds'?'Exceeds':t.rating==='meets'?'Meets':'Revision'}</span>`;
+  return '<span class="rate-dash">—</span>';
+}
+
+function renderQuests() {
+  let filtered = activeQuests.filter(t => {
+    if(searchQuery && !t.title.toLowerCase().includes(searchQuery) && !t.assignedTo.toLowerCase().includes(searchQuery)) return false;
+    if(currentTab === 'awaiting' && (t.status !== 'completed' || t.rating)) return false;
+    if(currentTab === 'rated' && t.status !== 'rated') return false;
+    return true;
+  });
+  
+  const body = document.getElementById('questsBody');
+  body.innerHTML = filtered.map((q, i) => {
+    const p = PROJECTS.find(pr => pr.id === q.projectId);
+    return `<tr>
+      <td>${i+1}</td>
+      <td class="td-title">${q.title}</td>
+      <td><div class="assignee-cell">
+        <div class="h-avatar" style="border-color:${p.color};color:${p.color};background:${p.color}18">${q.assignedTo.charAt(0)}</div>
+        <span class="h-name">${q.assignedTo}</span>
+      </div></td>
+      <td class="td-deadline">${new Date(q.deadline).toLocaleDateString('en-GB')}</td>
+      <td>${priorityChip(q.priority)}</td>
+      <td>${statusChip(q.status, q.rating)}</td>
+      <td>${rateCell(q)}</td>
+    </tr>`;
+  }).join('');
+  
+  document.getElementById('pgInfo').textContent = `Showing 1 to ${filtered.length} of ${filtered.length} quests`;
+}
+
+function handleRate(sel, id) {
+  if(!sel.value) return;
+  const task = activeQuests.find(t => t.id === id);
+  if(task) {
+    task.rating = sel.value === '8' ? 'exceeds' : sel.value === '5' ? 'meets' : 'needs_revision';
+    task.points = parseInt(sel.value);
+    task.status = 'rated';
+  }
+  showToast("Rating will be saved to backend in the next phase.");
+  renderQuests();
+}
+
+init();
 </script>
 </body>
 </html>
