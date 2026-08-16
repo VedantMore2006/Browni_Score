@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vitals&Vectors — Task Overview</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<title>Vitals&Vectors — Task Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/dashboard.css">
 <style>
 
 :root {
@@ -40,10 +42,6 @@ body::after { content: ''; position: fixed; top: -10%; left: 50%; transform: tra
 .chip-medium { background:rgba(79,195,247,0.12); border-color:rgba(79,195,247,0.4); color:var(--blue); }
 .chip-low    { background:rgba(74,74,106,0.2);   border-color:rgba(74,74,106,0.5);  color:var(--text2); }
 
-.rating-exceeds  { color:var(--teal);   font-size:11px; font-weight:700; }
-.rating-meets    { color:var(--blue);   font-size:11px; font-weight:700; }
-.rating-revision { color:var(--amber);  font-size:11px; font-weight:700; }
-
 .chip {
   display: inline-flex; align-items: center; justify-content: center;
   padding: 3px 12px; border-radius: 4px;
@@ -65,69 +63,107 @@ body::after { content: ''; position: fixed; top: -10%; left: 50%; transform: tra
 }
 .avatar-chip:hover { opacity: 0.8; }
 .avatar-circle {
-  width: 28px; height: 28px; border-radius: 50%;
+  width: 26px; height: 26px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 11px;
-  border: 1px solid;
+  font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 10px;
+  border: 1px solid; flex-shrink: 0;
 }
 
-.tasks-layout { display: flex; flex: 1; min-height: 0; }
+.tasks-main { flex: 1; min-height: 0; padding: 22px 24px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
 
-.tasks-main { flex: 1; padding: 24px; display: flex; flex-direction: column; overflow-y: auto; }
-.stats-bar { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-.stat-card {
-  flex: 1; min-width: 150px; background: var(--panel); border: 1px solid var(--border);
-  border-left: 3px solid var(--blue); border-radius: 6px; padding: 16px;
+/* ─── Row 1: top stat strip (Team Progress uses a ring instead of an icon) ─── */
+.stat-strip { grid-template-columns: repeat(4, 1fr); }
+.stat-ring {
+  width: 54px; height: 54px; border-radius: 50%; position: relative; flex-shrink: 0;
+  background: conic-gradient(var(--teal) calc(var(--pct) * 1%), rgba(255,255,255,0.06) 0);
 }
-.stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.05em; color: var(--text); }
-.stat-lbl { font-size: 11px; color: var(--text2); text-transform: uppercase; font-weight: 600; margin-top: 4px; }
+.stat-ring::after { content: ''; position: absolute; inset: 6px; border-radius: 50%; background: var(--elevated); }
+.stat-ring-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 13px; color: var(--teal); z-index: 1; }
 
-.table-card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-thead tr { background: var(--elevated); border-bottom: 1px solid var(--border); }
-thead th { padding: 12px 14px; font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text2); text-align: left; white-space: nowrap; }
-thead th:first-child { text-align: center; width: 50px; }
-tbody tr { border-bottom: 1px solid rgba(79,195,247,0.05); }
-tbody tr:hover { background: rgba(79,195,247,0.03); }
-td { padding: 13px 14px; color: var(--text); vertical-align: middle; }
-td:first-child { text-align: center; color: var(--text2); font-size: 12px; }
+/* ─── Row 2 / Row 3 grid ─── */
+.dash-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: stretch; }
+.dash-row-2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; align-items: stretch; }
+.dash-col { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
 
-.pagination-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--border); background: var(--elevated); }
-.pg-info { font-size: 12px; color: var(--text2); }
-.pg-controls { display: flex; gap: 4px; }
-.pg-btn { width: 28px; height: 28px; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--text2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; font-weight: 600; }
-.pg-btn:hover { border-color: var(--blue); color: var(--blue); }
-.pg-btn.active { background: rgba(79,195,247,0.12); border-color: var(--blue); color: var(--blue); }
+.dash-card {
+  background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 6px;
+  padding: 16px 18px; position: relative; overflow: hidden;
+  display: flex; flex-direction: column; min-height: 0;
+}
+.dash-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,200,255,0.25), transparent);
+}
 
-.dist-card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 16px; }
-.dist-title { font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--text2); margin-bottom:14px; }
-.dist-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; cursor:pointer; padding:4px; border-radius:4px; transition:background 0.15s; }
-.dist-row:hover { background: rgba(79,195,247,0.05); }
-.dist-row:last-child { margin-bottom:0; }
-.dist-label { width:150px; flex-shrink:0; font-size:12px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.dist-bar-track { flex:1; height:8px; background:rgba(255,255,255,0.04); border-radius:4px; overflow:hidden; }
-.dist-bar-fill { height:100%; border-radius:4px; transition:width 0.3s ease; }
-.dist-count { width:28px; text-align:right; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:12px; color:var(--text2); flex-shrink:0; }
+.donut-body { display: flex; align-items: center; gap: 18px; flex: 1; min-height: 0; }
+.donut-canvas-wrap { position: relative; width: 128px; height: 128px; flex-shrink: 0; }
+.donut-legend { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.legend-name { flex: 1; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.legend-val { font-weight: 700; color: var(--text); flex-shrink: 0; }
 
-.project-detail-panel { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:18px 20px; margin-bottom:16px; display:flex; align-items:flex-start; gap:18px; position:relative; overflow:hidden; }
-.project-detail-panel::before { content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--pd-color, var(--blue)); }
-.pd-badge { width:52px; height:52px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Bebas Neue',sans-serif; font-size:1.6rem; flex-shrink:0; border:1px solid; }
-.pd-body { flex:1; min-width:0; }
-.pd-name { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:0.04em; color:var(--text); }
-.pd-lead { font-size:12px; color:var(--text2); margin-top:2px; }
-.pd-members { display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; }
-.pd-member-chip { display:inline-flex; align-items:center; gap:5px; padding:3px 9px 3px 3px; border-radius:12px; background:rgba(255,255,255,0.03); border:1px solid var(--border); font-size:11px; color:var(--text2); }
-.pd-member-avatar { width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; background:rgba(79,195,247,0.15); color:var(--blue); flex-shrink:0; }
-.pd-stats { display:flex; gap:18px; margin-top:12px; flex-wrap:wrap; }
-.pd-stat-val { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--text); }
-.pd-stat-lbl { font-size:10px; color:var(--text2); text-transform:uppercase; letter-spacing:0.8px; }
-.pd-link { font-size:11px; color:var(--blue); text-decoration:none; white-space:nowrap; flex-shrink:0; align-self:flex-start; margin-top:4px; }
-.pd-link:hover { text-decoration:underline; }
+.btn-view {
+  display: block; margin-top: 12px; padding: 8px 14px;
+  background: rgba(79,195,247,0.08); border: 1px solid rgba(79,195,247,0.3); border-radius: 5px;
+  color: var(--blue); font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; text-align: center; text-decoration: none;
+  cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+}
+.btn-view:hover { background: rgba(79,195,247,0.15); border-color: var(--blue); }
+
+/* Team Activity rows */
+.ta-list { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow-y: auto; }
+.ta-row { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.ta-row:last-child { border-bottom: none; }
+.ta-icon { width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ta-icon svg { width: 15px; height: 15px; }
+.ta-info { flex: 1; min-width: 0; }
+.ta-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 0.03em; color: var(--text); line-height: 1; }
+.ta-label { font-size: 10.5px; color: var(--text2); margin-top: 2px; }
+.ta-delta { font-size: 11px; font-weight: 700; flex-shrink: 0; }
+
+/* Projects overview / distribution bar rows (also reused inside the project list) */
+.dist-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.dist-row:last-child { margin-bottom: 0; }
+.dist-label { width: 130px; flex-shrink: 0; font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dist-bar-track { flex: 1; height: 7px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden; }
+.dist-bar-fill { height: 100%; border-radius: 4px; }
+.dist-count { width: 34px; text-align: right; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 12px; color: var(--text2); flex-shrink: 0; }
+
+/* Live task monitor mini table */
+.mini-table-wrap { flex: 1; min-height: 0; overflow-y: auto; }
+table.mini { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+table.mini thead th { padding: 8px 10px; font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); text-align: left; white-space: nowrap; position: sticky; top: 0; background: var(--bg-card); }
+table.mini tbody tr { border-bottom: 1px solid rgba(79,195,247,0.05); }
+table.mini tbody tr:hover { background: rgba(79,195,247,0.03); }
+table.mini td { padding: 9px 10px; color: var(--text); vertical-align: middle; }
+
+/* Upcoming deadlines */
+.ud-list { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow-y: auto; }
+.ud-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.ud-row:last-child { border-bottom: none; }
+.ud-icon { width: 26px; height: 26px; border-radius: 6px; background: rgba(79,195,247,0.1); border: 1px solid rgba(79,195,247,0.25); color: var(--blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ud-icon svg { width: 13px; height: 13px; }
+.ud-date { font-size: 10.5px; color: var(--text2); width: 42px; flex-shrink: 0; }
+.ud-info { flex: 1; min-width: 0; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ud-info b { color: var(--text); font-weight: 600; }
+.ud-member { color: var(--text2); }
+
+/* Bottom activity ticker */
+.activity-ticker {
+  flex-shrink: 0; background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
+  padding: 9px 18px; font-size: 11.5px; color: var(--text2);
+  display: flex; align-items: center; gap: 8px; overflow-x: auto; white-space: nowrap;
+}
+.activity-ticker .tick-label { color: var(--teal); font-weight: 700; letter-spacing: 1px; font-size: 10px; margin-right: 6px; flex-shrink: 0; }
+.activity-ticker .tick-time { color: var(--text3); margin-right: 4px; }
+.activity-ticker .tick-sep { color: var(--text3); margin: 0 10px; }
 </style>
 </head>
 <body>
 <div class="shell">
-  
+
   <nav class="sidebar" id="sidebar">
     <div class="logo-area">
       <div class="logo-wordmark">
@@ -193,46 +229,121 @@ td:first-child { text-align: center; color: var(--text2); font-size: 12px; }
 
   <div class="main">
     <div class="topbar" style="display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1px solid var(--border); background:var(--panel);">
-      <h1 class="page-title" style="font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:0.08em; margin:0;">TASK OVERVIEW</h1>
+      <div>
+        <h1 class="page-title" style="font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:0.08em; margin:0;">TASK DASHBOARD</h1>
+        <div style="font-size:11px; color:var(--text2); letter-spacing:0.5px; margin-top:2px;">Overview of team work, tasks &amp; progress</div>
+      </div>
       <div style="font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; background:rgba(0,229,255,0.1); color:var(--teal); padding:4px 10px; border-radius:12px; border:1px solid rgba(0,229,255,0.3); display:flex; align-items:center; gap:6px;">
         <div style="width:6px; height:6px; background:var(--teal); border-radius:50%; box-shadow:0 0 6px var(--teal);"></div> // SYSTEM ONLINE
       </div>
     </div>
-    
-    <div class="tasks-layout">
-      <!-- MAIN CONTENT -->
-      <div class="tasks-main">
-        <div class="stats-bar">
-          <div class="stat-card" style="border-left-color:var(--blue)"><div class="stat-val" id="st-total">0</div><div class="stat-lbl">Total Tasks</div></div>
-          <div class="stat-card" style="border-left-color:var(--amber)"><div class="stat-val" id="st-prog">0</div><div class="stat-lbl">In Progress</div></div>
-          <div class="stat-card" style="border-left-color:var(--teal)"><div class="stat-val" id="st-comp">0</div><div class="stat-lbl">Completed</div></div>
-          <div class="stat-card" style="border-left-color:var(--purple)"><div class="stat-val" id="st-await">0</div><div class="stat-lbl">Awaiting Rating</div></div>
-          <div class="stat-card" style="border-left-color:#FF9100"><div class="stat-val" id="st-duetoday">0</div><div class="stat-lbl">Due Today</div></div>
-          <div class="stat-card" style="border-left-color:var(--red)"><div class="stat-val" id="st-overdue">0</div><div class="stat-lbl">Overdue</div></div>
+
+    <div class="tasks-main">
+
+      <!-- ROW 1: top stat strip -->
+      <div class="stat-strip">
+        <div class="stat-card cyan-accent">
+          <div class="stat-icon-wrap cyan-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00c8ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Team Members</div>
+            <div class="stat-value cyan" id="st-members">0</div>
+            <div class="stat-sub" style="font-size:10px;color:var(--text2);margin-top:2px;">Across all active projects</div>
+          </div>
         </div>
 
-        <div id="projectDetailPanel" class="project-detail-panel" style="display:none;"></div>
-
-        <div class="dist-card">
-          <div class="dist-title">Tasks by Project</div>
-          <div id="distBody"></div>
+        <div class="stat-card cyan2-accent">
+          <div class="stat-ring" id="progressRing" style="--pct:0">
+            <div class="stat-ring-label" id="progressRingLabel">0%</div>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Team Progress</div>
+            <div class="stat-value cyan2" id="st-progress-frac">0 / 0</div>
+            <div class="stat-sub" style="font-size:10px;color:var(--text2);margin-top:2px;">Tasks completed</div>
+          </div>
         </div>
 
-        <div class="table-card">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th><th>TASK</th><th>PROJECT</th><th>ASSIGNED TO</th><th>LEAD</th><th>DEADLINE</th><th>PRIORITY</th><th>STATUS</th><th>POINTS</th>
-              </tr>
-            </thead>
-            <tbody id="taskBody"></tbody>
-          </table>
-          <div class="pagination-row">
-            <span class="pg-info" id="pgInfo">Showing 0 to 0 of 0 tasks</span>
-            <div class="pg-controls" id="pgControls"></div>
+        <div class="stat-card purple-accent">
+          <div class="stat-icon-wrap purple-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#9b59ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Number of Projects</div>
+            <div class="stat-value purple" id="st-projects">0</div>
+            <div class="stat-sub" style="font-size:10px;color:var(--text2);margin-top:2px;">Active projects</div>
+          </div>
+        </div>
+
+        <div class="stat-card gold-accent">
+          <div class="stat-icon-wrap gold-bg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M11 3 8 9l4 12 4-12-3-6"/><path d="M2 9h20"/></svg>
+          </div>
+          <div class="stat-info">
+            <div class="stat-label">Total Points</div>
+            <div class="stat-value gold" id="st-points">0</div>
+            <div class="stat-sub" style="font-size:10px;color:var(--text2);margin-top:2px;">Team score</div>
           </div>
         </div>
       </div>
+
+      <!-- ROW 2: today's overview / team activity / projects overview -->
+      <div class="dash-row-3">
+        <div class="dash-card">
+          <div class="card-header"><div class="card-title">Today's Task Overview</div></div>
+          <div class="donut-body">
+            <div class="donut-canvas-wrap"><canvas id="todayChart"></canvas></div>
+            <div class="donut-legend" id="todayLegend"></div>
+          </div>
+          <a class="btn-view" href="all-tasks.html">View All Tasks</a>
+        </div>
+
+        <div class="dash-card">
+          <div class="card-header"><div class="card-title">Team Activity <span>(Today)</span></div></div>
+          <div class="ta-list" id="teamActivityList"></div>
+        </div>
+
+        <div class="dash-card">
+          <div class="card-header"><div class="card-title">Projects Overview</div></div>
+          <div id="projectsOverviewList" style="flex:1;min-height:0;overflow-y:auto;"></div>
+          <a class="btn-view" href="all-tasks.html">View All Projects</a>
+        </div>
+      </div>
+
+      <!-- ROW 3: live task monitor / task distribution + upcoming deadlines -->
+      <div class="dash-row-2">
+        <div class="dash-card">
+          <div class="card-header"><div class="card-title">Live Task Monitor</div></div>
+          <div class="mini-table-wrap">
+            <table class="mini">
+              <thead><tr><th>MEMBER</th><th>PROJECT</th><th>TASK</th><th>PRIORITY</th><th>DEADLINE</th><th>STATUS</th></tr></thead>
+              <tbody id="liveMonitorBody"></tbody>
+            </table>
+          </div>
+          <a class="btn-view" href="all-tasks.html">View All Tasks</a>
+        </div>
+
+        <div class="dash-col">
+          <div class="dash-card" style="flex:0 0 auto;">
+            <div class="card-header"><div class="card-title">Task Distribution</div></div>
+            <div class="donut-body">
+              <div class="donut-canvas-wrap" style="width:108px;height:108px;"><canvas id="distChart"></canvas></div>
+              <div class="donut-legend" id="distLegend"></div>
+            </div>
+          </div>
+          <div class="dash-card" style="flex:1;">
+            <div class="card-header">
+              <div class="card-title">Upcoming Deadlines</div>
+              <a class="view-all" href="all-tasks.html">View All</a>
+            </div>
+            <div class="ud-list" id="upcomingList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER TICKER -->
+      <div class="activity-ticker" id="activityTicker"></div>
+
     </div>
   </div>
 </div>
@@ -288,163 +399,190 @@ document.getElementById('collapseBtn')?.addEventListener('click', () => {
   }
 });
 
-function showToast(msg, type = 'info') {
-  let c = document.getElementById('toast-container');
-  if (!c) { c = document.createElement('div'); c.id = 'toast-container'; c.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;'; document.body.appendChild(c); }
-  const colors = { success:'#00E5FF', error:'#FF1744', info:'#4FC3F7', warning:'#FFB300' };
-  const t = document.createElement('div');
-  t.style.cssText = `padding:12px 20px;border-radius:6px;font-family:'Inter',sans-serif;font-size:13px;border:1px solid ${colors[type]};color:${colors[type]};background:${colors[type]}18;animation:fadeIn 0.3s ease;max-width:340px;`;
-  t.textContent = msg;
-  c.appendChild(t);
-  setTimeout(() => t.remove(), 3500);
-}
-
-
 const TODAY = '2026-08-16';
 
-let currentPage = 1;
-const PER_PAGE = 10;
-let filteredTasks = ALL_TASKS;
-let activeDetailProject = null;
-
-function init() {
-  renderDistribution();
-  updateTable();
+if (!Chart.registry.plugins.get('centerText')) {
+  Chart.register({
+    id: 'centerText',
+    afterDraw(chart) {
+      const cfg = chart.config.options.plugins.centerText;
+      if (!cfg) return;
+      const { ctx, chartArea: { width, height, left, top } } = chart;
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = "700 22px 'Bebas Neue', sans-serif";
+      ctx.fillStyle = cfg.color || '#E8E8F0';
+      ctx.fillText(cfg.value, left + width / 2, top + height / 2 - 8);
+      ctx.font = "700 9px 'Rajdhani', sans-serif";
+      ctx.fillStyle = '#8A8AA3';
+      ctx.fillText(cfg.label, left + width / 2, top + height / 2 + 10);
+      ctx.restore();
+    }
+  });
 }
 
-function renderDistribution() {
-  const counts = PROJECTS.map(p => ({ p, count: ALL_TASKS.filter(t => t.projectId === p.id).length }))
-    .filter(x => x.count > 0)
-    .sort((a, b) => b.count - a.count);
-  const max = Math.max(...counts.map(x => x.count), 1);
-  document.getElementById('distBody').innerHTML = counts.map(x => `
-    <div class="dist-row" onclick="toggleProjectDetail('${x.p.id}')">
-      <div class="dist-label" style="color:${x.p.color}">${x.p.name}</div>
-      <div class="dist-bar-track"><div class="dist-bar-fill" style="width:${(x.count / max * 100)}%; background:${x.p.color}"></div></div>
-      <div class="dist-count">${x.count}</div>
+function makeDonut(canvasId, labels, values, colors, centerValue, centerLabel) {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  return new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 0, hoverOffset: 4 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '72%',
+      plugins: { legend: { display: false }, centerText: { value: centerValue, label: centerLabel } }
+    }
+  });
+}
+
+function renderLegend(containerId, rows) {
+  document.getElementById(containerId).innerHTML = rows.map(r => `
+    <div class="legend-row">
+      <div class="legend-dot" style="background:${r.color}"></div>
+      <div class="legend-name">${r.name}</div>
+      <div class="legend-val">${r.val}</div>
     </div>
   `).join('');
 }
 
-function toggleProjectDetail(projectId) {
-  activeDetailProject = activeDetailProject === projectId ? null : projectId;
-  renderProjectDetail();
+function priorityChip(p) {
+  if (p === 1) return '<span class="chip chip-high">High</span>';
+  if (p === 2) return '<span class="chip chip-medium">Medium</span>';
+  return '<span class="chip chip-low">Low</span>';
 }
 
-function renderProjectDetail() {
-  const panel = document.getElementById('projectDetailPanel');
-  const p = PROJECTS.find(pr => pr.id === activeDetailProject);
-  if (!p) { panel.style.display = 'none'; return; }
+function statusChip(t) {
+  if (t.status === 'pending') return '<span class="chip chip-pending">Pending</span>';
+  if (t.status === 'in_progress') return '<span class="chip chip-progress">In Progress</span>';
+  if (t.status === 'completed' && !t.rating) return '<span class="chip chip-completed">Completed</span>';
+  if (t.status === 'rated') return '<span class="chip chip-rated">Rated</span>';
+  return '';
+}
 
-  const pTasks = ALL_TASKS.filter(t => t.projectId === p.id);
-  const pending = pTasks.filter(t => t.status === 'pending').length;
-  const inProg = pTasks.filter(t => t.status === 'in_progress').length;
-  const done = pTasks.filter(t => t.status === 'completed' || t.status === 'rated').length;
+function fmtDate(d) {
+  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+}
 
-  panel.style.setProperty('--pd-color', p.color);
-  panel.style.display = 'flex';
-  panel.innerHTML = `
-    <div class="pd-badge" style="background:${p.color}26; border-color:${p.color}; color:${p.color}">${p.lead.charAt(0)}</div>
-    <div class="pd-body">
-      <div class="pd-name">${p.name}</div>
-      <div class="pd-lead">Lead: ${p.lead}</div>
-      <div class="pd-members">${p.members.length ? p.members.map(m => `<span class="pd-member-chip"><span class="pd-member-avatar">${m.charAt(0)}</span>${m}</span>`).join('') : '<span style="font-size:11px;color:var(--text3)">No members assigned</span>'}</div>
-      <div class="pd-stats">
-        <div class="pd-stat"><div class="pd-stat-val">${pTasks.length}</div><div class="pd-stat-lbl">Total</div></div>
-        <div class="pd-stat"><div class="pd-stat-val" style="color:var(--amber)">${pending}</div><div class="pd-stat-lbl">Pending</div></div>
-        <div class="pd-stat"><div class="pd-stat-val" style="color:var(--blue)">${inProg}</div><div class="pd-stat-lbl">In Progress</div></div>
-        <div class="pd-stat"><div class="pd-stat-val" style="color:var(--teal)">${done}</div><div class="pd-stat-lbl">Done</div></div>
-      </div>
+function init() {
+  // ── Row 1: stat strip ──
+  const memberSet = new Set();
+  PROJECTS.forEach(p => p.members.forEach(m => memberSet.add(m)));
+  document.getElementById('st-members').innerText = memberSet.size;
+
+  const totalTasks = ALL_TASKS.length;
+  const doneTasks = ALL_TASKS.filter(t => t.status === 'completed' || t.status === 'rated').length;
+  const progressPct = totalTasks ? Math.round(doneTasks / totalTasks * 100) : 0;
+  document.getElementById('progressRing').style.setProperty('--pct', progressPct);
+  document.getElementById('progressRingLabel').innerText = progressPct + '%';
+  document.getElementById('st-progress-frac').innerText = `${doneTasks} / ${totalTasks}`;
+
+  document.getElementById('st-projects').innerText = PROJECTS.length;
+  document.getElementById('st-points').innerText = ALL_TASKS.reduce((s, t) => s + t.points, 0).toLocaleString();
+
+  // ── Row 2 left: Today's Task Overview donut ──
+  const openTasks = ALL_TASKS.filter(t => t.status === 'pending' || t.status === 'in_progress');
+  const delayedCount = openTasks.filter(t => t.deadline < TODAY).length;
+  const progressCount = openTasks.filter(t => t.status === 'in_progress' && t.deadline >= TODAY).length;
+  const pendingCount = openTasks.filter(t => t.status === 'pending' && t.deadline >= TODAY).length;
+  const completedCount = doneTasks;
+
+  makeDonut('todayChart',
+    ['Completed', 'In Progress', 'Pending', 'Delayed'],
+    [completedCount, progressCount, pendingCount, delayedCount],
+    ['#00E5FF', '#4FC3F7', '#FFB300', '#FF1744'],
+    totalTasks, 'TOTAL TASKS');
+
+  const pct = n => totalTasks ? Math.round(n / totalTasks * 100) : 0;
+  renderLegend('todayLegend', [
+    { color: '#00E5FF', name: 'Completed', val: `${completedCount} (${pct(completedCount)}%)` },
+    { color: '#4FC3F7', name: 'In Progress', val: `${progressCount} (${pct(progressCount)}%)` },
+    { color: '#FFB300', name: 'Pending', val: `${pendingCount} (${pct(pendingCount)}%)` },
+    { color: '#FF1744', name: 'Delayed', val: `${delayedCount} (${pct(delayedCount)}%)` },
+  ]);
+
+  // ── Row 2 middle: Team Activity (Today) ──
+  const highPriorityOpen = openTasks.filter(t => t.priority === 1).length;
+  const activityRows = [
+    { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>', bg:'rgba(0,229,255,0.1)', val: completedCount, label: 'Tasks Completed' },
+    { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#FF1744" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', bg:'rgba(255,23,68,0.1)', val: delayedCount, label: 'Tasks Delayed' },
+    { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#8A8AA3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>', bg:'rgba(138,138,163,0.1)', val: 1, label: 'Member Inactive' },
+    { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#FFB300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C10 7 5 9 5 14a7 7 0 0014 0c0-5-5-7-7-12z"/></svg>', bg:'rgba(255,179,0,0.1)', val: highPriorityOpen, label: 'High Priority Tasks' },
+  ];
+  document.getElementById('teamActivityList').innerHTML = activityRows.map(r => `
+    <div class="ta-row">
+      <div class="ta-icon" style="background:${r.bg}">${r.icon}</div>
+      <div class="ta-info"><div class="ta-val">${r.val}</div><div class="ta-label">${r.label}</div></div>
     </div>
-    <a class="pd-link" href="project.html?id=${p.id}">View full project &rarr;</a>
-  `;
-}
+  `).join('');
 
-function getP(t) {
-  if(t===1) return 'high'; if(t===2) return 'medium'; return 'low';
-}
+  // ── Row 2 right: Projects Overview (progress bars) ──
+  const projectProgress = PROJECTS.map(p => {
+    const pTasks = ALL_TASKS.filter(t => t.projectId === p.id);
+    const done = pTasks.filter(t => t.status === 'completed' || t.status === 'rated').length;
+    return { p, total: pTasks.length, pct: pTasks.length ? Math.round(done / pTasks.length * 100) : 0 };
+  }).filter(x => x.total > 0).sort((a, b) => b.pct - a.pct);
 
-function updateTable() {
-  filteredTasks = ALL_TASKS;
+  document.getElementById('projectsOverviewList').innerHTML = projectProgress.map(x => `
+    <div class="dist-row">
+      <div class="dist-label" style="color:${x.p.color}">${x.p.name}</div>
+      <div class="dist-bar-track"><div class="dist-bar-fill" style="width:${x.pct}%; background:${x.p.color}"></div></div>
+      <div class="dist-count">${x.pct}%</div>
+    </div>
+  `).join('');
 
-  // Stats
-  document.getElementById('st-total').innerText = ALL_TASKS.length;
-  document.getElementById('st-prog').innerText = ALL_TASKS.filter(t=>t.status==='in_progress').length;
-  document.getElementById('st-comp').innerText = ALL_TASKS.filter(t=>t.status==='completed' && !t.rating).length;
-  document.getElementById('st-await').innerText = ALL_TASKS.filter(t=>t.status==='completed' && !t.rating).length;
-  const openTasks = ALL_TASKS.filter(t => t.status !== 'completed' && t.status !== 'rated');
-  document.getElementById('st-duetoday').innerText = openTasks.filter(t => t.deadline === TODAY).length;
-  document.getElementById('st-overdue').innerText = openTasks.filter(t => t.deadline < TODAY).length;
-
-  renderProjectDetail();
-  renderTable();
-}
-
-function renderTable() {
-  const tbody = document.getElementById('taskBody');
-  const pgInfo = document.getElementById('pgInfo');
-  const pgC = document.getElementById('pgControls');
-
-  const totalPages = Math.ceil(filteredTasks.length / PER_PAGE);
-  if(currentPage > totalPages) currentPage = totalPages;
-  const start = (currentPage - 1) * PER_PAGE;
-  const end = Math.min(start + PER_PAGE, filteredTasks.length);
-  const pageTasks = filteredTasks.slice(start, end);
-  
-  pgInfo.innerText = `Showing ${start + 1} to ${end} of ${filteredTasks.length} tasks`;
-  
-  let pgHtml = `<button class="pg-btn" onclick="setPage(${currentPage-1})" ${currentPage===1?'disabled':''}>&lt;</button>`;
-  for(let i=1; i<=totalPages; i++) {
-    pgHtml += `<button class="pg-btn ${i===currentPage?'active':''}" onclick="setPage(${i})">${i}</button>`;
-  }
-  pgHtml += `<button class="pg-btn" onclick="setPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>&gt;</button>`;
-  pgC.innerHTML = pgHtml;
-  
-  tbody.innerHTML = pageTasks.map((t, idx) => {
+  // ── Row 3 left: Live Task Monitor (5 most urgent open tasks) ──
+  const liveTasks = openTasks.slice().sort((a, b) => a.deadline.localeCompare(b.deadline)).slice(0, 5);
+  document.getElementById('liveMonitorBody').innerHTML = liveTasks.map(t => {
     const p = PROJECTS.find(pr => pr.id === t.projectId);
-    
-    let prioHtml = '';
-    if(t.priority===1) prioHtml = `<span class="chip chip-high">High</span>`;
-    else if(t.priority===2) prioHtml = `<span class="chip chip-medium">Medium</span>`;
-    else prioHtml = `<span class="chip chip-low">Low</span>`;
-    
-    let statHtml = '';
-    if(t.status==='pending') statHtml = `<span class="chip chip-pending">Pending</span>`;
-    else if(t.status==='in_progress') statHtml = `<span class="chip chip-progress">In Progress</span>`;
-    else if(t.status==='completed' && !t.rating) statHtml = `<span class="chip chip-completed">Completed</span>`;
-    else if(t.status==='rated') statHtml = `<span class="chip chip-rated">Rated</span>`;
-    
-    let ptsHtml = '<span style="color:var(--text3)">—</span>';
-    if(t.status==='completed' && !t.rating) ptsHtml = '<span style="color:var(--amber)">⏳</span>';
-    else if(t.rating) ptsHtml = `<span style="color:var(--teal);font-weight:700;">+${t.points}</span>`;
-    
-    const isPast = t.deadline < TODAY;
-    const dlColor = isPast ? 'var(--red)' : 'var(--text2)';
-    
     return `<tr>
-      <td>${start + idx + 1}</td>
-      <td><div style="font-weight:bold;color:white;">${t.title}</div><div style="font-size:11px;color:var(--text2)">${t.duration}h</div></td>
-      <td><div class="pill-proj" style="background:${p.color}26; color:${p.color}; border-color:${p.color}" onclick="window.location.href='project.html?id=${p.id}'">${p.name}</div></td>
       <td>
         <div class="avatar-chip" onclick="window.location.href='hunter.html?name=' + encodeURIComponent('${t.assignedTo}')">
           <div class="avatar-circle" style="background:${p.color}33; border-color:${p.color}; color:${p.color}">${t.assignedTo.charAt(0)}</div>
           ${t.assignedTo}
         </div>
       </td>
-      <td style="color:var(--text2)">${t.lead}</td>
-      <td style="color:${dlColor}">${new Date(t.deadline).toLocaleDateString('en-GB', {day:'numeric', month:'short'})}</td>
-      <td>${prioHtml}</td>
-      <td>${statHtml}</td>
-      <td style="text-align:center">${ptsHtml}</td>
+      <td><div class="pill-proj" style="background:${p.color}26; color:${p.color}; border-color:${p.color}" onclick="window.location.href='project.html?id=${p.id}'">${p.name}</div></td>
+      <td>${t.title}</td>
+      <td>${priorityChip(t.priority)}</td>
+      <td style="color:${t.deadline < TODAY ? 'var(--red)' : 'var(--text2)'}">${fmtDate(t.deadline)}</td>
+      <td>${statusChip(t)}</td>
     </tr>`;
   }).join('');
-}
 
-function setPage(p) {
-  const totalPages = Math.ceil(filteredTasks.length / PER_PAGE);
-  if(p < 1 || p > totalPages) return;
-  currentPage = p;
-  renderTable();
+  // ── Row 3 right top: Task Distribution donut (top 5 projects + Other) ──
+  const projCounts = PROJECTS.map(p => ({ p, count: ALL_TASKS.filter(t => t.projectId === p.id).length }))
+    .filter(x => x.count > 0).sort((a, b) => b.count - a.count);
+  const top5 = projCounts.slice(0, 5);
+  const otherCount = projCounts.slice(5).reduce((s, x) => s + x.count, 0);
+  const distLabels = top5.map(x => x.p.name);
+  const distValues = top5.map(x => x.count);
+  const distColors = top5.map(x => x.p.color);
+  if (otherCount > 0) { distLabels.push('Other Initiatives'); distValues.push(otherCount); distColors.push('#4A4A6A'); }
+
+  makeDonut('distChart', distLabels, distValues, distColors, totalTasks, 'TOTAL TASKS');
+  renderLegend('distLegend', distLabels.map((name, i) => ({
+    color: distColors[i], name, val: `${pct(distValues[i])}%`
+  })));
+
+  // ── Row 3 right bottom: Upcoming Deadlines ──
+  const upcoming = openTasks.filter(t => t.deadline >= TODAY).slice().sort((a, b) => a.deadline.localeCompare(b.deadline)).slice(0, 4);
+  document.getElementById('upcomingList').innerHTML = upcoming.map(t => `
+    <div class="ud-row">
+      <div class="ud-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+      <div class="ud-date">${fmtDate(t.deadline)}</div>
+      <div class="ud-info"><b>${t.title}</b> <span class="ud-member">(${t.assignedTo})</span></div>
+      ${priorityChip(t.priority)}
+    </div>
+  `).join('');
+
+  // ── Footer ticker (mock recent activity — no event-log data source exists yet) ──
+  const recentlyDone = ALL_TASKS.filter(t => t.status === 'completed' || t.status === 'rated');
+  const ticker = [
+    { time: '10:18 AM', text: `${liveTasks[0]?.assignedTo || 'A member'} is working on ${liveTasks[0]?.title || 'a task'}` },
+    { time: '10:12 AM', text: `${openTasks[0]?.assignedTo || 'A member'} requested help on ${openTasks[0]?.title || 'a task'}` },
+    { time: '10:05 AM', text: `${recentlyDone[0]?.assignedTo || 'A member'} completed ${recentlyDone[0]?.title || 'a task'}` },
+  ];
+  document.getElementById('activityTicker').innerHTML = '<span class="tick-label">RECENT ACTIVITY</span>' +
+    ticker.map(t => `<span class="tick-time">${t.time}</span>${t.text}`).join('<span class="tick-sep">•</span>');
 }
 
 init();

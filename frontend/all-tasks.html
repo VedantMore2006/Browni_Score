@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vitals&Vectors — All Tasks</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/global.css">
+<style>
+
+:root {
+  --bg:       #0A0A0F;
+  --panel:    #0D0D1A;
+  --elevated: #12121F;
+  --blue:     #4FC3F7;
+  --blue-glow: rgba(79,195,247,0.3);
+  --teal:     #00E5FF;
+  --purple:   #9A7BFF;
+  --red:      #FF1744;
+  --amber:    #FFB300;
+  --gold:     #FFD700;
+  --border:   rgba(79,195,247,0.1);
+  --border-h: rgba(79,195,247,0.35);
+  --text:     #E8E8F0;
+  --text2:    #8A8AA3;
+  --text3:    #4A4A6A;
+}
+html, body { height: 100%; font-family: 'Inter', sans-serif; color: var(--text); background: var(--bg); overflow: hidden; }
+body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(79,195,247,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(79,195,247,0.025) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: 0; }
+body::after { content: ''; position: fixed; top: -10%; left: 50%; transform: translateX(-50%); width: 900px; height: 500px; background: radial-gradient(ellipse at center top, rgba(79,195,247,0.07) 0%, transparent 65%); pointer-events: none; z-index: 0; }
+.shell { display: flex; height: 100vh; position: relative; z-index: 1; }
+.main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+
+.chip-pending    { background:rgba(255,179,0,0.12);  border-color:rgba(255,179,0,0.5);  color:var(--amber); }
+.chip-progress   { background:rgba(79,195,247,0.12); border-color:rgba(79,195,247,0.4); color:var(--blue); }
+.chip-completed  { background:rgba(0,229,255,0.12);  border-color:rgba(0,229,255,0.4);  color:var(--teal); }
+.chip-rated      { background:rgba(154,123,255,0.12);border-color:rgba(154,123,255,0.4);color:var(--purple); }
+
+.chip-high   { background:rgba(255,23,68,0.15);  border-color:rgba(255,23,68,0.5);  color:#FF5252; }
+.chip-medium { background:rgba(79,195,247,0.12); border-color:rgba(79,195,247,0.4); color:var(--blue); }
+.chip-low    { background:rgba(74,74,106,0.2);   border-color:rgba(74,74,106,0.5);  color:var(--text2); }
+
+.rating-exceeds  { color:var(--teal);   font-size:11px; font-weight:700; }
+.rating-meets    { color:var(--blue);   font-size:11px; font-weight:700; }
+.rating-revision { color:var(--amber);  font-size:11px; font-weight:700; }
+
+.chip {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 3px 12px; border-radius: 4px;
+  font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.5px; white-space: nowrap;
+  border: 1px solid;
+}
+
+.pill-proj {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 4px 10px; border-radius: 12px;
+  font-size: 11px; font-weight: 600; cursor: pointer;
+  border: 1px solid; transition: transform 0.2s;
+}
+.pill-proj:hover { transform: translateY(-1px); }
+
+.avatar-chip {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: opacity 0.2s;
+}
+.avatar-chip:hover { opacity: 0.8; }
+.avatar-circle {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 11px;
+  border: 1px solid;
+}
+
+.tasks-layout { display: flex; flex: 1; min-height: 0; }
+.tasks-main { flex: 1; min-height: 0; padding: 24px; display: flex; flex-direction: column; overflow-y: auto; }
+
+.page-subtitle { font-size: 11px; color: var(--text2); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+
+/* ---- tab bar ---- */
+.tab-bar { display:flex; gap:0; border-bottom:1px solid var(--border); margin-bottom:18px; flex-wrap:wrap; }
+.tab { padding:10px 20px; font-family:'Rajdhani',sans-serif; font-size:13px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--text2); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; transition:all 0.2s; white-space:nowrap; }
+.tab:hover { color:var(--text); }
+.tab.active { color:var(--blue); border-bottom-color:var(--blue); background:rgba(79,195,247,0.05); }
+
+/* ---- toolbar row: search + filters + export ---- */
+.toolbar-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+.search-wrap { position:relative; flex:1; min-width:220px; max-width:420px; }
+.search-icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--text2); pointer-events:none; }
+.search-input { width:100%; padding:9px 12px 9px 34px; background:rgba(10,10,20,0.7); border:1px solid rgba(79,195,247,0.15); border-radius:6px; color:var(--text); font-family:'Inter',sans-serif; font-size:12.5px; outline:none; transition:border-color 0.2s; }
+.search-input:focus { border-color:rgba(79,195,247,0.4); }
+.search-input::placeholder { color:var(--text2); opacity:0.6; }
+
+.toolbar-actions { display:flex; align-items:center; gap:10px; }
+.btn-tool {
+  display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:6px;
+  font-family:'Rajdhani',sans-serif; font-size:12.5px; font-weight:700; letter-spacing:0.5px;
+  cursor:pointer; border:1px solid var(--border); background:var(--panel); color:var(--text); transition:all 0.2s; white-space:nowrap;
+}
+.btn-tool:hover { border-color:var(--border-h); }
+.btn-tool.primary { background:rgba(79,195,247,0.12); border-color:rgba(79,195,247,0.4); color:var(--blue); }
+.btn-tool.primary:hover { background:rgba(79,195,247,0.2); }
+.filter-badge { display:inline-flex; align-items:center; justify-content:center; min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:var(--red); color:#fff; font-size:10px; font-weight:700; }
+
+/* ---- table ---- */
+.table-card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { background: var(--elevated); border-bottom: 1px solid var(--border); }
+thead th { padding: 12px 14px; font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text2); text-align: left; white-space: nowrap; }
+thead th:first-child { text-align: center; width: 50px; }
+tbody tr { border-bottom: 1px solid rgba(79,195,247,0.05); }
+tbody tr:hover { background: rgba(79,195,247,0.03); }
+td { padding: 13px 14px; color: var(--text); vertical-align: middle; }
+td:first-child { text-align: center; color: var(--text2); font-size: 12px; }
+
+.actions-cell { display:flex; align-items:center; gap:8px; position:relative; }
+.action-icon-btn {
+  width:28px; height:28px; border-radius:5px; display:flex; align-items:center; justify-content:center;
+  background:transparent; border:1px solid var(--border); color:var(--text2); cursor:pointer; transition:all 0.2s;
+}
+.action-icon-btn:hover { color:var(--blue); border-color:var(--border-h); background:rgba(79,195,247,0.08); }
+
+.pagination-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid var(--border); background: var(--elevated); flex-wrap:wrap; gap:10px; }
+.pg-info { font-size: 12px; color: var(--text2); }
+.pg-controls { display: flex; gap: 4px; }
+.pg-btn { width: 28px; height: 28px; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--text2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; font-weight: 600; }
+.pg-btn:hover { border-color: var(--blue); color: var(--blue); }
+.pg-btn.active { background: rgba(79,195,247,0.12); border-color: var(--blue); color: var(--blue); }
+.pg-btn:disabled { opacity:0.35; cursor:not-allowed; }
+.pg-size-select { background:var(--panel); border:1px solid var(--border); border-radius:4px; color:var(--text2); font-size:12px; padding:5px 8px; font-family:'Inter',sans-serif; outline:none; cursor:pointer; }
+
+/* ---- modal ---- */
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(2px); z-index:200; display:none; align-items:center; justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal-box { width:520px; max-width:92vw; max-height:84vh; display:flex; flex-direction:column; background:var(--panel); border:1px solid var(--border-h); border-radius:10px; box-shadow:0 20px 60px rgba(0,0,0,0.55); }
+.modal-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--border); }
+.modal-title { font-family:'Bebas Neue',sans-serif; font-size:1.2rem; letter-spacing:0.06em; color:var(--text); }
+.modal-close { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; background:transparent; border:1px solid var(--border); color:var(--text2); cursor:pointer; }
+.modal-close:hover { color:var(--red); border-color:var(--red); }
+.modal-body { padding:18px 20px; overflow-y:auto; flex:1; }
+.modal-footer { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-top:1px solid var(--border); }
+
+.filter-group { margin-bottom:20px; }
+.filter-group:last-child { margin-bottom:0; }
+.filter-group-title { font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--text2); margin-bottom:10px; }
+.filter-check-grid { display:flex; flex-wrap:wrap; gap:8px; }
+.filter-check { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:14px; border:1px solid var(--border); background:rgba(255,255,255,0.02); font-size:12px; color:var(--text2); cursor:pointer; transition:all 0.15s; user-select:none; }
+.filter-check input { display:none; }
+.filter-check.checked { color:var(--blue); border-color:rgba(79,195,247,0.4); background:rgba(79,195,247,0.1); }
+.filter-date-row { display:flex; gap:12px; }
+.filter-date-field { flex:1; }
+.filter-date-field label { display:block; font-size:11px; color:var(--text2); margin-bottom:5px; }
+.filter-date-field input[type=date] { width:100%; padding:8px 10px; background:rgba(10,10,20,0.7); border:1px solid var(--border); border-radius:5px; color:var(--text); font-family:'Inter',sans-serif; font-size:12px; outline:none; }
+.link-btn { background:none; border:none; color:var(--text2); font-size:12px; cursor:pointer; text-decoration:underline; padding:0; }
+.link-btn:hover { color:var(--red); }
+
+/* ---- task detail popover ---- */
+.task-popover { position:fixed; z-index:210; width:280px; background:var(--panel); border:1px solid var(--border-h); border-radius:8px; padding:16px 18px; box-shadow:0 12px 40px rgba(0,0,0,0.5); }
+.tp-title { font-family:'Bebas Neue',sans-serif; font-size:1.05rem; letter-spacing:0.03em; color:var(--text); margin-bottom:8px; }
+.tp-row { display:flex; justify-content:space-between; font-size:12px; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+.tp-row:last-child { border-bottom:none; }
+.tp-label { color:var(--text2); }
+.tp-val { color:var(--text); font-weight:600; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="sidebar" id="sidebar">
+    <div class="logo-area">
+      <div class="logo-wordmark">
+        <div class="logo-vv">V&amp;V</div>
+        <div class="logo-sub">Vitals&amp;Vectors</div>
+      </div>
+    </div>
+    <div class="nav-menu">
+      <a class="nav-item" href="dashboard.html">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a class="nav-item active" href="tasks.html">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span>
+        <span class="nav-label">Tasks</span>
+      </a>
+      <a class="nav-item" href="point-log.html">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+        <span class="nav-label">Point Log</span>
+      </a>
+      <a class="nav-item" href="leaderboard.html">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+        <span class="nav-label">Leaderboard</span>
+      </a>
+      <a class="nav-item" href="attendance.html">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+        <span class="nav-label">Attendance</span>
+      </a>
+      <a class="nav-item" href="rules.html">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+        <span class="nav-label">Rules</span>
+      </a>
+      <div class="nav-divider"></div>
+      <a class="nav-item" href="settings.html">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg></span>
+        <span class="nav-label">Settings</span>
+      </a>
+      <div class="nav-divider"></div>
+      <a class="nav-item nav-admin" href="admin/admin_dashboard.html">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+        <span class="nav-label">Admin panel</span>
+      </a>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="profile-row">
+        <div class="profile-avatar">AS</div>
+        <div class="profile-info">
+          <div class="profile-name">Aarav Singh</div>
+          <div class="profile-role">Coordinator</div>
+        </div>
+      </div>
+      <div class="profile-badge">
+        <div class="badge-hex">S</div>
+        <span class="badge-text">SILVER HUNTER</span>
+      </div>
+      <div class="nav-logout">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span class="nav-logout-label">Logout</span></div>
+      <div class="collapse-btn" id="collapseBtn">
+        <svg id="collapseIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/></svg>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="topbar" style="display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1px solid var(--border); background:var(--panel);">
+      <div>
+        <h1 class="page-title" style="font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:0.08em; margin:0;">ALL TASKS</h1>
+        <div class="page-subtitle">List of all tasks across projects</div>
+      </div>
+      <div style="font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; background:rgba(0,229,255,0.1); color:var(--teal); padding:4px 10px; border-radius:12px; border:1px solid rgba(0,229,255,0.3); display:flex; align-items:center; gap:6px;">
+        <div style="width:6px; height:6px; background:var(--teal); border-radius:50%; box-shadow:0 0 6px var(--teal);"></div> // SYSTEM ONLINE
+      </div>
+    </div>
+
+    <div class="tasks-layout">
+      <div class="tasks-main">
+
+        <div class="tab-bar" id="tabBar"></div>
+
+        <div class="toolbar-row">
+          <div class="search-wrap">
+            <span class="search-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search tasks, projects, members..." oninput="onSearchInput(this.value)">
+          </div>
+          <div class="toolbar-actions">
+            <button class="btn-tool" id="filterBtn" onclick="openFilterModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+              Filters
+              <span class="filter-badge" id="filterBadge" style="display:none;">0</span>
+            </button>
+            <button class="btn-tool primary" onclick="exportCSV()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export
+            </button>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>SR NUMBER</th><th>PROJECT NAME</th><th>TASK</th><th>ASSIGNED BY</th><th>ASSIGNED TO</th><th>DEADLINE</th><th>STATUS</th><th>PRIORITY</th><th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="taskBody"></tbody>
+          </table>
+          <div class="pagination-row">
+            <span class="pg-info" id="pgInfo">Showing 0 to 0 of 0 tasks</span>
+            <div class="pg-controls" id="pgControls"></div>
+            <select class="pg-size-select" id="pgSizeSelect" onchange="setPageSize(this.value)">
+              <option value="10">10 / page</option>
+              <option value="20">20 / page</option>
+              <option value="50">50 / page</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter modal -->
+<div class="modal-overlay" id="filterOverlay" onclick="if(event.target===this) closeFilterModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">Filter Tasks</div>
+      <button class="modal-close" onclick="closeFilterModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="filter-group">
+        <div class="filter-group-title">Status</div>
+        <div class="filter-check-grid" id="fStatus"></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-title">Priority</div>
+        <div class="filter-check-grid" id="fPriority"></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-title">Project</div>
+        <div class="filter-check-grid" id="fProject"></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-title">Assigned To</div>
+        <div class="filter-check-grid" id="fAssignee"></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-group-title">Deadline Range</div>
+        <div class="filter-date-row">
+          <div class="filter-date-field">
+            <label>From</label>
+            <input type="date" id="fDateFrom">
+          </div>
+          <div class="filter-date-field">
+            <label>To</label>
+            <input type="date" id="fDateTo">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="link-btn" onclick="clearFilterModal()">Clear all</button>
+      <button class="btn-tool primary" onclick="applyFilterModal()">Apply Filters</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+const PROJECTS = [
+  { id: 'mindspace', name: 'MindSpace', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Swapnil'], color: '#4FC3F7' },
+  { id: 'neurovi', name: 'NeuroVisualisAI', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Swapnil'], color: '#4FC3F7' },
+  { id: 'nutrisure', name: 'NutriSure', lead: 'Deepavali', members: ['Vishal', 'Vedant', 'Prem'], color: '#00E5FF' },
+  { id: 'solobeauty', name: 'SoloBeauty', lead: 'Santosh', members: ['Prem', 'Prerna'], color: '#9A7BFF' },
+  { id: 'skillsense', name: 'SkillSense', lead: 'Swapnil', members: ['Komal', 'Deepavali', 'Ashutosh', 'Shreya', 'Prem'], color: '#FFB300' },
+  { id: 'lms', name: 'LMS', lead: 'Swapnil', members: ['Prem', 'Swapnil', 'Komal', 'Shreya'], color: '#FFB300' },
+  { id: 'website', name: 'Website', lead: 'Debaditya', members: ['Suraj', 'Ashutosh'], color: '#FF1744' },
+  { id: 'socialmedia', name: 'LinkedIn / Social Media', lead: 'Debaditya', members: ['Ashutosh', 'Suraj'], color: '#FF1744' },
+  { id: 'ezest', name: 'E-Zest', lead: 'Santosh', members: ['Ganesh', 'Vedant', 'Nikita', 'Nakul', 'Prerna', 'Ashutosh', 'Swapnil', 'Nandini'], color: '#9A7BFF' },
+  { id: 'funday', name: 'Fun Day', lead: 'Nikita', members: ['Deepavali', 'Prerna'], color: '#00E5FF' },
+  { id: 'demoday', name: 'Demo Day', lead: 'Deepavali', members: ['Prerna'], color: '#00E5FF' },
+  { id: 'learningtime', name: 'Learning Time', lead: 'Vedant', members: [], color: '#4FC3F7' },
+  { id: 'premises', name: 'Premises', lead: 'Deepavali', members: ['Prem'], color: '#00E5FF' },
+];
+
+const U5_LEADS = ['Deepavali', 'Santosh', 'Debaditya', 'Swapnil', 'Ganesh', 'Nikita'];
+
+const ALL_TASKS = [
+  { id:1,  projectId:'mindspace',   title:'Implement user onboarding flow',    lead:'Ganesh',    assignedTo:'Vedant',   duration:3,   deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,          points:0  },
+  { id:2,  projectId:'mindspace',   title:'Fix session timeout bug',            lead:'Ganesh',    assignedTo:'Nakul',    duration:1,   deadline:'2026-08-16', priority:1, status:'completed',   rating:null,          points:0  },
+  { id:3,  projectId:'mindspace',   title:'Design dashboard wireframes',        lead:'Ganesh',    assignedTo:'Nandini',  duration:4,   deadline:'2026-08-18', priority:2, status:'rated',       rating:'exceeds',     points:8  },
+  { id:4,  projectId:'neurovi',     title:'Train classification model v2',      lead:'Ganesh',    assignedTo:'Ashutosh', duration:6,   deadline:'2026-08-22', priority:1, status:'in_progress', rating:null,          points:0  },
+  { id:5,  projectId:'neurovi',     title:'Write model evaluation report',      lead:'Ganesh',    assignedTo:'Vedant',   duration:2,   deadline:'2026-08-19', priority:2, status:'pending',     rating:null,          points:0  },
+  { id:6,  projectId:'nutrisure',   title:'Build nutrition tracking API',       lead:'Deepavali', assignedTo:'Prem',     duration:5,   deadline:'2026-08-21', priority:1, status:'in_progress', rating:null,          points:0  },
+  { id:7,  projectId:'nutrisure',   title:'Create meal recommendation logic',   lead:'Deepavali', assignedTo:'Vishal',   duration:3,   deadline:'2026-08-17', priority:2, status:'rated',       rating:'meets',       points:5  },
+  { id:8,  projectId:'solobeauty',  title:'Product catalogue UI',               lead:'Santosh',   assignedTo:'Prem',     duration:4,   deadline:'2026-08-20', priority:2, status:'pending',     rating:null,          points:0  },
+  { id:9,  projectId:'skillsense',  title:'Course module drag-and-drop',        lead:'Swapnil',   assignedTo:'Komal',    duration:3,   deadline:'2026-08-18', priority:1, status:'completed',   rating:null,          points:0  },
+  { id:10, projectId:'skillsense',  title:'Integrate payment gateway',          lead:'Swapnil',   assignedTo:'Ashutosh', duration:2,   deadline:'2026-08-23', priority:1, status:'pending',     rating:null,          points:0  },
+  { id:11, projectId:'lms',         title:'Student progress dashboard',         lead:'Swapnil',   assignedTo:'Shreya',   duration:4,   deadline:'2026-08-19', priority:2, status:'rated',       rating:'needs_revision', points:3 },
+  { id:12, projectId:'website',     title:'SEO meta tags for all pages',        lead:'Debaditya', assignedTo:'Suraj',    duration:1,   deadline:'2026-08-16', priority:2, status:'completed',   rating:null,          points:0  },
+  { id:13, projectId:'website',     title:'Contact form backend integration',   lead:'Debaditya', assignedTo:'Ashutosh', duration:2,   deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,          points:0  },
+  { id:14, projectId:'socialmedia', title:'Draft 4 LinkedIn posts for August',  lead:'Debaditya', assignedTo:'Suraj',    duration:2,   deadline:'2026-08-17', priority:2, status:'rated',       rating:'exceeds',     points:8  },
+  { id:15, projectId:'ezest',       title:'Workshop logistics planning',         lead:'Santosh',   assignedTo:'Prerna',   duration:3,   deadline:'2026-08-22', priority:2, status:'pending',     rating:null,          points:0  },
+  { id:16, projectId:'funday',      title:'Finalize venue and schedule',        lead:'Nikita',    assignedTo:'Deepavali',duration:1,   deadline:'2026-08-18', priority:1, status:'in_progress', rating:null,          points:0  },
+  { id:17, projectId:'demoday',     title:'Prepare stakeholder presentations',  lead:'Deepavali', assignedTo:'Prerna',   duration:5,   deadline:'2026-08-25', priority:1, status:'pending',     rating:null,          points:0  },
+  { id:18, projectId:'premises',    title:'Test attendance sync feature',       lead:'Deepavali', assignedTo:'Prem',     duration:2,   deadline:'2026-08-19', priority:1, status:'completed',   rating:null,          points:0  },
+];
+
+document.getElementById('collapseBtn')?.addEventListener('click', () => {
+  const sb = document.getElementById('sidebar');
+  const ic = document.getElementById('collapseIcon');
+  sb.classList.toggle('collapsed');
+  if (sb.classList.contains('collapsed')) {
+    ic.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="14 9 17 12 14 15"/>';
+  } else {
+    ic.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
+  }
+});
+
+function showToast(msg, type = 'info') {
+  let c = document.getElementById('toast-container');
+  if (!c) { c = document.createElement('div'); c.id = 'toast-container'; c.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;'; document.body.appendChild(c); }
+  const colors = { success:'#00E5FF', error:'#FF1744', info:'#4FC3F7', warning:'#FFB300' };
+  const t = document.createElement('div');
+  t.style.cssText = `padding:12px 20px;border-radius:6px;font-family:'Inter',sans-serif;font-size:13px;border:1px solid ${colors[type]};color:${colors[type]};background:${colors[type]}18;animation:fadeIn 0.3s ease;max-width:340px;`;
+  t.textContent = msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3500);
+}
+
+const TODAY = '2026-08-16';
+
+const ASSIGNEES = [...new Set(ALL_TASKS.map(t => t.assignedTo))].sort();
+
+const TABS = [
+  { id:'all',       label:'All Tasks' },
+  { id:'today',     label:"Today's Tasks" },
+  { id:'yesterday', label:"Yesterday's Tasks" },
+  { id:'week',      label:'This Week' },
+  { id:'completed', label:'Completed' },
+  { id:'overdue',   label:'Overdue' },
+];
+
+function addDays(dateStr, n) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + n);
+  return d.toISOString().slice(0, 10);
+}
+
+const YESTERDAY = addDays(TODAY, -1);
+const WEEK_START = (() => {
+  const d = new Date(TODAY + 'T00:00:00');
+  const dow = (d.getDay() + 6) % 7; // Mon=0
+  d.setDate(d.getDate() - dow);
+  return d.toISOString().slice(0, 10);
+})();
+const WEEK_END = addDays(WEEK_START, 6);
+
+function isOpen(t) { return t.status !== 'completed' && t.status !== 'rated'; }
+
+const TAB_PREDICATES = {
+  all:       t => true,
+  today:     t => t.deadline === TODAY,
+  yesterday: t => t.deadline === YESTERDAY,
+  week:      t => t.deadline >= WEEK_START && t.deadline <= WEEK_END,
+  completed: t => t.status === 'completed' || t.status === 'rated',
+  overdue:   t => isOpen(t) && t.deadline < TODAY,
+};
+
+let activeTab = 'all';
+let searchText = '';
+let filters = { status: [], priority: [], projectIds: [], assignees: [], dateFrom: '', dateTo: '' };
+let currentPage = 1;
+let PER_PAGE = 10;
+let filteredTasks = ALL_TASKS;
+
+function srNumber(id) {
+  return 'SR-2026-' + String(100 + id).padStart(5, '0');
+}
+
+function priorityChip(p) {
+  if (p === 1) return `<span class="chip chip-high">High</span>`;
+  if (p === 2) return `<span class="chip chip-medium">Medium</span>`;
+  return `<span class="chip chip-low">Low</span>`;
+}
+function priorityLabel(p) { return p === 1 ? 'High' : p === 2 ? 'Medium' : 'Low'; }
+
+function statusChip(t) {
+  if (t.status === 'pending') return `<span class="chip chip-pending">Pending</span>`;
+  if (t.status === 'in_progress') return `<span class="chip chip-progress">In Progress</span>`;
+  if (t.status === 'completed' && !t.rating) return `<span class="chip chip-completed">Completed</span>`;
+  if (t.status === 'rated') return `<span class="chip chip-rated">Rated</span>`;
+  return '';
+}
+function statusLabel(t) {
+  if (t.status === 'pending') return 'Pending';
+  if (t.status === 'in_progress') return 'In Progress';
+  if (t.status === 'completed' && !t.rating) return 'Completed';
+  if (t.status === 'rated') return 'Rated';
+  return t.status;
+}
+
+function fmtDate(dateStr) {
+  return new Date(dateStr + 'T00:00:00').toLocaleDateString('en-US', { day:'numeric', month:'short', year:'numeric' });
+}
+
+function renderTabs() {
+  document.getElementById('tabBar').innerHTML = TABS.map(tb =>
+    `<div class="tab ${tb.id === activeTab ? 'active' : ''}" onclick="setTab('${tb.id}')">${tb.label}</div>`
+  ).join('');
+}
+
+function setTab(id) {
+  activeTab = id;
+  currentPage = 1;
+  renderTabs();
+  updateTable();
+}
+
+function onSearchInput(v) {
+  searchText = v.trim().toLowerCase();
+  currentPage = 1;
+  updateTable();
+}
+
+function setPageSize(v) {
+  PER_PAGE = parseInt(v, 10);
+  currentPage = 1;
+  renderTable();
+}
+
+/* ---------- filter modal ---------- */
+
+function buildFilterModalOptions() {
+  const statusDefs = [
+    { v:'pending', l:'Pending' }, { v:'in_progress', l:'In Progress' },
+    { v:'completed', l:'Completed' }, { v:'rated', l:'Rated' },
+  ];
+  document.getElementById('fStatus').innerHTML = statusDefs.map(s =>
+    `<label class="filter-check ${filters.status.includes(s.v) ? 'checked' : ''}">
+      <input type="checkbox" value="${s.v}" ${filters.status.includes(s.v) ? 'checked' : ''} onchange="toggleFilter('status','${s.v}',this)">${s.l}
+    </label>`).join('');
+
+  const prioDefs = [{v:1,l:'High'},{v:2,l:'Medium'},{v:3,l:'Low'}];
+  document.getElementById('fPriority').innerHTML = prioDefs.map(p =>
+    `<label class="filter-check ${filters.priority.includes(p.v) ? 'checked' : ''}">
+      <input type="checkbox" value="${p.v}" ${filters.priority.includes(p.v) ? 'checked' : ''} onchange="toggleFilter('priority',${p.v},this)">${p.l}
+    </label>`).join('');
+
+  document.getElementById('fProject').innerHTML = PROJECTS.map(p =>
+    `<label class="filter-check ${filters.projectIds.includes(p.id) ? 'checked' : ''}">
+      <input type="checkbox" value="${p.id}" ${filters.projectIds.includes(p.id) ? 'checked' : ''} onchange="toggleFilter('projectIds','${p.id}',this)">${p.name}
+    </label>`).join('');
+
+  document.getElementById('fAssignee').innerHTML = ASSIGNEES.map(a =>
+    `<label class="filter-check ${filters.assignees.includes(a) ? 'checked' : ''}">
+      <input type="checkbox" value="${a}" ${filters.assignees.includes(a) ? 'checked' : ''} onchange="toggleFilter('assignees','${a}',this)">${a}
+    </label>`).join('');
+
+  document.getElementById('fDateFrom').value = filters.dateFrom;
+  document.getElementById('fDateTo').value = filters.dateTo;
+}
+
+function toggleFilter(group, value, el) {
+  const arr = filters[group];
+  const idx = arr.indexOf(value);
+  if (idx === -1) arr.push(value); else arr.splice(idx, 1);
+  el.closest('.filter-check').classList.toggle('checked', idx === -1);
+}
+
+function openFilterModal() {
+  buildFilterModalOptions();
+  document.getElementById('filterOverlay').classList.add('open');
+}
+function closeFilterModal() {
+  document.getElementById('filterOverlay').classList.remove('open');
+}
+function applyFilterModal() {
+  filters.dateFrom = document.getElementById('fDateFrom').value;
+  filters.dateTo = document.getElementById('fDateTo').value;
+  currentPage = 1;
+  closeFilterModal();
+  updateTable();
+}
+function clearFilterModal() {
+  filters = { status: [], priority: [], projectIds: [], assignees: [], dateFrom: '', dateTo: '' };
+  buildFilterModalOptions();
+}
+
+function activeFilterCount() {
+  return filters.status.length + filters.priority.length + filters.projectIds.length + filters.assignees.length
+    + (filters.dateFrom ? 1 : 0) + (filters.dateTo ? 1 : 0);
+}
+
+function updateFilterBadge() {
+  const n = activeFilterCount();
+  const badge = document.getElementById('filterBadge');
+  badge.textContent = n;
+  badge.style.display = n > 0 ? 'inline-flex' : 'none';
+}
+
+/* ---------- filtering + render ---------- */
+
+function getFilteredTasks() {
+  return ALL_TASKS.filter(t => {
+    if (!TAB_PREDICATES[activeTab](t)) return false;
+
+    if (searchText) {
+      const p = PROJECTS.find(pr => pr.id === t.projectId);
+      const hay = `${t.title} ${p ? p.name : ''} ${t.assignedTo} ${t.lead}`.toLowerCase();
+      if (!hay.includes(searchText)) return false;
+    }
+
+    if (filters.status.length && !filters.status.includes(t.status)) return false;
+    if (filters.priority.length && !filters.priority.includes(t.priority)) return false;
+    if (filters.projectIds.length && !filters.projectIds.includes(t.projectId)) return false;
+    if (filters.assignees.length && !filters.assignees.includes(t.assignedTo)) return false;
+    if (filters.dateFrom && t.deadline < filters.dateFrom) return false;
+    if (filters.dateTo && t.deadline > filters.dateTo) return false;
+
+    return true;
+  });
+}
+
+function updateTable() {
+  filteredTasks = getFilteredTasks();
+  updateFilterBadge();
+  renderTable();
+}
+
+function renderTable() {
+  const tbody = document.getElementById('taskBody');
+  const pgInfo = document.getElementById('pgInfo');
+  const pgC = document.getElementById('pgControls');
+
+  const totalPages = Math.max(1, Math.ceil(filteredTasks.length / PER_PAGE));
+  if (currentPage > totalPages) currentPage = totalPages;
+  const start = filteredTasks.length ? (currentPage - 1) * PER_PAGE : 0;
+  const end = Math.min(start + PER_PAGE, filteredTasks.length);
+  const pageTasks = filteredTasks.slice(start, end);
+
+  pgInfo.innerText = `Showing ${filteredTasks.length ? start + 1 : 0} to ${end} of ${filteredTasks.length} tasks`;
+
+  let pgHtml = `<button class="pg-btn" onclick="setPage(${currentPage-1})" ${currentPage===1?'disabled':''}>&lt;</button>`;
+  for (let i = 1; i <= totalPages; i++) {
+    pgHtml += `<button class="pg-btn ${i===currentPage?'active':''}" onclick="setPage(${i})">${i}</button>`;
+  }
+  pgHtml += `<button class="pg-btn" onclick="setPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>&gt;</button>`;
+  pgC.innerHTML = pgHtml;
+
+  if (!pageTasks.length) {
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:32px; color:var(--text2);">No tasks match the current view.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = pageTasks.map((t, idx) => {
+    const p = PROJECTS.find(pr => pr.id === t.projectId);
+    const isPast = isOpen(t) && t.deadline < TODAY;
+    const dlColor = isPast ? 'var(--red)' : 'var(--text2)';
+
+    return `<tr>
+      <td>${start + idx + 1}</td>
+      <td style="color:var(--text2); font-size:12px;">${srNumber(t.id)}</td>
+      <td><div class="pill-proj" style="background:${p.color}26; color:${p.color}; border-color:${p.color}" onclick="window.location.href='project.html?id=${p.id}'">${p.name}</div></td>
+      <td><div style="font-weight:bold;color:white;">${t.title}</div><div style="font-size:11px;color:var(--text2)">${t.duration}h</div></td>
+      <td style="color:var(--text2)">${t.lead}</td>
+      <td>
+        <div class="avatar-chip" onclick="window.location.href='hunter.html?name=' + encodeURIComponent('${t.assignedTo}')">
+          <div class="avatar-circle" style="background:${p.color}33; border-color:${p.color}; color:${p.color}">${t.assignedTo.charAt(0)}</div>
+          ${t.assignedTo}
+        </div>
+      </td>
+      <td style="color:${dlColor}">${fmtDate(t.deadline)}</td>
+      <td>${statusChip(t)}</td>
+      <td>${priorityChip(t.priority)}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="action-icon-btn" title="View" onclick="openTaskPopover(event, ${t.id})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+          <button class="action-icon-btn" title="More" onclick="taskActionsMenu(${t.id})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function setPage(p) {
+  const totalPages = Math.max(1, Math.ceil(filteredTasks.length / PER_PAGE));
+  if (p < 1 || p > totalPages) return;
+  currentPage = p;
+  renderTable();
+}
+
+/* ---------- task popover + actions ---------- */
+
+function closeTaskPopover() {
+  document.getElementById('taskPopoverEl')?.remove();
+  document.removeEventListener('click', popoverOutsideClick, true);
+}
+function popoverOutsideClick(e) {
+  const el = document.getElementById('taskPopoverEl');
+  if (el && !el.contains(e.target)) closeTaskPopover();
+}
+
+function openTaskPopover(evt, id) {
+  evt.stopPropagation();
+  closeTaskPopover();
+  const t = ALL_TASKS.find(x => x.id === id);
+  const p = PROJECTS.find(pr => pr.id === t.projectId);
+  const rect = evt.currentTarget.getBoundingClientRect();
+
+  const el = document.createElement('div');
+  el.className = 'task-popover';
+  el.id = 'taskPopoverEl';
+  el.style.top = Math.min(rect.bottom + 8, window.innerHeight - 280) + 'px';
+  el.style.left = Math.min(rect.left - 240, window.innerWidth - 300) + 'px';
+  el.innerHTML = `
+    <div class="tp-title">${t.title}</div>
+    <div class="tp-row"><span class="tp-label">SR Number</span><span class="tp-val">${srNumber(t.id)}</span></div>
+    <div class="tp-row"><span class="tp-label">Project</span><span class="tp-val" style="color:${p.color}">${p.name}</span></div>
+    <div class="tp-row"><span class="tp-label">Assigned by</span><span class="tp-val">${t.lead}</span></div>
+    <div class="tp-row"><span class="tp-label">Assigned to</span><span class="tp-val">${t.assignedTo}</span></div>
+    <div class="tp-row"><span class="tp-label">Deadline</span><span class="tp-val">${fmtDate(t.deadline)}</span></div>
+    <div class="tp-row"><span class="tp-label">Priority</span><span class="tp-val">${priorityLabel(t.priority)}</span></div>
+    <div class="tp-row"><span class="tp-label">Status</span><span class="tp-val">${statusLabel(t)}</span></div>
+    <div class="tp-row"><span class="tp-label">Points</span><span class="tp-val">${t.points || '—'}</span></div>
+  `;
+  document.body.appendChild(el);
+  setTimeout(() => document.addEventListener('click', popoverOutsideClick, true), 0);
+}
+
+function taskActionsMenu(id) {
+  showToast('Task actions coming soon', 'info');
+}
+
+/* ---------- CSV export ---------- */
+
+function csvEscape(v) {
+  const s = String(v ?? '');
+  return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+
+function exportCSV() {
+  const rows = [
+    ['SR Number', 'Project', 'Task', 'Assigned By', 'Assigned To', 'Deadline', 'Status', 'Priority'],
+    ...filteredTasks.map(t => {
+      const p = PROJECTS.find(pr => pr.id === t.projectId);
+      return [srNumber(t.id), p.name, t.title, t.lead, t.assignedTo, t.deadline, statusLabel(t), priorityLabel(t.priority)];
+    }),
+  ];
+  const csv = rows.map(r => r.map(csvEscape).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `all-tasks-${TODAY}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  showToast(`Exported ${filteredTasks.length} tasks`, 'success');
+}
+
+function init() {
+  renderTabs();
+  updateTable();
+}
+
+init();
+</script>
+</body>
+</html>
