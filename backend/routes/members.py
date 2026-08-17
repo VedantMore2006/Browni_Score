@@ -1,17 +1,15 @@
-from typing import List
-
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 
 import models
 import schemas
+from auth import get_current_user, hash_password, require_role
 from database import get_db
-from auth import get_current_user, require_role, hash_password
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/members", tags=["members"])
 
 
-@router.get("", response_model=List[schemas.MemberOut])
+@router.get("", response_model=list[schemas.MemberOut])
 def list_members(
     db: Session = Depends(get_db),
     user: models.Member = Depends(get_current_user),

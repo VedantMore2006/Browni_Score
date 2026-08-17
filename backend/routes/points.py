@@ -1,13 +1,11 @@
-from typing import List
-
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 
 import models
 import schemas
-from database import get_db
 from auth import get_current_user, require_role
+from database import get_db
+from fastapi import APIRouter, Depends, HTTPException
 from points_engine import apply_points
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/points", tags=["points"])
 
@@ -34,7 +32,7 @@ def log_points(
     return log
 
 
-@router.get("/member/{member_id}", response_model=List[schemas.PointLogOut])
+@router.get("/member/{member_id}", response_model=list[schemas.PointLogOut])
 def member_point_log(
     member_id: int,
     db: Session = Depends(get_db),

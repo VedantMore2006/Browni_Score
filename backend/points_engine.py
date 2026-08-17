@@ -1,7 +1,6 @@
-from sqlalchemy.orm import Session
-
 import models
 from ranking import rank_for_points
+from sqlalchemy.orm import Session
 
 
 def apply_points(

@@ -1,12 +1,11 @@
 from datetime import datetime
 
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
-
 import models
 import schemas
-from database import get_db
 from auth import require_role
+from database import get_db
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 

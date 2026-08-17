@@ -1,21 +1,19 @@
 from datetime import datetime
-from typing import List, Optional
-
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 
 import models
 import schemas
-from database import get_db
 from auth import get_current_user, require_role
+from database import get_db
+from fastapi import APIRouter, Depends, HTTPException
 from points_engine import apply_points
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 RATING_POINTS = {"needs_revision": 3, "meets": 5, "exceeds": 8}
 
 
-@router.get("", response_model=List[schemas.TaskOut])
+@router.get("", response_model=list[schemas.TaskOut])
 def list_tasks(
     db: Session = Depends(get_db),
     user: models.Member = Depends(get_current_user),

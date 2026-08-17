@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, Literal
+from typing import Literal
 
 from pydantic import BaseModel
 
@@ -51,9 +51,9 @@ class MemberCreate(BaseModel):
 
 
 class MemberUpdate(BaseModel):
-    name: Optional[str] = None
-    role: Optional[Role] = None
-    status: Optional[MemberStatus] = None
+    name: str | None = None
+    role: Role | None = None
+    status: MemberStatus | None = None
 
 
 class PasswordReset(BaseModel):
@@ -63,7 +63,7 @@ class PasswordReset(BaseModel):
 class TaskCreateRequest(BaseModel):
     title: str
     duration_hrs: float = 0
-    deadline: Optional[datetime] = None
+    deadline: datetime | None = None
     priority: int = 2
     assigned_to: int
 
@@ -72,15 +72,15 @@ class TaskOut(BaseModel):
     id: int
     title: str
     duration_hrs: float
-    deadline: Optional[datetime]
+    deadline: datetime | None
     priority: int
     assigned_to: int
     assigned_by: int
     status: TaskStatus
-    rating: Optional[TaskRating]
+    rating: TaskRating | None
     points_awarded: int
     created_at: datetime
-    completed_at: Optional[datetime]
+    completed_at: datetime | None
 
     class Config:
         from_attributes = True

@@ -1,12 +1,10 @@
-from typing import List
-
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 
 import models
 import schemas
+from auth import get_current_user, require_role
 from database import get_db
-from auth import require_role, get_current_user
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/warnings", tags=["warnings"])
 
@@ -39,7 +37,7 @@ def issue_warning(
     return warning
 
 
-@router.get("/member/{member_id}", response_model=List[schemas.WarningOut])
+@router.get("/member/{member_id}", response_model=list[schemas.WarningOut])
 def member_warnings(
     member_id: int,
     db: Session = Depends(get_db),

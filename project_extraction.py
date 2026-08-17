@@ -18,9 +18,7 @@ into a single text file.
 
 import os
 import sys
-from pathlib import Path
 from collections import Counter
-
 
 IGNORE_DIRS = {
     ".git", "__pycache__", ".pytest_cache", "*.egg-info",
@@ -278,7 +276,7 @@ def extract_project_files(root_dir, output_file, extensions):
                         content = f.read()
                         out.write(content)
                 except Exception as e:
-                    out.write(f"[ERROR] Could not read file: {str(e)}\n")
+                    out.write(f"[ERROR] Could not read file: {e!s}\n")
 
             out.write("\n")
 
@@ -287,7 +285,7 @@ def extract_project_files(root_dir, output_file, extensions):
         out.write(f"SUMMARY: {len(extracted_files)} files extracted ({ext_list})\n")
         out.write("=" * 80 + "\n")
 
-    print(f"✓ Extraction complete!")
+    print("✓ Extraction complete!")
     print(f"✓ Total files extracted ({ext_list}): {len(extracted_files)}")
     print(f"✓ Output saved to: {output_file}")
     print(f"✓ File size: {os.path.getsize(output_file) / 1024:.2f} KB")

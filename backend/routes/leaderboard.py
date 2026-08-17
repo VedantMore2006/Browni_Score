@@ -1,18 +1,15 @@
-from datetime import datetime
-from typing import List
-
-from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
 
 import models
 import schemas
-from database import get_db
 from auth import get_current_user
+from database import get_db
+from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/leaderboard", tags=["leaderboard"])
 
 
-@router.get("/weekly", response_model=List[schemas.MemberOut])
+@router.get("/weekly", response_model=list[schemas.MemberOut])
 def weekly_leaderboard(
     db: Session = Depends(get_db),
     user: models.Member = Depends(get_current_user),
@@ -25,7 +22,7 @@ def weekly_leaderboard(
     )
 
 
-@router.get("/monthly", response_model=List[schemas.MemberOut])
+@router.get("/monthly", response_model=list[schemas.MemberOut])
 def monthly_leaderboard(
     db: Session = Depends(get_db),
     user: models.Member = Depends(get_current_user),
@@ -38,7 +35,7 @@ def monthly_leaderboard(
     )
 
 
-@router.get("/hero-of-month", response_model=List[schemas.MemberOut])
+@router.get("/hero-of-month", response_model=list[schemas.MemberOut])
 def hero_of_month(
     db: Session = Depends(get_db),
     user: models.Member = Depends(get_current_user),

@@ -1,16 +1,15 @@
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-
-from database import Base, engine, SessionLocal
 import models
 from auth import hash_password
+from database import Base, SessionLocal, engine
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from routes import admin as admin_routes
 from routes import auth as auth_routes
+from routes import leaderboard as leaderboard_routes
 from routes import members as members_routes
 from routes import points as points_routes
 from routes import tasks as tasks_routes
 from routes import warnings as warnings_routes
-from routes import leaderboard as leaderboard_routes
-from routes import admin as admin_routes
 
 Base.metadata.create_all(bind=engine)
 
