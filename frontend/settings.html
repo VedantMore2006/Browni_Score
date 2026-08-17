@@ -3,177 +3,156 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vitals&Vectors — Settings</title>
+<title>Vitals&Vectors — About</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/global.css">
 <style>
 
-/* ── TOPBAR (page-specific deltas only; base topbar/page-title/status-pill/status-dot come from global.css) ── */
-.topbar { align-items:flex-start; }
-.topbar-left { display:flex; flex-direction:column; gap:3px; }
-.page-title { line-height:1; }
-.page-subtitle { font-size:13px; color:var(--text2); }
+/* ── TOPBAR ── */
+.topbar { align-items: flex-start; }
+.topbar-left { display: flex; flex-direction: column; gap: 4px; }
+.page-title { line-height: 1.1; }
+.page-subtitle { font-size: 13px; color: var(--text2); }
 
 /* ── CONTENT ── */
-.content { flex:1; padding:20px 32px 24px; overflow-y:auto; display:flex; flex-direction:column; gap:18px; }
+.content { flex: 1; padding: 24px 32px 40px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
 
 /* ── CARD BASE ── */
-.card { background:var(--panel); border-radius:8px; position:relative; overflow:hidden; }
-.card::before { content:''; position:absolute; top:0;left:0;right:0;height:1px; }
-.card.blue-accent { border:1px solid rgba(79,195,247,0.15); }
-.card.blue-accent::before { background:linear-gradient(90deg,transparent,var(--blue),var(--purple),transparent); }
-.card.blue-accent2 { border:1px solid rgba(79,195,247,0.15); }
-.card.blue-accent2::before { background:linear-gradient(90deg,transparent,var(--blue),transparent); }
-.card.red-accent { border:1px solid rgba(255,23,68,0.25); }
-.card.red-accent::before { background:linear-gradient(90deg,transparent,var(--red),transparent); }
-
-/* ── PROFILE CARD ── */
-.profile-card { padding:28px 32px; display:flex; align-items:center; gap:40px; }
-
-/* large avatar */
-.avatar-section { display:flex; flex-direction:column; align-items:center; gap:14px; flex-shrink:0; }
-.big-avatar {
-  width:120px; height:120px; border-radius:50%;
-  background:linear-gradient(135deg,#0d2240,#1a3a5c);
-  border:2px solid var(--blue);
-  box-shadow:0 0 0 4px rgba(79,195,247,0.12), 0 0 30px rgba(79,195,247,0.2);
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Bebas Neue',sans-serif; font-size:2.8rem; letter-spacing:0.05em;
-  color:var(--text);
-  position:relative;
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  position: relative;
+  padding: 24px 28px;
 }
-/* animated ring */
-.big-avatar::after {
-  content:''; position:absolute; inset:-5px;
-  border-radius:50%;
-  border:2px solid transparent;
-  border-top-color:var(--blue);
-  border-left-color:var(--teal);
-  animation:spinRing 4s linear infinite;
+.card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; border-top-left-radius: 10px; border-top-right-radius: 10px; }
+.card.accent-blue::before { background: linear-gradient(90deg, transparent, var(--blue), var(--purple), transparent); }
+.card.accent-teal::before { background: linear-gradient(90deg, transparent, var(--teal), transparent); }
+.card.accent-green::before { background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.5), transparent); }
+.card.accent-purple::before { background: linear-gradient(90deg, transparent, var(--purple), transparent); }
+.card.accent-red::before { background: linear-gradient(90deg, transparent, var(--red), transparent); }
+
+.card-header-label {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--text2);
+  margin-bottom: 16px;
+  line-height: 1.3;
 }
-@keyframes spinRing { to { transform:rotate(360deg); } }
 
-.btn-change-avatar {
-  display:flex; align-items:center; gap:7px;
-  padding:8px 18px;
-  background:transparent; border:1px solid rgba(79,195,247,0.3); border-radius:5px;
-  font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:1px;
-  color:var(--blue); cursor:pointer; transition:all 0.2s; white-space:nowrap;
+/* ── SECTION 2: ABOUT SYSTEM ── */
+.about-header-row { display: flex; align-items: center; gap: 18px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.about-logo-text { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--blue); text-shadow: 0 0 12px rgba(0, 200, 255, 0.4); line-height: 1.2; }
+.about-sep-line { width: 1px; height: 36px; background: var(--border); }
+.about-lab-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; letter-spacing: 0.06em; color: var(--text); line-height: 1.2; }
+
+.about-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+.about-col-label { font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text2); line-height: 1.3; }
+.about-col-text { font-family: 'Inter', sans-serif; font-size: 13.5px; color: var(--text2); line-height: 1.65; margin-top: 8px; }
+
+/* ── SECTION 3: SCORING PERIOD ── */
+.sp-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 12px; }
+.sp-card {
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 18px;
+  border-left: 4px solid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-.btn-change-avatar:hover { background:rgba(79,195,247,0.08); border-color:var(--blue); }
-.btn-change-avatar svg { width:13px; height:13px; }
+.sp-card.blue { border-left-color: var(--blue); }
+.sp-card.purple { border-left-color: var(--purple); }
+.sp-card.amber { border-left-color: var(--amber); }
 
-/* profile fields */
-.profile-fields { flex:1; display:grid; grid-template-columns:1fr 1fr; gap:20px 40px; }
-.profile-field {}
-.pf-label { font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text2); margin-bottom:4px; display:flex; align-items:center; gap:6px; }
-.pf-label svg { width:14px; height:14px; }
-.pf-value { font-size:16px; font-weight:600; color:var(--text); }
+.sp-label { font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text2); margin-bottom: 6px; line-height: 1.3; }
+.sp-value { font-family: 'Bebas Neue', sans-serif; font-size: 1.65rem; letter-spacing: 0.05em; color: var(--text); line-height: 1.3; padding-top: 2px; }
 
-/* rank side */
-.rank-section { display:flex; flex-direction:column; gap:16px; align-items:flex-start; }
-.rank-row { display:flex; align-items:center; gap:16px; }
-.rank-hex-large {
-  width:64px; height:64px;
-  clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);
-  background:rgba(154,123,255,0.12); border:2px solid var(--purple);
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Bebas Neue',sans-serif; font-size:18px; letter-spacing:0.05em;
-  color:var(--purple);
-  box-shadow:0 0 20px rgba(154,123,255,0.25);
-  animation:ssGlow 2s infinite;
+/* ── SECTION 4: POINT SYSTEM REFERENCE ── */
+.ref-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; margin-top: 12px; }
+.ref-section-title { font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; line-height: 1.3; }
+.ref-section-title.earn { color: var(--teal); }
+.ref-section-title.deduct { color: var(--red); }
+
+.ref-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(79, 195, 247, 0.07); }
+.ref-row:last-child { border-bottom: none; }
+.ref-label { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text2); line-height: 1.4; }
+.ref-pts { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 0.5px; line-height: 1.3; }
+.ref-pts.earn { color: var(--teal); }
+.ref-pts.deduct { color: var(--red); }
+
+/* ── SECTION 5: RANK SYSTEM ── */
+.rank-ref-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; margin-top: 12px; }
+.rank-ref-card {
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, transform 0.2s;
 }
-@keyframes ssGlow { 0%,100%{box-shadow:0 0 12px rgba(154,123,255,0.25)} 50%{box-shadow:0 0 28px rgba(154,123,255,0.5)} }
-.rank-info {}
-.rank-label-sm { font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text2); margin-bottom:3px; }
-.rank-name { font-family:'Inter',sans-serif; font-size:18px; font-weight:700; color:var(--purple); }
-.btn-rank-label {
-  display:inline-flex; align-items:center; justify-content:center;
-  padding:7px 18px; border:1px solid var(--purple); border-radius:5px;
-  font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:1px;
-  color:var(--purple); cursor:pointer; background:transparent;
-  transition:all 0.2s;
+.rank-ref-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-glow);
 }
-.btn-rank-label:hover { background:rgba(154,123,255,0.1); }
 
-.joindate-row { display:flex; align-items:center; gap:14px; margin-top:4px; }
-.joindate-icon { color:var(--text2); display:flex; align-items:center; }
-.joindate-icon svg { width:22px; height:22px; }
-.joindate-info {}
-.joindate-label { font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text2); margin-bottom:2px; }
-.joindate-val { font-size:16px; font-weight:600; color:var(--text); }
-
-/* ── BOTTOM ROW ── */
-.bottom-row { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
-
-/* card headers */
-.card-header { display:flex; align-items:center; gap:10px; padding:20px 24px 16px; border-bottom:1px solid var(--border); }
-.card-header-icon { display:flex; align-items:center; }
-.card-header-icon svg { width:20px; height:20px; }
-.card-header-icon.blue { color:var(--blue); }
-.card-header-icon.red  { color:var(--red); }
-.card-title { font-family:'Bebas Neue',sans-serif; font-size:1.25rem; letter-spacing:0.08em; }
-.card-title.blue { color:var(--text); }
-.card-title.red  { color:var(--text); }
-.admin-only-badge { margin-left:auto; padding:4px 10px; border:1px solid rgba(255,23,68,0.45); border-radius:4px; font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.8px; color:var(--red); background:rgba(255,23,68,0.06); }
-
-/* password fields */
-.pw-section { padding:20px 24px 24px; display:flex; flex-direction:column; gap:12px; }
-.pw-field { position:relative; }
-.pw-field svg.lock-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--text2); pointer-events:none; }
-.pw-input {
-  width:100%; padding:12px 40px 12px 36px;
-  background:rgba(10,10,20,0.6); border:1px solid rgba(79,195,247,0.15); border-radius:6px;
-  color:var(--text); font-family:'Inter',sans-serif; font-size:13px;
-  outline:none; transition:border-color 0.2s, box-shadow 0.2s; -webkit-appearance:none;
+@keyframes pulse-ss {
+  0%, 100% { box-shadow: 0 0 8px rgba(154, 123, 255, 0.3); }
+  50% { box-shadow: 0 0 20px rgba(154, 123, 255, 0.65); }
 }
-.pw-input:focus { border-color:rgba(79,195,247,0.45); box-shadow:0 0 0 3px rgba(79,195,247,0.06); }
-.pw-input::placeholder { color:var(--text2); opacity:0.55; }
-.pw-eye { position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text2); cursor:pointer; display:flex; align-items:center; transition:color 0.2s; padding:2px; }
-.pw-eye:hover { color:var(--blue); }
-.pw-eye svg { width:16px; height:16px; }
+.pulse-ss { animation: pulse-ss 2s infinite; }
 
-/* red variant inputs */
-.pw-input.red-variant { border-color:rgba(255,23,68,0.2); }
-.pw-input.red-variant:focus { border-color:rgba(255,23,68,0.45); box-shadow:0 0 0 3px rgba(255,23,68,0.06); }
-
-/* member select */
-.member-select-wrap { position:relative; }
-.member-select-wrap .user-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--text2); pointer-events:none; }
-.member-select {
-  width:100%; padding:12px 36px 12px 36px;
-  background:rgba(10,10,20,0.6); border:1px solid rgba(255,23,68,0.2); border-radius:6px;
-  color:var(--text2); font-family:'Inter',sans-serif; font-size:13px;
-  outline:none; cursor:pointer; -webkit-appearance:none;
-  transition:border-color 0.2s;
+/* ── SECTION 6: ADMIN QUICK ACCESS ── */
+.btn-admin-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  border-radius: 6px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 1px solid rgba(255, 23, 68, 0.4);
+  color: var(--red);
+  background: rgba(255, 23, 68, 0.06);
+  line-height: 1.3;
 }
-.member-select:focus { border-color:rgba(255,23,68,0.45); }
-.member-select-wrap::after { content:''; position:absolute; right:12px; top:50%; transform:translateY(-50%); border-left:4px solid transparent; border-right:4px solid transparent; border-top:5px solid var(--text2); pointer-events:none; }
-
-/* buttons */
-.btn-update {
-  width:100%; padding:14px;
-  background:linear-gradient(90deg,#1565C0,#29B6F6,#00E5FF,#00FFFF);
-  border:none; border-radius:6px;
-  font-family:'Bebas Neue',sans-serif; font-size:1.05rem; letter-spacing:0.12em;
-  color:#0A0A0F; cursor:pointer;
-  box-shadow:0 4px 20px rgba(0,229,255,0.25);
-  transition:box-shadow 0.2s, transform 0.15s; margin-top:4px;
+.btn-admin-link:hover {
+  background: rgba(255, 23, 68, 0.14);
+  box-shadow: 0 0 18px rgba(255, 23, 68, 0.25);
+  transform: translateY(-1px);
 }
-.btn-update:hover { box-shadow:0 4px 28px rgba(0,229,255,0.45); transform:translateY(-1px); }
-
-.btn-reset-pw {
-  width:100%; padding:14px;
-  background:var(--red);
-  border:none; border-radius:6px;
-  font-family:'Bebas Neue',sans-serif; font-size:1.05rem; letter-spacing:0.12em;
-  color:white; cursor:pointer;
-  box-shadow:0 4px 16px rgba(255,23,68,0.3);
-  transition:box-shadow 0.2s, transform 0.15s; margin-top:4px;
+.btn-admin-link.secondary {
+  border-color: rgba(79, 195, 247, 0.35);
+  color: var(--blue);
+  background: rgba(79, 195, 247, 0.06);
 }
-.btn-reset-pw:hover { box-shadow:0 4px 24px rgba(255,23,68,0.5); transform:translateY(-1px); }
+.btn-admin-link.secondary:hover {
+  background: rgba(79, 195, 247, 0.14);
+  box-shadow: 0 0 18px rgba(79, 195, 247, 0.2);
+  transform: translateY(-1px);
+}
+.btn-admin-link svg { width: 16px; height: 16px; flex-shrink: 0; }
 
-/* scrollbar */
+/* ── SECTION 7: SYSTEM INFO ── */
+.sys-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; margin-top: 10px; }
+.sys-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid rgba(79, 195, 247, 0.07); }
+.sys-row:last-child { border-bottom: none; }
+.sys-label { font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text2); line-height: 1.3; }
+.sys-val { font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text); line-height: 1.3; }
+
 </style>
 </head>
 <body>
@@ -195,24 +174,21 @@
       <a class="nav-item" href="attendance.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span><span class="nav-label">Attendance</span></a>
       <a class="nav-item" href="rules.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span><span class="nav-label">Rules</span></a>
       <div class="nav-divider"></div>
-      <a class="nav-item active" href="settings.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg></span><span class="nav-label">Settings</span></a>
+      <a class="nav-item active" href="settings.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg></span><span class="nav-label">About</span></a>
       <div class="nav-divider"></div>
       <a class="nav-item nav-admin" href="admin/admin_dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span class="nav-label">Admin panel</span></a>
     </div>
     <div class="sidebar-bottom">
       <div class="profile-row">
-        <div class="profile-avatar">
-          AS
-          <div class="profile-rank-badge">SS</div>
-        </div>
+        <div class="profile-avatar">AS</div>
         <div class="profile-info">
           <div class="profile-name">Aarav Singh</div>
-          <div class="profile-role">Administrator</div>
+          <div class="profile-role">Coordinator</div>
         </div>
       </div>
-      <div class="profile-badge-ss">
-        <div class="badge-hex-ss">SS</div>
-        <span class="badge-text-ss">SHADOW MONARCH</span>
+      <div class="profile-badge">
+        <div class="badge-hex">S</div>
+        <span class="badge-text">SILVER HUNTER</span>
       </div>
       <div class="nav-logout">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span class="nav-logout-label">Logout</span></div>
@@ -226,8 +202,8 @@
   <div class="main">
     <div class="topbar">
       <div class="topbar-left">
-        <h1 class="page-title">SETTINGS</h1>
-        <p class="page-subtitle">Manage your profile and account settings.</p>
+        <h1 class="page-title">ABOUT</h1>
+        <p class="page-subtitle">Public information portal for Vitals&amp;Vectors Research Lab</p>
       </div>
       <div class="status-pill">
         <div class="status-dot"></div>
@@ -237,156 +213,180 @@
 
     <div class="content">
 
-      <!-- PROFILE CARD -->
-      <div class="card blue-accent">
-        <div class="profile-card">
-          <!-- Avatar -->
-          <div class="avatar-section">
-            <div class="big-avatar">AS</div>
-            <button class="btn-change-avatar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              CHANGE AVATAR
-            </button>
+      <!-- SECTION 2: ABOUT THIS SYSTEM -->
+      <div class="card accent-blue">
+        <div class="about-header-row">
+          <div class="about-logo-text">V&amp;V</div>
+          <div class="about-sep-line"></div>
+          <div class="about-lab-title">Vitals&amp;Vectors Research Lab</div>
+        </div>
+        <div class="about-columns">
+          <div>
+            <div class="about-col-label">WHAT IS THIS</div>
+            <div class="about-col-text">
+              Vitals&amp;Vectors is a research lab monitoring portal. It provides full transparency into team activity — tasks, points, attendance, and rankings are visible to everyone. No login required.
+            </div>
           </div>
-
-          <!-- Profile fields (left group) -->
-          <div class="profile-fields">
-            <div class="profile-field">
-              <div class="pf-label">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                Full Name
-              </div>
-              <div class="pf-value">Aarav Singh</div>
-            </div>
-            <div class="profile-field">
-              <!-- Rank -->
-              <div class="rank-row">
-                <div class="rank-hex-large">SS</div>
-                <div class="rank-info">
-                  <div class="rank-label-sm">Rank</div>
-                  <div class="rank-name">Shadow Monarch</div>
-                </div>
-              </div>
-            </div>
-            <div class="profile-field">
-              <div class="pf-label">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M1.05 12H3m18 0h1.95M12 1.05V3m0 18v1.95"/></svg>
-                Username
-              </div>
-              <div class="pf-value">aarav.singh</div>
-            </div>
-            <div class="profile-field">
-              <!-- Your Rank Label button -->
-              <button class="btn-rank-label">YOUR RANK LABEL</button>
-            </div>
-            <div class="profile-field">
-              <div class="pf-label">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                Role
-              </div>
-              <div class="pf-value">Administrator</div>
-            </div>
-            <div class="profile-field">
-              <!-- Join date -->
-              <div class="joindate-row">
-                <div class="joindate-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                </div>
-                <div class="joindate-info">
-                  <div class="joindate-label">Join Date</div>
-                  <div class="joindate-val">2026-01-15</div>
-                </div>
-              </div>
+          <div>
+            <div class="about-col-label">HOW IT WORKS</div>
+            <div class="about-col-text">
+              Team members earn Brownie Points through task completion, attendance, learning hours, and content contributions. Points determine weekly and monthly rankings. The top scorer each week wins Hero of the Week. Members who cross 300 points in a month earn Hero of the Month.
             </div>
           </div>
         </div>
       </div>
 
-      <!-- BOTTOM ROW -->
-      <div class="bottom-row">
-
-        <!-- CHANGE PASSWORD -->
-        <div class="card blue-accent2">
-          <div class="card-header">
-            <div class="card-header-icon blue">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-            </div>
-            <span class="card-title blue">CHANGE PASSWORD</span>
+      <!-- SECTION 3: SCORING PERIOD -->
+      <div class="card accent-teal">
+        <div class="card-header-label">CURRENT SCORING PERIOD</div>
+        <div class="sp-grid">
+          <div class="sp-card blue">
+            <div class="sp-label">WEEK START</div>
+            <div class="sp-value" id="sp-week-start">—</div>
           </div>
-          <div class="pw-section">
-            <div class="pw-field">
-              <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-              <input type="password" class="pw-input" placeholder="Current Password" id="curPw">
-              <button class="pw-eye" onclick="togglePw('curPw',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-            </div>
-            <div class="pw-field">
-              <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-              <input type="password" class="pw-input" placeholder="New Password" id="newPw">
-              <button class="pw-eye" onclick="togglePw('newPw',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-            </div>
-            <div class="pw-field">
-              <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-              <input type="password" class="pw-input" placeholder="Confirm New Password" id="confPw">
-              <button class="pw-eye" onclick="togglePw('confPw',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-            </div>
-            <button class="btn-update">UPDATE PASSWORD</button>
+          <div class="sp-card blue">
+            <div class="sp-label">WEEK END</div>
+            <div class="sp-value" id="sp-week-end">—</div>
+          </div>
+          <div class="sp-card purple">
+            <div class="sp-label">MONTH</div>
+            <div class="sp-value" id="sp-month">—</div>
+          </div>
+          <div class="sp-card amber">
+            <div class="sp-label">HERO THRESHOLD</div>
+            <div class="sp-value" style="color:var(--amber);">300 pts</div>
           </div>
         </div>
+      </div>
 
-        <!-- RESET MEMBER PASSWORD (admin only) -->
-        <div class="card red-accent">
-          <div class="card-header">
-            <div class="card-header-icon red">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            </div>
-            <span class="card-title red">RESET MEMBER PASSWORD</span>
-            <span class="admin-only-badge">ADMIN ONLY</span>
+      <!-- SECTION 4: POINT SYSTEM QUICK REFERENCE -->
+      <div class="card accent-green">
+        <div class="card-header-label">POINT SYSTEM — QUICK REFERENCE</div>
+        <div class="ref-columns">
+          <div>
+            <div class="ref-section-title earn">+ EARNING</div>
+            <div class="ref-row"><span class="ref-label">On-time reporting (per week)</span><span class="ref-pts earn">+5 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Full week presence streak bonus</span><span class="ref-pts earn">+10 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Full week task reporting streak</span><span class="ref-pts earn">+10 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Task: needs revision</span><span class="ref-pts earn">+3 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Task: meets expectation</span><span class="ref-pts earn">+5 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Task: exceeds expectation</span><span class="ref-pts earn">+8 pts</span></div>
+            <div class="ref-row"><span class="ref-label">85% weekly task completion</span><span class="ref-pts earn">+20 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Attended learning hour (per session)</span><span class="ref-pts earn">+5 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Content post published</span><span class="ref-pts earn">+5 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Led a learning session</span><span class="ref-pts earn">+5 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Helped a teammate (verified)</span><span class="ref-pts earn">+5 pts</span></div>
           </div>
-          <div class="pw-section">
-            <div>
-              <div class="pf-label" style="margin-bottom:8px;">Select Member</div>
-              <div class="member-select-wrap">
-                <svg class="user-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                <select class="member-select">
-                  <option value="" disabled selected>Select member...</option>
-                  <option>Riya Sharma</option>
-                  <option>Aarav Singh</option>
-                  <option>Arjun Verma</option>
-                  <option>Pranav Patil</option>
-                  <option>Neha Kulkarni</option>
-                  <option>Aniket Kamble</option>
-                  <option>Siddhant More</option>
-                  <option>Sneha Pawar</option>
-                  <option>Ritik Kadam</option>
-                  <option>Mayur Bhosale</option>
-                </select>
-              </div>
-            </div>
-            <div>
-              <div class="pf-label" style="margin-bottom:8px;">New Password</div>
-              <div class="pw-field">
-                <svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                <input type="password" class="pw-input red-variant" placeholder="Enter new password" id="resetPw">
-                <button class="pw-eye" onclick="togglePw('resetPw',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-              </div>
-            </div>
-            <button class="btn-reset-pw">RESET PASSWORD</button>
+          <div>
+            <div class="ref-section-title deduct">− DEDUCTIONS</div>
+            <div class="ref-row"><span class="ref-label">Late arrival (outside window)</span><span class="ref-pts deduct">−10 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Absent without notice (per day)</span><span class="ref-pts deduct">−10 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Missed task sync (4–4:30 PM)</span><span class="ref-pts deduct">−10 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Task missed without flagging</span><span class="ref-pts deduct">−20 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Task sheet not updated</span><span class="ref-pts deduct">−15 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Task delayed, no renegotiation</span><span class="ref-pts deduct">−15 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Missed learning hour</span><span class="ref-pts deduct">−15 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Content posts &lt; 2 in month</span><span class="ref-pts deduct">−10 pts</span></div>
+            <div class="ref-row"><span class="ref-label">Non-compliance after 3rd warning</span><span class="ref-pts deduct">−20 pts</span></div>
           </div>
         </div>
+      </div>
 
-      </div><!-- /bottom-row -->
+      <!-- SECTION 5: RANK SYSTEM -->
+      <div class="card accent-purple">
+        <div class="card-header-label">RANK SYSTEM</div>
+        <div class="rank-ref-row" id="rankRefRow"></div>
+      </div>
+
+      <!-- SECTION 6: ADMIN QUICK ACCESS -->
+      <div class="card accent-red">
+        <div class="card-header-label">ADMIN ACCESS</div>
+        <p style="font-size: 13.5px; color: var(--text2); margin-bottom: 18px; line-height: 1.4;">Admin-only actions for managing the portal.</p>
+        <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+          <a href="admin/admin_dashboard.html" class="btn-admin-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Admin Panel
+          </a>
+          <a href="admin/members.html" class="btn-admin-link secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            Manage Members
+          </a>
+        </div>
+      </div>
+
+      <!-- SECTION 7: SYSTEM INFO -->
+      <div class="card">
+        <div class="card-header-label">SYSTEM INFO</div>
+        <div class="sys-columns">
+          <div>
+            <div class="sys-row"><span class="sys-label">PORTAL VERSION</span><span class="sys-val">v1.0.0</span></div>
+            <div class="sys-row"><span class="sys-label">LAST UPDATED</span><span class="sys-val" id="sysDate"></span></div>
+            <div class="sys-row"><span class="sys-label">ENVIRONMENT</span><span class="sys-val">Local Development</span></div>
+          </div>
+          <div>
+            <div class="sys-row"><span class="sys-label">BACKEND</span><span class="sys-val" style="color:var(--amber); font-weight:600;">⚠ Connection Pending</span></div>
+            <div class="sys-row"><span class="sys-label">ATTENDANCE DATA</span><span class="sys-val" style="color:var(--amber); font-weight:600;">⚠ Premises App — Not Connected</span></div>
+            <div class="sys-row"><span class="sys-label">TASK DATA</span><span class="sys-val" style="color:var(--amber); font-weight:600;">⚠ Google Classroom — Not Connected</span></div>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /shell -->
 
 <script>
-function togglePw(id, btn) {
-  const inp = document.getElementById(id);
-  const show = inp.type === 'password';
-  inp.type = show ? 'text' : 'password';
-  btn.innerHTML = show
-    ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`
-    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+function getScoringPeriod() {
+  const now = new Date();
+  const day = now.getDay();
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1));
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+
+  const fmt = d => d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+  const month = now.toLocaleDateString('en-IN', { month:'long', year:'numeric' });
+
+  return { weekStart: fmt(monday), weekEnd: fmt(sunday), month };
+}
+
+const RANKS = [
+  { code:'E',  label:'Unranked Hunter',  range:'0 – 99',    color:'#8A93A8' },
+  { code:'D',  label:'Bronze Hunter',    range:'100 – 149', color:'#CD7F32' },
+  { code:'C',  label:'Iron Hunter',      range:'150 – 199', color:'#B0B0B0' },
+  { code:'B',  label:'Silver Hunter',    range:'200 – 249', color:'#4FC3F7' },
+  { code:'A',  label:'Gold Hunter',      range:'250 – 299', color:'#FFD700' },
+  { code:'S',  label:'Platinum Hunter',  range:'300 – 399', color:'#00E5FF' },
+  { code:'SS', label:'Shadow Monarch',   range:'400+',      color:'#9A7BFF' },
+];
+
+function init() {
+  // Scoring period dates
+  const { weekStart, weekEnd, month } = getScoringPeriod();
+  document.getElementById('sp-week-start').textContent = weekStart;
+  document.getElementById('sp-week-end').textContent   = weekEnd;
+  document.getElementById('sp-month').textContent      = month;
+
+  // Last updated date
+  document.getElementById('sysDate').textContent =
+    new Date().toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+
+  // Render rank cards
+  document.getElementById('rankRefRow').innerHTML = RANKS.map(r => `
+    <div class="rank-ref-card">
+      <div style="width:38px;height:38px;margin:0 auto 8px;
+        clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);
+        background:${r.color}18;border:1.5px solid ${r.color};
+        display:flex;align-items:center;justify-content:center;
+        font-family:'Bebas Neue',sans-serif;font-size:15px;color:${r.color};"
+        class="${r.code==='SS' ? 'pulse-ss' : ''}">
+        ${r.code}
+      </div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;color:${r.color};letter-spacing:0.05em;line-height:1.2;">${r.code}</div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text2);margin-top:4px;line-height:1.3;">${r.label}</div>
+      <div style="font-size:11.5px;color:var(--text2);margin-top:4px;line-height:1.2;">${r.range} pts</div>
+    </div>
+  `).join('');
 }
 
 document.getElementById('collapseBtn').addEventListener('click', () => {
@@ -397,6 +397,8 @@ document.getElementById('collapseBtn').addEventListener('click', () => {
     ? '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="14 9 17 12 14 15"/>'
     : '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
 });
+
+init();
 </script>
 </body>
 </html>

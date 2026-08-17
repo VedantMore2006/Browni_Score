@@ -749,64 +749,205 @@
       gap: 4px;
     }
 
-    /* ── RIGHT PANELS ── */
-    .right-panels {
-      width: 290px;
-      flex-shrink: 0;
-      background: var(--panel);
-      border-left: 1px solid var(--border);
+    /* ── TOPBAR ACTIONS ── */
+    .topbar-actions {
       display: flex;
-      flex-direction: column;
-      overflow-y: auto;
+      align-items: center;
+      gap: 10px;
     }
 
-    .rp-section {
-      padding: 18px 18px 14px;
+    .btn-action-primary {
+      padding: 7px 14px;
+      background: linear-gradient(90deg, #1565C0, #29B6F6, #00E5FF);
+      border: none;
+      border-radius: 5px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #0A0A0F;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 14px rgba(0, 229, 255, 0.2);
+      transition: all 0.2s;
+    }
+
+    .btn-action-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(0, 229, 255, 0.4);
+    }
+
+    .btn-action-secondary {
+      padding: 6px 12px;
+      background: rgba(0, 229, 255, 0.08);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      border-radius: 5px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--teal);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-action-secondary:hover {
+      background: rgba(0, 229, 255, 0.16);
+      border-color: var(--teal);
+    }
+
+    .btn-action-danger {
+      padding: 6px 12px;
+      background: rgba(255, 23, 68, 0.08);
+      border: 1px solid rgba(255, 23, 68, 0.35);
+      border-radius: 5px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: var(--red);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn-action-danger:hover {
+      background: rgba(255, 23, 68, 0.16);
+      border-color: var(--red);
+    }
+
+    /* ── MODALS SYSTEM ── */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 10, 20, 0.78);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: var(--panel);
+      border: 1px solid rgba(0, 200, 255, 0.25);
+      border-radius: 10px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), 0 0 32px rgba(0, 200, 255, 0.12);
+      position: relative;
+      overflow: hidden;
+      transform: translateY(20px) scale(0.96);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: none;
+    }
+
+    .modal-backdrop.active .modal-card.active {
+      display: block;
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--blue), var(--teal), transparent);
+    }
+
+    .modal-card.red-theme::before {
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+    }
+
+    .modal-header {
+      padding: 16px 20px 14px;
       border-bottom: 1px solid var(--border);
-    }
-
-    .rp-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 14px;
     }
 
-    .rp-title {
+    .modal-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-icon {
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+    }
+
+    .modal-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .modal-title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.1rem;
+      font-size: 1.35rem;
       letter-spacing: 0.08em;
       color: var(--text);
     }
 
-    .rp-close {
+    .modal-close {
       background: none;
       border: none;
       color: var(--text2);
       cursor: pointer;
-      padding: 2px;
+      padding: 4px;
       display: flex;
       align-items: center;
-      border-radius: 3px;
-      transition: color 0.2s;
+      border-radius: 4px;
+      transition: color 0.2s, background 0.2s;
     }
 
-    .rp-close:hover {
+    .modal-close:hover {
       color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
     }
 
-    .rp-close svg {
-      width: 16px;
-      height: 16px;
+    .modal-body {
+      padding: 18px 20px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .modal-footer {
+      padding: 10px 20px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .form-field {
-      margin-bottom: 12px;
+      margin-bottom: 4px;
     }
 
     .form-label {
       font-family: 'Rajdhani', sans-serif;
-      font-size: 9px;
+      font-size: 9.5px;
       font-weight: 700;
       letter-spacing: 1.5px;
       text-transform: uppercase;
@@ -827,7 +968,7 @@
       font-family: 'Inter', sans-serif;
       font-size: 12.5px;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
       -webkit-appearance: none;
     }
 
@@ -835,6 +976,7 @@
     .form-select:focus,
     .form-textarea:focus {
       border-color: rgba(79, 195, 247, 0.45);
+      box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.08);
     }
 
     .form-input::placeholder,
@@ -911,16 +1053,15 @@
 
     .btn-confirm {
       width: 100%;
-      padding: 12px;
+      padding: 11px;
       border: none;
       border-radius: 5px;
       background: linear-gradient(90deg, #1565C0, #29B6F6, #00E5FF);
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 1rem;
+      font-size: 1.05rem;
       letter-spacing: 0.1em;
       color: #0A0A0F;
       cursor: pointer;
-      margin-bottom: 8px;
       box-shadow: 0 4px 16px rgba(0, 229, 255, 0.2);
       transition: box-shadow 0.2s, transform 0.15s;
     }
@@ -932,7 +1073,7 @@
 
     .btn-cancel-outline {
       width: 100%;
-      padding: 11px;
+      padding: 10px;
       border: 1px solid rgba(255, 23, 68, 0.4);
       border-radius: 5px;
       background: transparent;
@@ -950,16 +1091,15 @@
 
     .btn-danger-fill {
       width: 100%;
-      padding: 12px;
+      padding: 11px;
       border: none;
       border-radius: 5px;
       background: var(--red);
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 1rem;
+      font-size: 1.05rem;
       letter-spacing: 0.1em;
       color: white;
       cursor: pointer;
-      margin-bottom: 8px;
       box-shadow: 0 4px 16px rgba(255, 23, 68, 0.2);
       transition: all 0.2s;
     }
@@ -971,7 +1111,7 @@
 
     .btn-cancel-plain {
       width: 100%;
-      padding: 11px;
+      padding: 10px;
       border: 1px solid rgba(255, 23, 68, 0.3);
       border-radius: 5px;
       background: transparent;
@@ -985,6 +1125,40 @@
 
     .btn-cancel-plain:hover {
       background: rgba(255, 23, 68, 0.06);
+    }
+
+    /* ── HERO CONFIRM BUTTONS ── */
+    .btn-confirm-hero {
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px 12px;
+      border-radius: 5px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid;
+    }
+    .btn-confirm-hero.week {
+      background: rgba(255,215,0,0.08);
+      border-color: rgba(255,215,0,0.35);
+      color: var(--gold);
+    }
+    .btn-confirm-hero.week:hover {
+      background: rgba(255,215,0,0.14);
+      box-shadow: 0 0 12px rgba(255,215,0,0.2);
+    }
+    .btn-confirm-hero.month {
+      background: rgba(154,123,255,0.08);
+      border-color: rgba(154,123,255,0.35);
+      color: var(--purple);
+    }
+    .btn-confirm-hero.month:hover {
+      background: rgba(154,123,255,0.14);
+      box-shadow: 0 0 12px rgba(154,123,255,0.2);
     }
 
   </style>
@@ -1038,7 +1212,7 @@
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="3" />
               <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14" />
-            </svg></span><span class="nav-label">Settings</span></a>
+            </svg></span><span class="nav-label">About</span></a>
         <div class="nav-divider"></div>
         <a class="nav-item nav-admin active" href="admin_dashboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24"
               fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1075,16 +1249,32 @@
     <div class="main">
       <div class="topbar">
         <h1 class="page-title">ADMIN PANEL</h1>
-        <div class="status-pill">
-          <div class="status-dot"></div>
-          // SYSTEM ONLINE
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div class="topbar-actions">
+            <button class="btn-action-primary" onclick="openAddMemberModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              ADD MEMBER
+            </button>
+            <button class="btn-action-secondary" onclick="openPointsModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              LOG POINTS
+            </button>
+            <button class="btn-action-danger" onclick="openWarnModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              WARNING
+            </button>
+          </div>
+          <div class="status-pill">
+            <div class="status-dot"></div>
+            // SYSTEM ONLINE
+          </div>
         </div>
       </div>
 
       <div class="content">
 
         <!-- ALERT BANNER -->
-        <div class="alert-banner">
+        <div class="alert-banner" id="alertBanner">
           <div class="alert-left">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round">
@@ -1092,7 +1282,7 @@
               <line x1="12" y1="9" x2="12" y2="13" />
               <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
-            <span class="alert-text"><span class="alert-count">3 ACTIVE ALERTS</span><span class="alert-sep"> —
+            <span class="alert-text"><span class="alert-count"><span id="alertBannerCount">0</span> ACTIVE ALERTS</span><span class="alert-sep"> —
               </span><a class="alert-link">VIEW BELOW</a></span>
           </div>
           <div class="alert-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
@@ -1115,7 +1305,7 @@
             </div>
             <div class="stat-info">
               <div class="stat-label">Members Below 100 Pts</div>
-              <div class="stat-num red">5</div>
+              <div class="stat-num red" id="statBelowMin">0</div>
               <div class="stat-link">View members →</div>
             </div>
           </div>
@@ -1130,7 +1320,7 @@
             </div>
             <div class="stat-info">
               <div class="stat-label">Members With 2 Warnings</div>
-              <div class="stat-num amber">2</div>
+              <div class="stat-num amber" id="statTwoWarns">0</div>
               <div class="stat-link">View members →</div>
             </div>
           </div>
@@ -1144,7 +1334,7 @@
             </div>
             <div class="stat-info">
               <div class="stat-label">Overdue Tasks</div>
-              <div class="stat-num blue">8</div>
+              <div class="stat-num blue" id="statOverdue">0</div>
               <div class="stat-link">View tasks →</div>
             </div>
           </div>
@@ -1152,17 +1342,23 @@
 
         <!-- TEAM OVERVIEW -->
         <div class="overview-card">
-          <div class="overview-header">TEAM OVERVIEW</div>
+          <div class="overview-header" style="display: flex; align-items: center; justify-content: space-between;">
+            <span>TEAM OVERVIEW</span>
+            <button class="btn-action-primary" style="padding: 5px 12px; font-size: 11px;" onclick="openAddMemberModal()">
+              + ADD HUNTER
+            </button>
+          </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
-                  <th>RANK</th>
-                  <th>NAME</th>
+                  <th>POS</th>
+                  <th>HUNTER</th>
                   <th>TOTAL PTS</th>
                   <th>THIS WEEK</th>
                   <th>STREAK</th>
                   <th>STATUS</th>
+                  <th>WARNINGS</th>
                   <th>ACTIONS</th>
                 </tr>
               </thead>
@@ -1176,60 +1372,7 @@
           <!-- ALERTS -->
           <div class="alerts-card">
             <div class="section-title">ALERTS</div>
-            <div class="alert-list">
-              <div class="alert-item">
-                <div class="alert-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <line x1="17" y1="11" x2="23" y2="11" />
-                  </svg></div>
-                <div class="alert-body">
-                  <div class="alert-title-row"><span class="alert-name">Pranav Patil has 2 warnings</span><span
-                      class="alert-time">10 min ago</span></div>
-                  <div class="alert-desc">Further violations may lead to suspension.</div>
-                </div>
-              </div>
-              <div class="alert-item">
-                <div class="alert-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="4" width="18" height="18" rx="2" />
-                    <line x1="16" y1="2" x2="16" y2="6" />
-                    <line x1="8" y1="2" x2="8" y2="6" />
-                    <line x1="3" y1="10" x2="21" y2="10" />
-                    <line x1="12" y1="14" x2="12" y2="18" />
-                  </svg></div>
-                <div class="alert-body">
-                  <div class="alert-title-row"><span class="alert-name">8 tasks are overdue</span><span
-                      class="alert-time">25 min ago</span></div>
-                  <div class="alert-desc">These tasks are past their deadlines.</div>
-                </div>
-              </div>
-              <div class="alert-item">
-                <div class="alert-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <polyline points="19 12 12 19 5 12" />
-                  </svg></div>
-                <div class="alert-body">
-                  <div class="alert-title-row"><span class="alert-name">5 members have below 100 points</span><span
-                      class="alert-time">1 hr ago</span></div>
-                  <div class="alert-desc">Encourage engagement and task completion.</div>
-                </div>
-              </div>
-              <div class="alert-item">
-                <div class="alert-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg></div>
-                <div class="alert-body">
-                  <div class="alert-title-row"><span class="alert-name">3 members have missed check-in today</span><span
-                      class="alert-time">2 hrs ago</span></div>
-                  <div class="alert-desc">Attendance not recorded yet.</div>
-                </div>
-              </div>
-            </div>
+            <div class="alert-list" id="alertList"></div>
             <div class="view-all-link">View all alerts →</div>
           </div>
 
@@ -1246,8 +1389,8 @@
               </div>
               <div class="hero-week-info">
                 <div class="hw-label">HERO OF THE WEEK</div>
-                <div class="hw-name">Riya Sharma</div>
-                <div class="hw-pts">12,450 PTS</div>
+                <div class="hw-name" id="heroWeekName">—</div>
+                <div class="hw-pts" id="heroWeekPts">— PTS THIS WEEK</div>
               </div>
               <!-- faint art placeholder -->
               <div class="hero-art">
@@ -1259,6 +1402,7 @@
                 </svg>
               </div>
             </div>
+            <button class="btn-confirm-hero week" onclick="confirmHero('week')">👑 Confirm Hero of Week</button>
             <!-- Hero of Month -->
             <div class="hero-month">
               <div class="hm-label">
@@ -1268,11 +1412,9 @@
                   </svg></div>
                 HERO OF THE MONTH
               </div>
-              <div class="hm-row"><span class="hm-name">Riya Sharma</span><span class="hm-pts">12,450 PTS</span></div>
-              <div class="hm-row"><span class="hm-name">Aarav Singh</span><span class="hm-pts">7,650 PTS</span></div>
-              <div class="hm-row"><span class="hm-name">Arjun Verma</span><span class="hm-pts">5,980 PTS</span></div>
-              <div class="hm-row"><span class="hm-name">Neha Kulkarni</span><span class="hm-pts">4,210 PTS</span></div>
+              <div id="heroMonthList"></div>
             </div>
+            <button class="btn-confirm-hero month" onclick="confirmHero('month')">⭐ Confirm Hero of Month</button>
             <div class="view-lb-link">View all leaderboard →</div>
           </div>
         </div>
@@ -1280,27 +1422,97 @@
       </div><!-- /content -->
     </div><!-- /main -->
 
-    <!-- ── RIGHT PANELS ── -->
-    <div class="right-panels">
-      <!-- ADD / DEDUCT POINTS -->
-      <div class="rp-section">
-        <div class="rp-header">
-          <span class="rp-title">ADD / DEDUCT POINTS</span>
-          <button class="rp-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg></button>
+  </div><!-- /shell -->
+
+  <!-- ── MODAL BACKDROP & DIALOG CARDS ── -->
+  <div class="modal-backdrop" id="modalBackdrop" onclick="handleBackdropClick(event)">
+
+    <!-- MODAL 1: ADD HUNTER / MEMBER -->
+    <div class="modal-card" id="modalAddMember">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <line x1="19" y1="8" x2="19" y2="14" />
+              <line x1="22" y1="11" x2="16" y2="11" />
+            </svg>
+          </div>
+          <span class="modal-title">ADD HUNTER / MEMBER</span>
+        </div>
+        <button class="modal-close" onclick="closeAllModals()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-field">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="fAddName" placeholder="Enter full name (e.g. Riya Sharma)">
         </div>
         <div class="form-field">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-input" id="fAddUsername" placeholder="Enter username (e.g. riya.sharma)">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Password</label>
+          <div style="position: relative;">
+            <input type="password" class="form-input" id="fAddPassword" placeholder="Enter password" style="padding-right: 36px;">
+            <button type="button" onclick="toggleAddPw()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text2); cursor: pointer; display: flex; align-items: center;">
+              <svg id="addEyeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Role</label>
+          <div class="select-wrap">
+            <select class="form-select" id="fAddRole">
+              <option value="Member" selected>Member</option>
+              <option value="U5 Coordinator">U5 Coordinator</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-confirm" onclick="createHunterFromModal()">CREATE HUNTER</button>
+        <button class="btn-cancel-outline" onclick="closeAllModals()">CANCEL</button>
+      </div>
+    </div>
+
+    <!-- MODAL 2: ADD / DEDUCT POINTS -->
+    <div class="modal-card" id="modalPoints">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          </div>
+          <span class="modal-title">ADD / DEDUCT POINTS</span>
+        </div>
+        <button class="modal-close" onclick="closeAllModals()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-field">
           <label class="form-label">Member</label>
-          <input type="text" class="form-input" value="Riya Sharma">
+          <div class="select-wrap">
+            <select class="form-select" id="fMember"></select>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Type</label>
+          <div class="select-wrap">
+            <select class="form-select" id="fType">
+              <option value="earn">Earn (+)</option>
+              <option value="deduct">Deduct (−)</option>
+            </select>
+          </div>
         </div>
         <div class="form-field">
           <label class="form-label">Category</label>
           <div class="select-wrap">
-            <select class="form-select">
-              <option>Select category</option>
+            <select class="form-select" id="fCategory">
+              <option value="" disabled selected>Select category</option>
               <option>Attendance</option>
               <option>Task</option>
               <option>Learning</option>
@@ -1313,99 +1525,425 @@
         <div class="form-field">
           <label class="form-label">Points</label>
           <div class="pts-wrap">
-            <input type="number" class="form-input" placeholder="Enter points (e.g. 10 or -5)">
+            <input type="number" class="form-input" id="fPoints" placeholder="Enter points (e.g. 10 or 5)">
             <div class="pts-spin">
-              <button>▲</button>
-              <button>▼</button>
+              <button type="button" onclick="document.getElementById('fPoints').stepUp()">▲</button>
+              <button type="button" onclick="document.getElementById('fPoints').stepDown()">▼</button>
             </div>
           </div>
         </div>
         <div class="form-field">
           <label class="form-label">Reason</label>
-          <textarea class="form-textarea" placeholder="Enter reason for adding or deducting points..."></textarea>
+          <textarea class="form-textarea" id="fReason" placeholder="Enter reason for adding or deducting points..."></textarea>
         </div>
-        <button class="btn-confirm">CONFIRM</button>
-        <button class="btn-cancel-outline">CANCEL</button>
       </div>
-
-      <!-- ISSUE WARNING -->
-      <div class="rp-section">
-        <div class="rp-header">
-          <span class="rp-title">ISSUE WARNING</span>
-          <button class="rp-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg></button>
-        </div>
-        <div class="form-field">
-          <label class="form-label">Member</label>
-          <input type="text" class="form-input" value="Aniket Kamble">
-        </div>
-        <div class="form-field">
-          <label class="form-label">Reason</label>
-          <textarea class="form-textarea" placeholder="Enter reason for warning..."></textarea>
-        </div>
-        <button class="btn-danger-fill">ISSUE WARNING</button>
-        <button class="btn-cancel-plain">CANCEL</button>
+      <div class="modal-footer">
+        <button class="btn-confirm" onclick="logPoints()">CONFIRM POINTS</button>
+        <button class="btn-cancel-outline" onclick="closeAllModals()">CANCEL</button>
       </div>
     </div>
 
-  </div><!-- /shell -->
+    <!-- MODAL 3: ISSUE WARNING -->
+    <div class="modal-card red-theme" id="modalWarn">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <div class="modal-icon" style="color: var(--red);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+              <line x1="12" y1="9" x2="12" y2="13" />
+              <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+          </div>
+          <span class="modal-title" style="color: var(--red);">ISSUE WARNING</span>
+        </div>
+        <button class="modal-close" onclick="closeAllModals()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-field">
+          <label class="form-label">Member</label>
+          <div class="select-wrap">
+            <select class="form-select" id="fWarnMember"></select>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Reason</label>
+          <textarea class="form-textarea" id="fWarnReason" placeholder="Enter reason for warning..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-danger-fill" onclick="issueWarning()">ISSUE WARNING</button>
+        <button class="btn-cancel-plain" onclick="closeAllModals()">CANCEL</button>
+      </div>
+    </div>
+
+  </div>
 
   <script>
-    const TEAM = [
-      { pos: 1, posType: 'gold', initials: 'RV', name: 'Riya Sharma', you: false, pts: '12,450', week: '+1,250', streak: '4w', status: 'active', color: '#FFD700' },
-      { pos: 2, posType: 'silver', initials: 'AS', name: 'Aarav Singh', you: true, pts: '7,650', week: '+620', streak: '3w', status: 'active', color: '#4FC3F7' },
-      { pos: 3, posType: 'bronze', initials: 'AV', name: 'Arjun Verma', you: false, pts: '5,980', week: '+410', streak: '2w', status: 'active', color: '#CD7F32' },
-      { pos: 4, posType: 'plain', initials: 'PP', name: 'Pranav Patil', you: false, pts: '4,820', week: '+180', streak: '1w', status: 'active', color: '#4FC3F7' },
-      { pos: 5, posType: 'plain', initials: 'NK', name: 'Neha Kulkarni', you: false, pts: '4,210', week: '+300', streak: '2w', status: 'active', color: '#00E5FF' },
-      { pos: 6, posType: 'plain', initials: 'AK', name: 'Aniket Kamble', you: false, pts: '3,780', week: '+90', streak: '2w', status: 'warning', color: '#4FC3F7' },
-      { pos: 7, posType: 'plain', initials: 'SM', name: 'Siddhant More', you: false, pts: '3,450', week: '+120', streak: '1w', status: 'active', color: '#8A93A8' },
-      { pos: 8, posType: 'plain', initials: 'SP', name: 'Sneha Pawar', you: false, pts: '2,300', week: '-20', streak: '0w', status: 'warning', color: '#CD7F32' },
+    // ─── SHARED MOCK DATA (same arrays used across all pages) ───
+    const MEMBERS = [
+      { name:'Ganesh',    init:'GA', pts_week:70,  pts_month:320, streak:4, rank:'s',  warnings:0, status:'active' },
+      { name:'Debaditya', init:'DE', pts_week:65,  pts_month:298, streak:3, rank:'a',  warnings:0, status:'active' },
+      { name:'Deepavali', init:'DW', pts_week:58,  pts_month:260, streak:3, rank:'a',  warnings:0, status:'active' },
+      { name:'Nandini',   init:'NA', pts_week:55,  pts_month:245, streak:3, rank:'b',  warnings:0, status:'active' },
+      { name:'Swapnil',   init:'SW', pts_week:48,  pts_month:220, streak:2, rank:'b',  warnings:0, status:'active' },
+      { name:'Suraj',     init:'SU', pts_week:45,  pts_month:210, streak:2, rank:'b',  warnings:0, status:'active' },
+      { name:'Santosh',   init:'SA', pts_week:40,  pts_month:195, streak:2, rank:'c',  warnings:1, status:'active' },
+      { name:'Nikita',    init:'NK', pts_week:38,  pts_month:185, streak:2, rank:'c',  warnings:0, status:'active' },
+      { name:'Vedant',    init:'VE', pts_week:35,  pts_month:170, streak:2, rank:'c',  warnings:0, status:'active' },
+      { name:'Nakul',     init:'NC', pts_week:30,  pts_month:155, streak:1, rank:'c',  warnings:0, status:'active' },
+      { name:'Ashutosh',  init:'AS', pts_week:28,  pts_month:140, streak:1, rank:'d',  warnings:1, status:'active' },
+      { name:'Vishal',    init:'VS', pts_week:25,  pts_month:130, streak:1, rank:'d',  warnings:0, status:'active' },
+      { name:'Komal',     init:'KO', pts_week:22,  pts_month:118, streak:1, rank:'d',  warnings:0, status:'active' },
+      { name:'Prerna',    init:'PR', pts_week:20,  pts_month:110, streak:1, rank:'d',  warnings:2, status:'active' },
+      { name:'Shreya',    init:'SH', pts_week:18,  pts_month:100, streak:0, rank:'d',  warnings:0, status:'active' },
+      { name:'Prem',      init:'PM', pts_week:15,  pts_month:88,  streak:0, rank:'e',  warnings:0, status:'active' },
+      { name:'Krishna',   init:'KR', pts_week:12,  pts_month:72,  streak:0, rank:'e',  warnings:2, status:'active' },
+      { name:'SAB',       init:'SB', pts_week:8,   pts_month:45,  streak:0, rank:'e',  warnings:0, status:'active' },
     ];
 
-    function renderTeam() {
+    const RANK_COLORS = {
+      ss:'#9A7BFF', s:'#00E5FF', a:'#FFD700',
+      b:'#4FC3F7',  c:'#B0B0B0', d:'#CD7F32', e:'#8A93A8'
+    };
+
+    const ALL_TASKS = [
+      { id:1,  projectId:'mindspace',   title:'Implement user onboarding flow',      lead:'Ganesh',    assignedTo:'Vedant',    deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,             points:0 },
+      { id:2,  projectId:'mindspace',   title:'Fix session timeout bug',              lead:'Ganesh',    assignedTo:'Nakul',     deadline:'2026-08-16', priority:1, status:'completed',   rating:null,             points:0 },
+      { id:3,  projectId:'mindspace',   title:'Design dashboard wireframes',          lead:'Ganesh',    assignedTo:'Nandini',   deadline:'2026-08-18', priority:2, status:'rated',       rating:'exceeds',        points:8 },
+      { id:4,  projectId:'neurovi',     title:'Train classification model v2',        lead:'Ganesh',    assignedTo:'Ashutosh',  deadline:'2026-08-22', priority:1, status:'in_progress', rating:null,             points:0 },
+      { id:5,  projectId:'neurovi',     title:'Write model evaluation report',        lead:'Ganesh',    assignedTo:'Vedant',    deadline:'2026-08-19', priority:2, status:'pending',     rating:null,             points:0 },
+      { id:6,  projectId:'nutrisure',   title:'Build nutrition tracking API',         lead:'Deepavali', assignedTo:'Prem',      deadline:'2026-08-21', priority:1, status:'in_progress', rating:null,             points:0 },
+      { id:7,  projectId:'nutrisure',   title:'Create meal recommendation logic',     lead:'Deepavali', assignedTo:'Vishal',    deadline:'2026-08-17', priority:2, status:'rated',       rating:'meets',          points:5 },
+      { id:8,  projectId:'solobeauty',  title:'Product catalogue UI',                 lead:'Santosh',   assignedTo:'Prem',      deadline:'2026-08-20', priority:2, status:'pending',     rating:null,             points:0 },
+      { id:9,  projectId:'skillsense',  title:'Course module drag-and-drop',          lead:'Swapnil',   assignedTo:'Komal',     deadline:'2026-08-18', priority:1, status:'completed',   rating:null,             points:0 },
+      { id:10, projectId:'skillsense',  title:'Integrate payment gateway',            lead:'Swapnil',   assignedTo:'Ashutosh',  deadline:'2026-08-23', priority:1, status:'pending',     rating:null,             points:0 },
+      { id:11, projectId:'lms',         title:'Student progress dashboard',           lead:'Swapnil',   assignedTo:'Shreya',    deadline:'2026-08-19', priority:2, status:'rated',       rating:'needs_revision', points:3 },
+      { id:12, projectId:'website',     title:'SEO meta tags for all pages',          lead:'Debaditya', assignedTo:'Suraj',     deadline:'2026-08-16', priority:2, status:'completed',   rating:null,             points:0 },
+      { id:13, projectId:'website',     title:'Contact form backend integration',     lead:'Debaditya', assignedTo:'Ashutosh',  deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,             points:0 },
+      { id:14, projectId:'socialmedia', title:'Draft 4 LinkedIn posts for August',    lead:'Debaditya', assignedTo:'Suraj',     deadline:'2026-08-17', priority:2, status:'rated',       rating:'exceeds',        points:8 },
+      { id:15, projectId:'ezest',       title:'Workshop logistics planning',           lead:'Santosh',   assignedTo:'Prerna',    deadline:'2026-08-22', priority:2, status:'pending',     rating:null,             points:0 },
+      { id:16, projectId:'funday',      title:'Finalize venue and schedule',          lead:'Nikita',    assignedTo:'Deepavali', deadline:'2026-08-18', priority:1, status:'in_progress', rating:null,             points:0 },
+      { id:17, projectId:'demoday',     title:'Prepare stakeholder presentations',    lead:'Deepavali', assignedTo:'Prerna',    deadline:'2026-08-25', priority:1, status:'pending',     rating:null,             points:0 },
+      { id:18, projectId:'premises',    title:'Test attendance sync feature',         lead:'Deepavali', assignedTo:'Prem',      deadline:'2026-08-19', priority:1, status:'completed',   rating:null,             points:0 },
+    ];
+
+    // ─── TOAST (same pattern used across the app) ───
+    function showToast(msg, type = 'info') {
+      let c = document.getElementById('toast-container');
+      if (!c) { c = document.createElement('div'); c.id = 'toast-container'; c.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;'; document.body.appendChild(c); }
+      const colors = { success:'#00E5FF', error:'#FF1744', info:'#4FC3F7', warning:'#FFB300' };
+      const t = document.createElement('div');
+      t.style.cssText = `padding:12px 20px;border-radius:6px;font-family:'Inter',sans-serif;font-size:13px;border:1px solid ${colors[type]};color:${colors[type]};background:${colors[type]}18;max-width:340px;`;
+      t.textContent = msg;
+      c.appendChild(t);
+      setTimeout(() => t.remove(), 3500);
+    }
+
+    // ─── SECTION 1: COMPUTED STATS ───
+    function computeAlerts() {
+      const belowMin = MEMBERS.filter(m => m.pts_month < 100);
+      const twoWarns = MEMBERS.filter(m => m.warnings >= 2);
+      const overdue  = ALL_TASKS.filter(t => {
+        if (t.status === 'rated' || t.status === 'completed') return false;
+        return t.deadline < TODAY;
+      });
+      return { belowMin, twoWarns, overdue };
+    }
+
+    function renderStats() {
+      const { belowMin, twoWarns, overdue } = computeAlerts();
+      document.getElementById('statBelowMin').textContent = belowMin.length;
+      document.getElementById('statTwoWarns').textContent = twoWarns.length;
+      document.getElementById('statOverdue').textContent  = overdue.length;
+
+      const totalAlerts = belowMin.length + twoWarns.length + overdue.length;
+      document.getElementById('alertBannerCount').textContent = totalAlerts;
+      document.getElementById('alertBanner').style.display = totalAlerts > 0 ? 'flex' : 'none';
+    }
+
+    // ─── SECTION 2: TEAM OVERVIEW TABLE ───
+    function renderTeamTable() {
+      const sorted = [...MEMBERS].sort((a, b) => b.pts_month - a.pts_month);
       const body = document.getElementById('teamBody');
-      body.innerHTML = TEAM.map(m => {
-        const posHtml = `<div class="rank-pos ${m.posType}">${m.pos}</div>`;
-        const weekCls = m.week.startsWith('-') ? 'td-week neg' : 'td-week';
-        const statusHtml = m.status === 'active'
-          ? '<span class="chip-active">ACTIVE</span>'
-          : '<span class="chip-warning">WARNING</span>';
-        return `<tr>
-      <td>${posHtml}</td>
-      <td>
-        <div class="hunter-cell">
-          <div class="h-avatar" style="border-color:${m.color};color:${m.color};background:${m.color}15">${m.initials}</div>
-          <span class="h-name">${m.name}</span>
-          ${m.you ? '<span class="you-tag">YOU</span>' : ''}
-        </div>
-      </td>
-      <td class="td-pts">${m.pts}</td>
-      <td class="${weekCls}">${m.week}</td>
-      <td class="td-streak">🔥 ${m.streak}</td>
-      <td>${statusHtml}</td>
-      <td>
-        <div class="actions-cell">
-          <button class="btn-pts-pos" onclick="openAddPoints('${m.name}')">+ Points</button>
-          <button class="btn-pts-neg" onclick="openDeductPoints('${m.name}')">- Points</button>
-          <button class="btn-warn" onclick="openWarn('${m.name}')">Warn</button>
-          <button class="btn-overflow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
-        </div>
-      </td>
-    </tr>`;
+      body.innerHTML = sorted.map((m, i) => {
+        const rc = RANK_COLORS[m.rank];
+        const posStyle = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : 'plain';
+        const statusChip = m.status === 'active'
+          ? `<span class="chip-active">ACTIVE</span>`
+          : `<span class="chip-warning">SUSPENDED</span>`;
+        const warnDisplay = m.warnings > 0
+          ? `<span style="color:${m.warnings >= 2 ? 'var(--red)' : 'var(--amber)'}; font-weight:700;">${m.warnings} ⚠</span>`
+          : `<span style="color:var(--text2)">—</span>`;
+
+        return `
+        <tr>
+          <td><div class="rank-pos ${posStyle}">${i + 1}</div></td>
+          <td>
+            <div class="hunter-cell">
+              <div class="h-avatar" style="background:${rc}18;border-color:${rc};color:${rc}">${m.init}</div>
+              <a href="../hunter.html?name=${encodeURIComponent(m.name)}"
+                 style="color:var(--text);text-decoration:none;font-weight:600;font-size:12.5px;"
+                 onmouseover="this.style.color='var(--blue)'"
+                 onmouseout="this.style.color='var(--text)'">${m.name}</a>
+            </div>
+          </td>
+          <td class="td-pts">${m.pts_month}</td>
+          <td class="td-week">+${m.pts_week}</td>
+          <td class="td-streak">🔥 ${m.streak}w</td>
+          <td>${statusChip}</td>
+          <td>${warnDisplay}</td>
+          <td>
+            <div class="actions-cell">
+              <button class="btn-pts-pos" onclick="openPoints('${m.name}','earn')">+ Pts</button>
+              <button class="btn-pts-neg" onclick="openPoints('${m.name}','deduct')">− Pts</button>
+              <button class="btn-warn" onclick="openWarn('${m.name}')">Warn</button>
+            </div>
+          </td>
+        </tr>`;
       }).join('');
     }
 
-    function openAddPoints(name) {
-      document.querySelector('.rp-section:first-child .form-input').value = name;
+    // ─── SECTION 3: ALERTS PANEL ───
+    function renderAlerts() {
+      const { belowMin, twoWarns, overdue } = computeAlerts();
+      const list = document.getElementById('alertList');
+      const items = [];
+
+      twoWarns.forEach(m => {
+        items.push({
+          name: `${m.name} has ${m.warnings} warnings`,
+          desc: 'Further violations may lead to suspension.',
+          time: 'Active',
+          color: 'var(--red)'
+        });
+      });
+
+      belowMin.forEach(m => {
+        items.push({
+          name: `${m.name} is below 100 points (${m.pts_month} pts)`,
+          desc: 'Encourage task completion and attendance.',
+          time: 'Active',
+          color: 'var(--amber)'
+        });
+      });
+
+      if (overdue.length > 0) {
+        items.push({
+          name: `${overdue.length} task${overdue.length > 1 ? 's are' : ' is'} overdue`,
+          desc: overdue.slice(0, 2).map(t => t.title).join(', ') + (overdue.length > 2 ? '...' : ''),
+          time: 'Active',
+          color: 'var(--blue)'
+        });
+      }
+
+      if (items.length === 0) {
+        list.innerHTML = `<div style="text-align:center;color:var(--text2);padding:24px;font-size:13px;">No active alerts. All systems normal.</div>`;
+        return;
+      }
+
+      list.innerHTML = items.map(item => `
+        <div class="alert-item">
+          <div class="alert-icon-wrap" style="border-color:${item.color}33;background:${item.color}10;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="${item.color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <div class="alert-body">
+            <div class="alert-title-row">
+              <span class="alert-name">${item.name}</span>
+              <span class="alert-time" style="color:${item.color}">${item.time}</span>
+            </div>
+            <div class="alert-desc">${item.desc}</div>
+          </div>
+        </div>
+      `).join('');
     }
-    function openDeductPoints(name) {
-      document.querySelector('.rp-section:first-child .form-input').value = name;
+
+    // ─── SECTION 4: HEROES PANEL ───
+    function renderHeroes() {
+      const heroWeek = [...MEMBERS].sort((a, b) => b.pts_week - a.pts_week)[0];
+      document.getElementById('heroWeekName').textContent = heroWeek.name.toUpperCase();
+      document.getElementById('heroWeekPts').textContent = `${heroWeek.pts_week} PTS THIS WEEK`;
+
+      const heroMonth = MEMBERS.filter(m => m.pts_month >= 300).sort((a, b) => b.pts_month - a.pts_month);
+      const hmList = document.getElementById('heroMonthList');
+      if (heroMonth.length === 0) {
+        hmList.innerHTML = `<div style="color:var(--text2);font-size:12px;padding:8px 0;">No members have reached 300 pts yet this month.</div>`;
+      } else {
+        hmList.innerHTML = heroMonth.map(m => `
+          <div class="hm-row">
+            <span class="hm-name">${m.name}</span>
+            <span class="hm-pts">${m.pts_month} PTS</span>
+          </div>
+        `).join('');
+      }
     }
-    function openWarn(name) {
-      document.querySelector('.rp-section:last-child .form-input').value = name;
+
+    // ─── MODAL CONTROLLERS ───
+    function openModal(modalId) {
+      const backdrop = document.getElementById('modalBackdrop');
+      document.querySelectorAll('.modal-card').forEach(m => m.classList.remove('active'));
+      const target = document.getElementById(modalId);
+      if (target) target.classList.add('active');
+      backdrop.classList.add('active');
+    }
+
+    function closeAllModals() {
+      const backdrop = document.getElementById('modalBackdrop');
+      if (backdrop) backdrop.classList.remove('active');
+      document.querySelectorAll('.modal-card').forEach(m => m.classList.remove('active'));
+    }
+
+    function handleBackdropClick(e) {
+      if (e.target.id === 'modalBackdrop') {
+        closeAllModals();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeAllModals();
+    });
+
+    function openAddMemberModal() {
+      document.getElementById('fAddName').value = '';
+      document.getElementById('fAddUsername').value = '';
+      document.getElementById('fAddPassword').value = '';
+      document.getElementById('fAddRole').selectedIndex = 0;
+      openModal('modalAddMember');
+    }
+
+    function openPointsModal(memberName, type = 'earn') {
+      if (memberName) {
+        const sel = document.getElementById('fMember');
+        if (sel) sel.value = memberName;
+      }
+      const typeEl = document.getElementById('fType');
+      if (typeEl) typeEl.value = type;
+      openModal('modalPoints');
+    }
+
+    function openWarnModal(memberName) {
+      if (memberName) {
+        const sel = document.getElementById('fWarnMember');
+        if (sel) sel.value = memberName;
+      }
+      openModal('modalWarn');
+    }
+
+    function toggleAddPw() {
+      const pw = document.getElementById('fAddPassword');
+      pw.type = pw.type === 'password' ? 'text' : 'password';
+    }
+
+    function populateMemberDropdowns() {
+      const options = '<option value="" disabled selected>Select member</option>' +
+        MEMBERS.map(m => `<option value="${m.name}">${m.name}</option>`).join('');
+      ['#fMember', '#fWarnMember'].forEach(sel => {
+        const el = document.querySelector(sel);
+        if (el) el.innerHTML = options;
+      });
+    }
+
+    function createHunterFromModal() {
+      const name = document.getElementById('fAddName').value.trim();
+      const username = document.getElementById('fAddUsername').value.trim();
+      const role = document.getElementById('fAddRole').value;
+
+      if (!name) {
+        showToast('Please enter full name.', 'error');
+        return;
+      }
+
+      const init = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'HU';
+      const newMember = {
+        name: name,
+        init: init,
+        pts_week: 0,
+        pts_month: 100,
+        streak: 0,
+        rank: 'd',
+        warnings: 0,
+        status: 'active'
+      };
+
+      MEMBERS.unshift(newMember);
+      renderStats();
+      renderTeamTable();
+      renderAlerts();
+      populateMemberDropdowns();
+      closeAllModals();
+      showToast(`Hunter "${name}" created successfully!`, 'success');
+    }
+
+    function logPoints() {
+      const member   = document.getElementById('fMember').value;
+      const type     = document.getElementById('fType').value;
+      const category = document.getElementById('fCategory').value;
+      const ptsVal   = document.getElementById('fPoints').value;
+      const reason   = document.getElementById('fReason').value;
+
+      if (!member || !type || !category || !ptsVal || !reason) {
+        showToast('Please fill all fields before logging points.', 'error');
+        return;
+      }
+
+      const pts = parseInt(ptsVal);
+      const m = MEMBERS.find(x => x.name === member);
+      if (m) {
+        const delta = type === 'earn' ? Math.abs(pts) : -Math.abs(pts);
+        m.pts_month = Math.max(0, m.pts_month + delta);
+        if (delta > 0) m.pts_week += delta;
+      }
+
+      renderStats();
+      renderTeamTable();
+      renderAlerts();
+      renderHeroes();
+      closeAllModals();
+      showToast(`Points logged for ${member} (${type === 'earn' ? '+' : '-'}${Math.abs(pts)} pts).`, 'success');
+    }
+
+    function issueWarning() {
+      const member = document.getElementById('fWarnMember').value;
+      const reason = document.getElementById('fWarnReason').value;
+      if (!member || !reason) {
+        showToast('Please select a member and enter a reason.', 'error');
+        return;
+      }
+
+      const m = MEMBERS.find(x => x.name === member);
+      if (m) {
+        m.warnings += 1;
+      }
+
+      renderStats();
+      renderTeamTable();
+      renderAlerts();
+      closeAllModals();
+      showToast(`Warning issued to ${member}.`, 'warning');
+    }
+
+    function openPoints(memberName, type) {
+      openPointsModal(memberName, type);
+    }
+
+    function openWarn(memberName) {
+      openWarnModal(memberName);
+    }
+
+    // ─── SECTION 8: HERO CONFIRM BUTTONS ───
+    function confirmHero(type) {
+      if (type === 'week') {
+        const hw = [...MEMBERS].sort((a, b) => b.pts_week - a.pts_week)[0];
+        showToast(`Hero of Week confirmed: ${hw.name} (${hw.pts_week} pts). Will notify in next phase.`, 'success');
+      } else {
+        const hm = MEMBERS.filter(m => m.pts_month >= 300);
+        if (hm.length === 0) {
+          showToast('No members have reached 300 pts this month yet.', 'info');
+        } else {
+          showToast(`Hero of Month confirmed: ${hm.map(m => m.name).join(', ')}. Will notify in next phase.`, 'success');
+        }
+      }
     }
 
     document.getElementById('collapseBtn').addEventListener('click', () => {
@@ -1417,7 +1955,17 @@
         : '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
     });
 
-    renderTeam();
+    const TODAY = '2026-08-16';
+
+    function init() {
+      renderStats();
+      renderTeamTable();
+      renderAlerts();
+      renderHeroes();
+      populateMemberDropdowns();
+    }
+
+    init();
   </script>
 </body>
 
