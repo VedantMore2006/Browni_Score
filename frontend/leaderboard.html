@@ -144,7 +144,6 @@ thead th { padding:10px 16px; font-family:'Rajdhani',sans-serif; font-size:10px;
 tbody tr { border-bottom:1px solid rgba(79,195,247,0.05); transition:background 0.15s; position:relative; }
 tbody tr:hover { background:rgba(79,195,247,0.03); }
 tbody tr:last-child { border-bottom:none; }
-tbody tr.you-row { background:rgba(79,195,247,0.06); }
 
 td { padding:11px 16px; color:var(--text); vertical-align:middle; }
 td.td-pos { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--text2); width:60px; position:relative; padding-left:20px; }
@@ -178,7 +177,6 @@ td.td-pos { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--tex
   border:1px solid;
 }
 .hunter-name { font-weight:600; font-size:13px; color:var(--text); }
-.you-tag { display:inline-block; margin-left:8px; padding:1px 8px; background:rgba(79,195,247,0.12); border:1px solid rgba(79,195,247,0.35); border-radius:3px; font-size:10px; font-weight:700; color:var(--blue); font-family:'Rajdhani',sans-serif; letter-spacing:0.5px; }
 
 .td-pts { font-family:'Bebas Neue',sans-serif; font-size:14px; color:var(--teal); letter-spacing:0.5px; }
 .td-streak { font-size:13px; color:var(--text2); display:flex; align-items:center; gap:5px; }
@@ -248,12 +246,15 @@ td.td-pos { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--tex
   <div class="main">
     <!-- TOPBAR -->
     <div class="topbar">
-      <h1 class="page-title">HUNTER RANKINGS</h1>
+      <div>
+        <h1 class="page-title">HUNTER RANKINGS</h1>
+        <p style="font-size:13px;color:var(--text2);margin-top:2px;">Public ranking of all Vitals&amp;Vectors team members</p>
+      </div>
       <div class="scoring-badge">
         <div class="scoring-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
         <div class="scoring-text">
           <div class="scoring-label">Scoring Period</div>
-          <div class="scoring-period">12 May – 18 May 2025</div>
+          <div class="scoring-period" id="scoringPeriod">Loading...</div>
         </div>
         <div class="scoring-cal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
       </div>
@@ -269,80 +270,7 @@ td.td-pos { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--tex
       </div>
 
       <!-- PODIUM -->
-      <div class="podium">
-
-        <!-- #2 AARAV SINGH -->
-        <div class="podium-card second">
-          <div class="pos-badge silver">2</div>
-          <div class="avatar-wrap">
-            <!-- wings -->
-            <svg class="wings silver-wings" viewBox="0 0 110 55" fill="none" stroke="currentColor" stroke-width="1">
-              <path d="M55,28 C45,20 25,15 5,22 C20,24 35,28 45,35 Z" fill="currentColor" opacity="0.5"/>
-              <path d="M55,28 C65,20 85,15 105,22 C90,24 75,28 65,35 Z" fill="currentColor" opacity="0.5"/>
-              <path d="M55,28 C42,18 18,12 2,18 C18,21 38,27 48,36 Z" fill="currentColor" opacity="0.3"/>
-              <path d="M55,28 C68,18 92,12 108,18 C92,21 72,27 62,36 Z" fill="currentColor" opacity="0.3"/>
-            </svg>
-            <div class="podium-avatar silver">AS</div>
-          </div>
-          <div class="podium-name">AARAV SINGH</div>
-          <div class="podium-pts silver">7,650 PTS</div>
-          <div class="rank-label-row">
-            <div class="rank-hex-sm s">S</div>
-            <span class="rank-label-text s">SILVER HUNTER</span>
-          </div>
-        </div>
-
-        <!-- #1 RIYA SHARMA -->
-        <div class="podium-card first">
-          <div class="hero-badge-corner week">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l3 6 4-2 4 2 3-6H5z"/></svg>
-            <div class="hb-top">HERO</div>
-            <div class="hb-bot">OF WEEK</div>
-          </div>
-          <div class="pos-badge gold">1</div>
-          <div class="avatar-wrap">
-            <svg class="wings gold-wings" viewBox="0 0 110 55" fill="none" stroke="currentColor" stroke-width="1">
-              <path d="M55,28 C45,20 25,15 5,22 C20,24 35,28 45,35 Z" fill="currentColor" opacity="0.6"/>
-              <path d="M55,28 C65,20 85,15 105,22 C90,24 75,28 65,35 Z" fill="currentColor" opacity="0.6"/>
-              <path d="M55,28 C42,18 18,12 2,18 C18,21 38,27 48,36 Z" fill="currentColor" opacity="0.35"/>
-              <path d="M55,28 C68,18 92,12 108,18 C92,21 72,27 62,36 Z" fill="currentColor" opacity="0.35"/>
-            </svg>
-            <div class="podium-avatar gold">RV</div>
-          </div>
-          <div class="podium-name">RIYA SHARMA</div>
-          <div class="podium-pts gold">12,450 PTS</div>
-          <div class="rank-label-row">
-            <div class="rank-hex-sm a">A</div>
-            <span class="rank-label-text a">GOLD HUNTER</span>
-          </div>
-        </div>
-
-        <!-- #3 ARJUN VERMA -->
-        <div class="podium-card third">
-          <div class="hero-badge-corner month">
-            <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <div class="hb-top">HERO</div>
-            <div class="hb-bot">OF MONTH</div>
-          </div>
-          <div class="pos-badge bronze">3</div>
-          <div class="avatar-wrap">
-            <svg class="wings bronze-wings" viewBox="0 0 110 55" fill="none" stroke="currentColor" stroke-width="1">
-              <path d="M55,28 C45,20 25,15 5,22 C20,24 35,28 45,35 Z" fill="currentColor" opacity="0.5"/>
-              <path d="M55,28 C65,20 85,15 105,22 C90,24 75,28 65,35 Z" fill="currentColor" opacity="0.5"/>
-              <path d="M55,28 C42,18 18,12 2,18 C18,21 38,27 48,36 Z" fill="currentColor" opacity="0.25"/>
-              <path d="M55,28 C68,18 92,12 108,18 C92,21 72,27 62,36 Z" fill="currentColor" opacity="0.25"/>
-            </svg>
-            <div class="podium-avatar bronze">AV</div>
-          </div>
-          <div class="podium-name">ARJUN VERMA</div>
-          <div class="podium-pts bronze">5,980 PTS</div>
-          <div class="rank-label-row">
-            <div class="rank-hex-sm c">C</div>
-            <span class="rank-label-text c">IRON HUNTER</span>
-          </div>
-        </div>
-
-      </div><!-- /podium -->
+      <div class="podium" id="podium"></div>
 
       <!-- LEADERBOARD TABLE -->
       <div class="lb-table-wrap">
@@ -352,7 +280,7 @@ td.td-pos { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--tex
               <th>POS</th>
               <th>RANK</th>
               <th>HUNTER</th>
-              <th>POINTS (THIS WEEK)</th>
+              <th id="ptsColHeader">POINTS (THIS WEEK)</th>
               <th>STREAK</th>
               <th>HERO BADGE</th>
             </tr>
@@ -379,48 +307,185 @@ td.td-pos { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--tex
 </div><!-- /shell -->
 
 <script>
-const ROWS = [
-  { pos:4,  rank:'s', initials:'PP', name:'PRANAV PATIL',    pts:'4,820 PTS', streak:'3w', hero:false, you:false, accentColor:'#00E5FF' },
-  { pos:5,  rank:'a', initials:'NK', name:'NEHA KULKARNI',   pts:'4,210 PTS', streak:'2w', hero:false, you:false, accentColor:'#FFD700' },
-  { pos:6,  rank:'b', initials:'AK', name:'ANIKET KAMBLE',   pts:'3,780 PTS', streak:'2w', hero:false, you:false, accentColor:'#4FC3F7' },
-  { pos:7,  rank:'b', initials:'SM', name:'SIDDHANT MORE',   pts:'3,450 PTS', streak:'1w', hero:false, you:false, accentColor:'#4FC3F7' },
-  { pos:8,  rank:'s', initials:'AS', name:'AARAV SINGH',     pts:'2,800 PTS', streak:'1w', hero:false, you:true,  accentColor:'#00E5FF' },
-  { pos:9,  rank:'c', initials:'SP', name:'SNEHA PAWAR',     pts:'2,300 PTS', streak:'1w', hero:false, you:false, accentColor:'#B0B0B0' },
-  { pos:10, rank:'d', initials:'RK', name:'RITIK KADAM',     pts:'1,950 PTS', streak:'0w', hero:false, you:false, accentColor:'#CD7F32' },
+const MEMBERS = [
+  // name, initials, pts_week, pts_month, streak_weeks, rank
+  { name:'Ganesh',    init:'GA', pts_week:70,  pts_month:320, streak:4, rank:'s'  },
+  { name:'Debaditya', init:'DE', pts_week:65,  pts_month:298, streak:3, rank:'a'  },
+  { name:'Deepavali', init:'DW', pts_week:58,  pts_month:260, streak:3, rank:'a'  },
+  { name:'Nandini',   init:'NA', pts_week:55,  pts_month:245, streak:3, rank:'b'  },
+  { name:'Swapnil',   init:'SW', pts_week:48,  pts_month:220, streak:2, rank:'b'  },
+  { name:'Suraj',     init:'SU', pts_week:45,  pts_month:210, streak:2, rank:'b'  },
+  { name:'Santosh',   init:'SA', pts_week:40,  pts_month:195, streak:2, rank:'c'  },
+  { name:'Nikita',    init:'NK', pts_week:38,  pts_month:185, streak:2, rank:'c'  },
+  { name:'Vedant',    init:'VE', pts_week:35,  pts_month:170, streak:2, rank:'c'  },
+  { name:'Nakul',     init:'NC', pts_week:30,  pts_month:155, streak:1, rank:'c'  },
+  { name:'Ashutosh',  init:'AS', pts_week:28,  pts_month:140, streak:1, rank:'d'  },
+  { name:'Vishal',    init:'VS', pts_week:25,  pts_month:130, streak:1, rank:'d'  },
+  { name:'Komal',     init:'KO', pts_week:22,  pts_month:118, streak:1, rank:'d'  },
+  { name:'Prerna',    init:'PR', pts_week:20,  pts_month:110, streak:1, rank:'d'  },
+  { name:'Shreya',    init:'SH', pts_week:18,  pts_month:100, streak:0, rank:'d'  },
+  { name:'Prem',      init:'PM', pts_week:15,  pts_month:88,  streak:0, rank:'e'  },
+  { name:'Krishna',   init:'KR', pts_week:12,  pts_month:72,  streak:0, rank:'e'  },
+  { name:'SAB',       init:'SB', pts_week:8,   pts_month:45,  streak:0, rank:'e'  },
 ];
 
-const RANK_COLORS = { s:'#00E5FF', a:'#FFD700', b:'#4FC3F7', c:'#B0B0B0', d:'#CD7F32', e:'#8A93A8' };
-const ACCENT_COLORS = { 4:'#FFD700', 5:'#FFD700', 6:'#CD7F32', 7:'#4FC3F7', 8:'#4FC3F7' };
+const RANK_COLORS = {
+  ss: '#9A7BFF',
+  s:  '#00E5FF',
+  a:  '#FFD700',
+  b:  '#4FC3F7',
+  c:  '#B0B0B0',
+  d:  '#CD7F32',
+  e:  '#8A93A8',
+};
 
-function renderRows() {
-  const body = document.getElementById('lbBody');
-  body.innerHTML = ROWS.map(r => {
-    const rc = RANK_COLORS[r.rank];
-    const accentColor = r.pos <= 7 ? ACCENT_COLORS[r.pos] || rc : rc;
+const RANK_LABELS = {
+  ss: 'Shadow Monarch',
+  s:  'Platinum Hunter',
+  a:  'Gold Hunter',
+  b:  'Silver Hunter',
+  c:  'Iron Hunter',
+  d:  'Bronze Hunter',
+  e:  'Unranked Hunter',
+};
+
+let activeTab = 'week'; // 'week' or 'month'
+
+function getSorted() {
+  const key = activeTab === 'week' ? 'pts_week' : 'pts_month';
+  return [...MEMBERS].sort((a, b) => b[key] - a[key]);
+}
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tabWeek').classList.toggle('active', tab === 'week');
+  document.getElementById('tabMonth').classList.toggle('active', tab === 'month');
+  document.getElementById('ptsColHeader').textContent = tab === 'week' ? 'POINTS (THIS WEEK)' : 'POINTS (THIS MONTH)';
+  render();
+}
+
+function fmt(d) {
+  return d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+}
+
+function updateScoringPeriod() {
+  const now = new Date();
+  if (activeTab === 'week') {
+    const day = now.getDay(); // 0=Sun
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - (day === 0 ? 6 : day - 1));
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    document.getElementById('scoringPeriod').textContent = `${fmt(monday)} – ${fmt(sunday)}`;
+  } else {
+    const first = new Date(now.getFullYear(), now.getMonth(), 1);
+    const last  = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    document.getElementById('scoringPeriod').textContent = `${fmt(first)} – ${fmt(last)}`;
+  }
+}
+
+function renderPodium(sorted) {
+  const top3 = [sorted[1], sorted[0], sorted[2]]; // left=2nd, center=1st, right=3rd
+  const styles = ['second', 'first', 'third'];
+  const badgeStyles = ['silver', 'gold', 'bronze'];
+  const positions = [2, 1, 3];
+
+  document.getElementById('podium').innerHTML = top3.map((m, i) => {
+    if (!m) return '';
+    const pos = positions[i];
+    const style = styles[i];
+    const badgeStyle = badgeStyles[i];
+    const rc = RANK_COLORS[m.rank];
+    const pts = activeTab === 'week' ? m.pts_week : m.pts_month;
+    const isHeroWeek = activeTab === 'week' && pos === 1;
+    const isHeroMonth = activeTab === 'month' && pts >= 300;
+
+    const wingClass = badgeStyle + '-wings';
+    const rl = RANK_LABELS[m.rank];
+
     return `
-    <tr class="${r.you ? 'you-row' : ''}">
+    <div class="podium-card ${style}">
+      ${isHeroWeek ? `
+        <div class="hero-badge-corner week">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l3 6 4-2 4 2 3-6H5z"/></svg>
+          <div class="hb-top">HERO</div>
+          <div class="hb-bot">OF WEEK</div>
+        </div>` : ''}
+      ${isHeroMonth ? `
+        <div class="hero-badge-corner month">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <div class="hb-top">HERO</div>
+          <div class="hb-bot">OF MONTH</div>
+        </div>` : ''}
+      <div class="pos-badge ${badgeStyle}">${pos}</div>
+      <div class="avatar-wrap">
+        <svg class="wings ${wingClass}" viewBox="0 0 110 55" fill="none" stroke="currentColor" stroke-width="1">
+          <path d="M55,28 C45,20 25,15 5,22 C20,24 35,28 45,35 Z" fill="currentColor" opacity="0.5"/>
+          <path d="M55,28 C65,20 85,15 105,22 C90,24 75,28 65,35 Z" fill="currentColor" opacity="0.5"/>
+          <path d="M55,28 C42,18 18,12 2,18 C18,21 38,27 48,36 Z" fill="currentColor" opacity="0.3"/>
+          <path d="M55,28 C68,18 92,12 108,18 C92,21 72,27 62,36 Z" fill="currentColor" opacity="0.3"/>
+        </svg>
+        <div class="podium-avatar ${badgeStyle}">${m.init}</div>
+      </div>
+      <a href="hunter.html?name=${encodeURIComponent(m.name)}" style="color:inherit;text-decoration:none;" class="podium-name">${m.name.toUpperCase()}</a>
+      <div class="podium-pts ${badgeStyle}">${pts} PTS</div>
+      <div class="rank-label-row">
+        <div class="rank-hex-sm ${m.rank}" style="border-color:${rc};background:${rc}18;color:${rc}">${m.rank.toUpperCase()}</div>
+        <span class="rank-label-text ${m.rank}" style="color:${rc}">${rl}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderTable(sorted) {
+  const body = document.getElementById('lbBody');
+  const tableRows = sorted.slice(3);
+
+  if (tableRows.length === 0) {
+    body.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text2);padding:32px;">No data available</td></tr>`;
+    return;
+  }
+
+  body.innerHTML = tableRows.map((m, i) => {
+    const pos = i + 4;
+    const rc = RANK_COLORS[m.rank];
+    const pts = activeTab === 'week' ? m.pts_week : m.pts_month;
+    const isHeroMonth = activeTab === 'month' && pts >= 300;
+    const heroCell = isHeroMonth
+      ? `<span style="font-size:11px;font-weight:700;font-family:'Rajdhani',sans-serif;letter-spacing:0.5px;color:var(--purple);background:rgba(154,123,255,0.12);border:1px solid rgba(154,123,255,0.4);padding:2px 8px;border-radius:3px;">⭐ HERO</span>`
+      : `<span style="color:var(--text3)">–</span>`;
+
+    return `
+    <tr>
       <td class="td-pos">
-        <div class="pos-bar" style="background:${accentColor}"></div>
-        ${r.pos}
+        <div class="pos-bar" style="background:${rc}"></div>
+        ${pos}
       </td>
-      <td><div class="rank-hex-tbl ${r.rank}">${r.rank.toUpperCase()}</div></td>
       <td>
-        <div class="hunter-cell">
-          <div class="hunter-avatar" style="background:${rc}18;border-color:${rc};color:${rc}">${r.initials}</div>
-          <span class="hunter-name">${r.name}</span>
-          ${r.you ? '<span class="you-tag">You</span>' : ''}
+        <div class="rank-hex-tbl ${m.rank}" style="border-color:${rc}88;background:${rc}18;color:${rc}">
+          ${m.rank.toUpperCase()}
         </div>
       </td>
-      <td class="td-pts">${r.pts}</td>
-      <td class="td-streak"><span class="flame">🔥</span> ${r.streak}</td>
-      <td class="td-hero">–</td>
+      <td>
+        <div class="hunter-cell">
+          <div class="hunter-avatar" style="background:${rc}18;border-color:${rc};color:${rc}">${m.init}</div>
+          <a href="hunter.html?name=${encodeURIComponent(m.name)}" style="color:var(--text);text-decoration:none;" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text)'">
+            <span class="hunter-name">${m.name}</span>
+          </a>
+        </div>
+      </td>
+      <td class="td-pts">${pts} PTS</td>
+      <td class="td-streak"><span class="flame">🔥</span> ${m.streak}w</td>
+      <td class="td-hero">${heroCell}</td>
     </tr>`;
   }).join('');
 }
 
-function switchTab(tab) {
-  document.getElementById('tabWeek').classList.toggle('active', tab === 'week');
-  document.getElementById('tabMonth').classList.toggle('active', tab === 'month');
+function render() {
+  const sorted = getSorted();
+  renderPodium(sorted);
+  renderTable(sorted);
+  updateScoringPeriod();
 }
 
 document.getElementById('collapseBtn').addEventListener('click', () => {
@@ -432,7 +497,7 @@ document.getElementById('collapseBtn').addEventListener('click', () => {
     : '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
 });
 
-renderRows();
+render();
 </script>
 </body>
 </html>

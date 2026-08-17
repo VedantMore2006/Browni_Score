@@ -1,557 +1,902 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vitals&Vectors — Point History</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/global.css">
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitals&Vectors — Point History</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/global.css">
+  <style>
+    /* ── CONTENT ── */
+    .content {
+      flex: 1;
+      padding: 20px 28px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
 
-/* ── CONTENT ── */
-.content { flex:1; padding:20px 28px 20px; overflow-y:auto; display:flex; flex-direction:column; gap:18px; }
+    /* ── FILTER CHIPS ── */
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
-/* ── FILTER CHIPS ── */
-.filter-bar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-.filter-chip {
-  display:flex; align-items:center; gap:6px;
-  padding:6px 16px; border-radius:20px;
-  border:1px solid var(--border);
-  background:transparent;
-  font-family:'Inter',sans-serif; font-size:13px; font-weight:500;
-  color:var(--text2); cursor:pointer; transition:all 0.2s;
-  white-space:nowrap;
-}
-.filter-chip:hover { border-color:rgba(79,195,247,0.35); color:var(--text); }
-.filter-chip.active {
-  border-color:var(--blue);
-  background:rgba(79,195,247,0.08);
-  color:var(--blue);
-}
-.filter-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .filter-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text2);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
 
-/* ── MEMBER SELECTOR ── */
-.member-selector { display:flex; gap:6px; flex-wrap:wrap; padding:4px 0; }
-.member-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 12px 5px 6px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text2);
-  font-family: 'Inter', sans-serif;
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-}
-.member-pill:hover {
-  border-color: rgba(79,195,247,0.4);
-  color: var(--text);
-}
-.member-pill.active {
-  border-color: var(--blue);
-  background: rgba(79,195,247,0.08);
-  color: var(--blue);
-}
-.member-pill.all-members { padding: 5px 14px; }
-.member-avatar-sm {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: rgba(79,195,247,0.12);
-  border: 1px solid rgba(79,195,247,0.3);
-  color: var(--blue);
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
+    .filter-chip:hover {
+      border-color: rgba(79, 195, 247, 0.35);
+      color: var(--text);
+    }
 
-/* ── STAT CARDS ── */
-.stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    .filter-chip.active {
+      border-color: var(--blue);
+      background: rgba(79, 195, 247, 0.08);
+      color: var(--blue);
+    }
 
-.stat-card {
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:8px;
-  padding:18px 20px;
-  display:flex; align-items:center; gap:16px;
-  position:relative; overflow:hidden;
-  transition:border-color 0.2s, box-shadow 0.2s;
-}
-.stat-card:hover { border-color:rgba(79,195,247,0.3); box-shadow:0 0 20px rgba(79,195,247,0.08); }
+    .filter-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
 
-.stat-icon-ring {
-  width:48px; height:48px; border-radius:50%; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  border:2px solid;
-}
-.stat-icon-ring svg { width:20px; height:20px; }
-.stat-icon-ring.earn  { border-color:var(--teal);   background:rgba(0,229,255,0.08); color:var(--teal); }
-.stat-icon-ring.deduct{ border-color:var(--red);    background:rgba(255,23,68,0.08); color:var(--red);  }
-.stat-icon-ring.net   { border-color:var(--blue);   background:rgba(79,195,247,0.08); color:var(--blue); }
+    /* ── MEMBER SELECTOR ── */
+    .member-selector {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding: 4px 0;
+    }
 
-.stat-info { flex:1; min-width:0; }
-.stat-label { font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text2); margin-bottom:4px; }
-.stat-value { font-family:'Bebas Neue',sans-serif; font-size:2rem; letter-spacing:0.04em; line-height:1; }
-.stat-value.earn   { color:var(--teal); }
-.stat-value.deduct { color:var(--red);  }
-.stat-value.net    { color:var(--teal); }
+    .member-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 12px 5px 6px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text2);
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
 
-/* sparkline canvas */
-.sparkline { width:80px; height:40px; flex-shrink:0; }
+    .member-pill:hover {
+      border-color: rgba(79, 195, 247, 0.4);
+      color: var(--text);
+    }
 
-/* ── TABLE ── */
-.table-card {
-  background:var(--panel); border:1px solid var(--border); border-radius:8px;
-  overflow:hidden; flex:1; display:flex; flex-direction:column;
-}
-.table-wrap { overflow-x:auto; flex:1; }
-table { width:100%; border-collapse:collapse; font-size:13px; }
-thead tr { background:var(--elevated); border-bottom:1px solid var(--border); }
-thead th { padding:12px 16px; font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--text2); text-align:left; white-space:nowrap; }
-tbody tr { border-bottom:1px solid rgba(79,195,247,0.05); transition:background 0.15s; }
-tbody tr:hover { background:rgba(79,195,247,0.03); }
-tbody tr:last-child { border-bottom:none; }
-td { padding:13px 16px; color:var(--text); vertical-align:middle; }
+    .member-pill.active {
+      border-color: var(--blue);
+      background: rgba(79, 195, 247, 0.08);
+      color: var(--blue);
+    }
 
-.td-datetime { font-size:13px; color:var(--text2); white-space:nowrap; }
-.td-reason { font-size:13px; color:var(--text); }
-.td-loggedby { font-size:13px; color:var(--text2); }
+    .member-pill.all-members {
+      padding: 5px 14px;
+    }
 
-/* member column */
-.td-member { display:flex; align-items:center; gap:8px; }
-.member-avatar-tbl {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(79,195,247,0.1);
-  border: 1px solid rgba(79,195,247,0.3);
-  color: var(--blue);
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-.member-name-tbl {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-  cursor: pointer;
-}
-.member-name-tbl:hover {
-  color: var(--blue);
-  text-decoration: underline;
-}
+    .member-avatar-sm {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(79, 195, 247, 0.12);
+      border: 1px solid rgba(79, 195, 247, 0.3);
+      color: var(--blue);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
 
-/* category chips */
-.cat-chip { display:inline-flex; align-items:center; justify-content:center; padding:3px 12px; border-radius:4px; font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.4px; border:1px solid; white-space:nowrap; }
-.cat-attendance { background:rgba(255,179,0,0.12);   border-color:rgba(255,179,0,0.5);   color:var(--amber); }
-.cat-task       { background:rgba(79,195,247,0.12);  border-color:rgba(79,195,247,0.45); color:var(--blue); }
-.cat-learning   { background:rgba(154,123,255,0.12); border-color:rgba(154,123,255,0.45);color:var(--purple); }
-.cat-content    { background:rgba(0,229,255,0.10);   border-color:rgba(0,229,255,0.4);   color:var(--teal); }
-.cat-streak     { background:rgba(0,230,118,0.10);   border-color:rgba(0,230,118,0.4);   color:var(--green); }
-.cat-conduct    { background:rgba(255,23,68,0.10);   border-color:rgba(255,23,68,0.45);  color:var(--red); }
+    /* ── STAT CARDS ── */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
 
-/* points column */
-.pts-earn   { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:0.5px; color:var(--teal); }
-.pts-deduct { font-family:'Bebas Neue',sans-serif; font-size:15px; letter-spacing:0.5px; color:var(--red); }
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
 
-/* ── PAGINATION ── */
-.pagination-row { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-top:1px solid var(--border); background:var(--elevated); flex-shrink:0; }
-.pagination-info { font-size:12px; color:var(--text2); }
-.pagination-controls { display:flex; align-items:center; gap:4px; }
-.pg-btn { min-width:30px; height:30px; padding:0 6px; background:transparent; border:1px solid var(--border); border-radius:4px; color:var(--text2); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; font-weight:600; font-family:'Inter',sans-serif; transition:all 0.2s; }
-.pg-btn:hover { border-color:rgba(79,195,247,0.4); color:var(--blue); }
-.pg-btn.active { background:rgba(79,195,247,0.12); border-color:var(--blue); color:var(--blue); }
-.pg-btn svg { width:14px; height:14px; }
-.pg-btn:disabled { opacity:0.35; cursor:not-allowed; }
-.pg-ellipsis { color:var(--text2); font-size:13px; padding:0 4px; }
+    .stat-card:hover {
+      border-color: rgba(79, 195, 247, 0.3);
+      box-shadow: 0 0 20px rgba(79, 195, 247, 0.08);
+    }
 
-/* scrollbar */
-</style>
+    .stat-icon-ring {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid;
+    }
+
+    .stat-icon-ring svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .stat-icon-ring.earn {
+      border-color: var(--teal);
+      background: rgba(0, 229, 255, 0.08);
+      color: var(--teal);
+    }
+
+    .stat-icon-ring.deduct {
+      border-color: var(--red);
+      background: rgba(255, 23, 68, 0.08);
+      color: var(--red);
+    }
+
+    .stat-icon-ring.net {
+      border-color: var(--blue);
+      background: rgba(79, 195, 247, 0.08);
+      color: var(--blue);
+    }
+
+    .stat-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .stat-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text2);
+      margin-bottom: 4px;
+    }
+
+    .stat-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    .stat-value.earn {
+      color: var(--teal);
+    }
+
+    .stat-value.deduct {
+      color: var(--red);
+    }
+
+    .stat-value.net {
+      color: var(--teal);
+    }
+
+    /* sparkline canvas */
+    .sparkline {
+      width: 80px;
+      height: 40px;
+      flex-shrink: 0;
+    }
+
+    /* ── TABLE ── */
+    .table-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      flex: 1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead tr {
+      background: var(--elevated);
+      border-bottom: 1px solid var(--border);
+    }
+
+    thead th {
+      padding: 12px 16px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text2);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(79, 195, 247, 0.05);
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: rgba(79, 195, 247, 0.03);
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    td {
+      padding: 13px 16px;
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    .td-datetime {
+      font-size: 13px;
+      color: var(--text2);
+      white-space: nowrap;
+    }
+
+    .td-reason {
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .td-loggedby {
+      font-size: 13px;
+      color: var(--text2);
+    }
+
+    /* member column */
+    .td-member {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .member-avatar-tbl {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(79, 195, 247, 0.1);
+      border: 1px solid rgba(79, 195, 247, 0.3);
+      color: var(--blue);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .member-name-tbl {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .member-name-tbl:hover {
+      color: var(--blue);
+      text-decoration: underline;
+    }
+
+    /* category chips */
+    .cat-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 12px;
+      border-radius: 4px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+
+    .cat-attendance {
+      background: rgba(255, 179, 0, 0.12);
+      border-color: rgba(255, 179, 0, 0.5);
+      color: var(--amber);
+    }
+
+    .cat-task {
+      background: rgba(79, 195, 247, 0.12);
+      border-color: rgba(79, 195, 247, 0.45);
+      color: var(--blue);
+    }
+
+    .cat-learning {
+      background: rgba(154, 123, 255, 0.12);
+      border-color: rgba(154, 123, 255, 0.45);
+      color: var(--purple);
+    }
+
+    .cat-content {
+      background: rgba(0, 229, 255, 0.10);
+      border-color: rgba(0, 229, 255, 0.4);
+      color: var(--teal);
+    }
+
+    .cat-streak {
+      background: rgba(0, 230, 118, 0.10);
+      border-color: rgba(0, 230, 118, 0.4);
+      color: var(--green);
+    }
+
+    .cat-conduct {
+      background: rgba(255, 23, 68, 0.10);
+      border-color: rgba(255, 23, 68, 0.45);
+      color: var(--red);
+    }
+
+    /* points column */
+    .pts-earn {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+      color: var(--teal);
+    }
+
+    .pts-deduct {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+      color: var(--red);
+    }
+
+    /* ── PAGINATION ── */
+    .pagination-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      background: var(--elevated);
+      flex-shrink: 0;
+    }
+
+    .pagination-info {
+      font-size: 12px;
+      color: var(--text2);
+    }
+
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pg-btn {
+      min-width: 30px;
+      height: 30px;
+      padding: 0 6px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .pg-btn:hover {
+      border-color: rgba(79, 195, 247, 0.4);
+      color: var(--blue);
+    }
+
+    .pg-btn.active {
+      background: rgba(79, 195, 247, 0.12);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    .pg-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .pg-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .pg-ellipsis {
+      color: var(--text2);
+      font-size: 13px;
+      padding: 0 4px;
+    }
+
+    /* scrollbar */
+  </style>
 </head>
+
 <body>
-<div class="shell">
+  <div class="shell">
 
-  <!-- ── SIDEBAR ── -->
-  <nav class="sidebar" id="sidebar">
-    <div class="logo-area">
-      <div class="logo-wordmark">
-        <div class="logo-vv">V&amp;V</div>
-        <div class="logo-sub">Vitals&amp;Vectors</div>
-      </div>
-    </div>
-
-    <div class="nav-menu">
-      <a class="nav-item" href="dashboard.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
-        <span class="nav-label">Dashboard</span>
-      </a>
-      <a class="nav-item" href="tasks.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span>
-        <span class="nav-label">Tasks</span>
-      </a>
-      <a class="nav-item active" href="point-log.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-        <span class="nav-label">Point Log</span>
-      </a>
-      <a class="nav-item" href="leaderboard.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
-        <span class="nav-label">Leaderboard</span>
-      </a>
-      <a class="nav-item" href="attendance.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
-        <span class="nav-label">Attendance</span>
-      </a>
-      <a class="nav-item" href="rules.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
-        <span class="nav-label">Rules</span>
-      </a>
-      <div class="nav-divider"></div>
-      <a class="nav-item" href="settings.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg></span>
-        <span class="nav-label">Settings</span>
-      </a>
-      <div class="nav-divider"></div>
-      <a class="nav-item nav-admin" href="admin/admin_dashboard.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-        <span class="nav-label">Admin panel</span>
-      </a>
-    </div>
-
-    <div class="sidebar-bottom">
-      <div class="profile-row">
-        <div class="profile-avatar">AS</div>
-        <div class="profile-info">
-          <div class="profile-name">Aarav Singh</div>
-          <div class="profile-role">Coordinator</div>
-        </div>
-      </div>
-      <div class="profile-badge">
-        <div class="badge-hex">S</div>
-        <span class="badge-text">SILVER HUNTER</span>
-      </div>
-      <div class="nav-logout">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span class="nav-logout-label">Logout</span></div>
-      <div class="collapse-btn" id="collapseBtn">
-        <svg id="collapseIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/></svg>
-      </div>
-    </div>
-  </nav>
-
-  <!-- ── MAIN ── -->
-  <div class="main">
-    <div class="topbar">
-      <h1 class="page-title">POINT HISTORY</h1>
-      <div style="font-size:13px; color:var(--text2); margin-top:2px;">Public record of all team point activity</div>
-    </div>
-
-    <div class="content">
-
-      <!-- FILTER BAR -->
-      <div class="filter-bar" id="filterBar">
-        <button class="filter-chip active" onclick="setFilter('all',this)">
-          <div class="filter-dot" style="background:var(--blue)"></div> All
-        </button>
-        <button class="filter-chip" onclick="setFilter('attendance',this)">
-          <div class="filter-dot" style="background:var(--amber)"></div> Attendance
-        </button>
-        <button class="filter-chip" onclick="setFilter('task',this)">
-          <div class="filter-dot" style="background:var(--blue)"></div> Task
-        </button>
-        <button class="filter-chip" onclick="setFilter('learning',this)">
-          <div class="filter-dot" style="background:var(--purple)"></div> Learning
-        </button>
-        <button class="filter-chip" onclick="setFilter('content',this)">
-          <div class="filter-dot" style="background:var(--teal)"></div> Content
-        </button>
-        <button class="filter-chip" onclick="setFilter('streak',this)">
-          <div class="filter-dot" style="background:var(--green)"></div> Streak
-        </button>
-        <button class="filter-chip" onclick="setFilter('conduct',this)">
-          <div class="filter-dot" style="background:var(--red)"></div> Conduct
-        </button>
-      </div>
-
-      <!-- MEMBER SELECTOR -->
-      <div class="member-selector" id="memberSelector"></div>
-
-      <!-- STAT CARDS -->
-      <div class="stat-row">
-        <!-- Earned -->
-        <div class="stat-card">
-          <div class="stat-icon-ring earn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-          </div>
-          <div class="stat-info">
-            <div class="stat-label" id="lblEarn">Total Earned (All Members)</div>
-            <div class="stat-value earn" id="valEarn">+0</div>
-          </div>
-          <canvas class="sparkline" id="sparkEarn"></canvas>
-        </div>
-        <!-- Deducted -->
-        <div class="stat-card">
-          <div class="stat-icon-ring deduct">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
-          </div>
-          <div class="stat-info">
-            <div class="stat-label" id="lblDeduct">Total Deducted (All Members)</div>
-            <div class="stat-value deduct" id="valDeduct">-0</div>
-          </div>
-          <canvas class="sparkline" id="sparkDeduct"></canvas>
-        </div>
-        <!-- Net -->
-        <div class="stat-card">
-          <div class="stat-icon-ring net">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="8" x2="12" y2="16"/><circle cx="12" cy="12" r="3"/></svg>
-          </div>
-          <div class="stat-info">
-            <div class="stat-label" id="lblNet">Net (All Members)</div>
-            <div class="stat-value net" id="valNet">+0</div>
-          </div>
-          <canvas class="sparkline" id="sparkNet"></canvas>
+    <!-- ── SIDEBAR ── -->
+    <nav class="sidebar" id="sidebar">
+      <div class="logo-area">
+        <div class="logo-wordmark">
+          <div class="logo-vv">V&amp;V</div>
+          <div class="logo-sub">Vitals&amp;Vectors</div>
         </div>
       </div>
 
-      <!-- TABLE -->
-      <div class="table-card">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>DATE &amp; TIME</th>
-                <th>MEMBER</th>
-                <th>CATEGORY</th>
-                <th>POINTS</th>
-                <th>REASON</th>
-                <th>LOGGED BY</th>
-              </tr>
-            </thead>
-            <tbody id="logBody"></tbody>
-          </table>
-        </div>
-        <!-- PAGINATION -->
-        <div class="pagination-row">
-          <span class="pagination-info" id="pageInfo">Showing 1 to 10 of 64 entries</span>
-          <div class="pagination-controls" id="pgControls"></div>
-        </div>
+      <div class="nav-menu">
+        <a class="nav-item" href="dashboard.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg></span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a class="nav-item" href="tasks.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4" />
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+            </svg></span>
+          <span class="nav-label">Tasks</span>
+        </a>
+        <a class="nav-item active" href="point-log.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg></span>
+          <span class="nav-label">Point Log</span>
+        </a>
+        <a class="nav-item" href="leaderboard.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg></span>
+          <span class="nav-label">Leaderboard</span>
+        </a>
+        <a class="nav-item" href="attendance.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg></span>
+          <span class="nav-label">Attendance</span>
+        </a>
+        <a class="nav-item" href="rules.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg></span>
+          <span class="nav-label">Rules</span>
+        </a>
+        <div class="nav-divider"></div>
+        <a class="nav-item" href="settings.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14" />
+            </svg></span>
+          <span class="nav-label">Settings</span>
+        </a>
+        <div class="nav-divider"></div>
+        <a class="nav-item nav-admin" href="admin/admin_dashboard.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg></span>
+          <span class="nav-label">Admin panel</span>
+        </a>
       </div>
 
-    </div><!-- /content -->
-  </div><!-- /main -->
-</div><!-- /shell -->
+      <div class="sidebar-bottom">
+        <div class="profile-row">
+          <div class="profile-avatar">AS</div>
+          <div class="profile-info">
+            <div class="profile-name">Aarav Singh</div>
+            <div class="profile-role">Coordinator</div>
+          </div>
+        </div>
+        <div class="profile-badge">
+          <div class="badge-hex">S</div>
+          <span class="badge-text">SILVER HUNTER</span>
+        </div>
+        <div class="nav-logout">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg><span class="nav-logout-label">Logout</span>
+        </div>
+        <div class="collapse-btn" id="collapseBtn">
+          <svg id="collapseIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <line x1="9" y1="3" x2="9" y2="21" />
+            <polyline points="16 15 13 12 16 9" />
+          </svg>
+        </div>
+      </div>
+    </nav>
 
-<script>
-// ── DATA ──────────────────────────────────────────────
-const ALL_MEMBERS = [
-  'Deepavali', 'Santosh', 'Debaditya', 'Swapnil', 'Ganesh', 'Nikita',
-  'Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Prem',
-  'Komal', 'Shreya', 'Vishal', 'Suraj', 'Krishna', 'SAB'
-];
+    <!-- ── MAIN ── -->
+    <div class="main">
+      <div class="topbar">
+        <h1 class="page-title">POINT HISTORY</h1>
+        <div style="font-size:13px; color:var(--text2); margin-top:2px;">Public record of all team point activity</div>
+      </div>
 
-const ALL_LOGS = [
-  // Ganesh
-  { id:1,  member:'Ganesh',    datetime:'2026-08-16, 09:30 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting — full week streak',          by:'System'    },
-  { id:2,  member:'Ganesh',    datetime:'2026-08-15, 06:00 PM', cat:'task',       type:'earn',   pts:8,   reason:'Task rated: Exceeds expectation — MindSpace UI', by:'Deepavali' },
-  { id:3,  member:'Ganesh',    datetime:'2026-08-15, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
-  { id:4,  member:'Ganesh',    datetime:'2026-08-14, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week presence streak bonus',                by:'System'    },
+      <div class="content">
 
-  // Deepavali
-  { id:5,  member:'Deepavali', datetime:'2026-08-16, 10:00 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:6,  member:'Deepavali', datetime:'2026-08-15, 05:45 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — NutriSure API',  by:'Santosh'   },
-  { id:7,  member:'Deepavali', datetime:'2026-08-14, 11:30 AM', cat:'attendance', type:'deduct', pts:-10, reason:'Late arrival — outside 9:30–11:30 AM window',    by:'System'    },
-  { id:8,  member:'Deepavali', datetime:'2026-08-13, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week task reporting streak bonus',          by:'System'    },
+        <!-- FILTER BAR -->
+        <div class="filter-bar" id="filterBar">
+          <button class="filter-chip active" onclick="setFilter('all',this)">
+            <div class="filter-dot" style="background:var(--blue)"></div> All
+          </button>
+          <button class="filter-chip" onclick="setFilter('attendance',this)">
+            <div class="filter-dot" style="background:var(--amber)"></div> Attendance
+          </button>
+          <button class="filter-chip" onclick="setFilter('task',this)">
+            <div class="filter-dot" style="background:var(--blue)"></div> Task
+          </button>
+          <button class="filter-chip" onclick="setFilter('learning',this)">
+            <div class="filter-dot" style="background:var(--purple)"></div> Learning
+          </button>
+          <button class="filter-chip" onclick="setFilter('content',this)">
+            <div class="filter-dot" style="background:var(--teal)"></div> Content
+          </button>
+          <button class="filter-chip" onclick="setFilter('streak',this)">
+            <div class="filter-dot" style="background:var(--green)"></div> Streak
+          </button>
+          <button class="filter-chip" onclick="setFilter('conduct',this)">
+            <div class="filter-dot" style="background:var(--red)"></div> Conduct
+          </button>
+        </div>
 
-  // Santosh
-  { id:9,  member:'Santosh',   datetime:'2026-08-16, 09:45 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:10, member:'Santosh',   datetime:'2026-08-15, 03:00 PM', cat:'task',       type:'earn',   pts:8,   reason:'Task rated: Exceeds expectation — SoloBeauty',   by:'Ganesh'    },
-  { id:11, member:'Santosh',   datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Led learning session — Technical',               by:'System'    },
-  { id:12, member:'Santosh',   datetime:'2026-08-13, 04:00 PM', cat:'conduct',    type:'deduct', pts:-20, reason:'Non-compliance after 3rd warning',               by:'Admin'     },
+        <!-- MEMBER SELECTOR -->
+        <div class="member-selector" id="memberSelector"></div>
 
-  // Debaditya
-  { id:13, member:'Debaditya', datetime:'2026-08-16, 10:10 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:14, member:'Debaditya', datetime:'2026-08-15, 06:15 PM', cat:'task',       type:'earn',   pts:8,   reason:'Task rated: Exceeds expectation — LinkedIn posts',by:'Swapnil'   },
-  { id:15, member:'Debaditya', datetime:'2026-08-15, 02:30 PM', cat:'content',    type:'earn',   pts:5,   reason:'Content post published — LinkedIn',              by:'System'    },
-  { id:16, member:'Debaditya', datetime:'2026-08-14, 04:30 PM', cat:'streak',     type:'earn',   pts:20,  reason:'85% weekly task completion bonus',               by:'System'    },
+        <!-- STAT CARDS -->
+        <div class="stat-row">
+          <!-- Earned -->
+          <div class="stat-card">
+            <div class="stat-icon-ring earn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="12" y1="19" x2="12" y2="5" />
+                <polyline points="5 12 12 5 19 12" />
+              </svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label" id="lblEarn">Total Earned (All Members)</div>
+              <div class="stat-value earn" id="valEarn">+0</div>
+            </div>
+            <canvas class="sparkline" id="sparkEarn"></canvas>
+          </div>
+          <!-- Deducted -->
+          <div class="stat-card">
+            <div class="stat-icon-ring deduct">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <polyline points="19 12 12 19 5 12" />
+              </svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label" id="lblDeduct">Total Deducted (All Members)</div>
+              <div class="stat-value deduct" id="valDeduct">-0</div>
+            </div>
+            <canvas class="sparkline" id="sparkDeduct"></canvas>
+          </div>
+          <!-- Net -->
+          <div class="stat-card">
+            <div class="stat-icon-ring net">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9" />
+                <line x1="8" y1="12" x2="16" y2="12" />
+                <line x1="12" y1="8" x2="12" y2="16" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label" id="lblNet">Net (All Members)</div>
+              <div class="stat-value net" id="valNet">+0</div>
+            </div>
+            <canvas class="sparkline" id="sparkNet"></canvas>
+          </div>
+        </div>
 
-  // Swapnil
-  { id:17, member:'Swapnil',   datetime:'2026-08-16, 09:55 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:18, member:'Swapnil',   datetime:'2026-08-15, 05:00 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — SkillSense',     by:'Nikita'    },
-  { id:19, member:'Swapnil',   datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
-  { id:20, member:'Swapnil',   datetime:'2026-08-13, 09:00 AM', cat:'attendance', type:'deduct', pts:-5,  reason:'Missed alternate-day task sync (4:00–4:30 PM)',   by:'System'    },
+        <!-- TABLE -->
+        <div class="table-card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>DATE &amp; TIME</th>
+                  <th>MEMBER</th>
+                  <th>CATEGORY</th>
+                  <th>POINTS</th>
+                  <th>REASON</th>
+                  <th>LOGGED BY</th>
+                </tr>
+              </thead>
+              <tbody id="logBody"></tbody>
+            </table>
+          </div>
+          <!-- PAGINATION -->
+          <div class="pagination-row">
+            <span class="pagination-info" id="pageInfo">Showing 1 to 10 of 64 entries</span>
+            <div class="pagination-controls" id="pgControls"></div>
+          </div>
+        </div>
 
-  // Nikita
-  { id:21, member:'Nikita',    datetime:'2026-08-16, 10:20 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:22, member:'Nikita',    datetime:'2026-08-15, 04:30 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — Fun Day logistics',by:'Deepavali'},
-  { id:23, member:'Nikita',    datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
-  { id:24, member:'Nikita',    datetime:'2026-08-14, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week presence streak bonus',                by:'System'    },
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /shell -->
 
-  // Vedant
-  { id:25, member:'Vedant',    datetime:'2026-08-16, 10:30 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:26, member:'Vedant',    datetime:'2026-08-15, 05:30 PM', cat:'task',       type:'earn',   pts:8,   reason:'Task rated: Exceeds expectation — MindSpace onboarding',by:'Ganesh'},
-  { id:27, member:'Vedant',    datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
-  { id:28, member:'Vedant',    datetime:'2026-08-13, 11:45 AM', cat:'attendance', type:'deduct', pts:-10, reason:'Late arrival — outside reporting window',        by:'System'    },
+  <script>
+    // ── DATA ──────────────────────────────────────────────
+    const ALL_MEMBERS = [
+      'Deepavali', 'Santosh', 'Debaditya', 'Swapnil', 'Ganesh', 'Nikita',
+      'Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Prem',
+      'Komal', 'Shreya', 'Vishal', 'Suraj', 'Krishna', 'SAB'
+    ];
 
-  // Nakul
-  { id:29, member:'Nakul',     datetime:'2026-08-16, 10:05 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:30, member:'Nakul',     datetime:'2026-08-15, 04:00 PM', cat:'task',       type:'earn',   pts:3,   reason:'Task rated: Needs revision — Session timeout fix',by:'Ganesh'   },
-  { id:31, member:'Nakul',     datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
-  { id:32, member:'Nakul',     datetime:'2026-08-13, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week task reporting streak bonus',          by:'System'    },
+    const ALL_LOGS = [
+      // Ganesh
+      { id: 1, member: 'Ganesh', datetime: '2026-08-16, 09:30 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting — full week streak', by: 'System' },
+      { id: 2, member: 'Ganesh', datetime: '2026-08-15, 06:00 PM', cat: 'task', type: 'earn', pts: 8, reason: 'Task rated: Exceeds expectation — MindSpace UI', by: 'Deepavali' },
+      { id: 3, member: 'Ganesh', datetime: '2026-08-15, 02:30 PM', cat: 'learning', type: 'earn', pts: 5, reason: 'Attended learning hour', by: 'System' },
+      { id: 4, member: 'Ganesh', datetime: '2026-08-14, 04:30 PM', cat: 'streak', type: 'earn', pts: 10, reason: 'Full week presence streak bonus', by: 'System' },
 
-  // Ashutosh
-  { id:33, member:'Ashutosh',  datetime:'2026-08-16, 09:40 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:34, member:'Ashutosh',  datetime:'2026-08-15, 06:00 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — Website backend', by:'Debaditya' },
-  { id:35, member:'Ashutosh',  datetime:'2026-08-14, 02:30 PM', cat:'content',    type:'earn',   pts:5,   reason:'Content post published — Instagram',             by:'System'    },
-  { id:36, member:'Ashutosh',  datetime:'2026-08-13, 05:00 PM', cat:'learning',   type:'deduct', pts:-15, reason:'Missed learning hour (2:00–2:30 PM)',            by:'System'    },
+      // Deepavali
+      { id: 5, member: 'Deepavali', datetime: '2026-08-16, 10:00 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 6, member: 'Deepavali', datetime: '2026-08-15, 05:45 PM', cat: 'task', type: 'earn', pts: 5, reason: 'Task rated: Meets expectation — NutriSure API', by: 'Santosh' },
+      { id: 7, member: 'Deepavali', datetime: '2026-08-14, 11:30 AM', cat: 'attendance', type: 'deduct', pts: -10, reason: 'Late arrival — outside 9:30–11:30 AM window', by: 'System' },
+      { id: 8, member: 'Deepavali', datetime: '2026-08-13, 04:30 PM', cat: 'streak', type: 'earn', pts: 10, reason: 'Full week task reporting streak bonus', by: 'System' },
 
-  // Prerna
-  { id:37, member:'Prerna',    datetime:'2026-08-16, 10:45 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:38, member:'Prerna',    datetime:'2026-08-15, 03:30 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — E-Zest logistics',by:'Santosh'  },
-  { id:39, member:'Prerna',    datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
-  { id:40, member:'Prerna',    datetime:'2026-08-14, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week presence streak bonus',                by:'System'    },
+      // Santosh
+      { id: 9, member: 'Santosh', datetime: '2026-08-16, 09:45 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 10, member: 'Santosh', datetime: '2026-08-15, 03:00 PM', cat: 'task', type: 'earn', pts: 8, reason: 'Task rated: Exceeds expectation — SoloBeauty', by: 'Ganesh' },
+      { id: 11, member: 'Santosh', datetime: '2026-08-14, 02:30 PM', cat: 'learning', type: 'earn', pts: 5, reason: 'Led learning session — Technical', by: 'System' },
+      { id: 12, member: 'Santosh', datetime: '2026-08-13, 04:00 PM', cat: 'conduct', type: 'deduct', pts: -20, reason: 'Non-compliance after 3rd warning', by: 'Admin' },
 
-  // Prem
-  { id:41, member:'Prem',      datetime:'2026-08-16, 11:00 AM', cat:'attendance', type:'deduct', pts:-10, reason:'Late arrival — outside 9:30–11:30 AM window',    by:'System'    },
-  { id:42, member:'Prem',      datetime:'2026-08-15, 05:15 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — NutriSure tracking',by:'Deepavali'},
-  { id:43, member:'Prem',      datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
-  { id:44, member:'Prem',      datetime:'2026-08-13, 04:30 PM', cat:'task',       type:'earn',   pts:5,   reason:'Daily check-in completed',                       by:'Deepavali' },
+      // Debaditya
+      { id: 13, member: 'Debaditya', datetime: '2026-08-16, 10:10 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 14, member: 'Debaditya', datetime: '2026-08-15, 06:15 PM', cat: 'task', type: 'earn', pts: 8, reason: 'Task rated: Exceeds expectation — LinkedIn posts', by: 'Swapnil' },
+      { id: 15, member: 'Debaditya', datetime: '2026-08-15, 02:30 PM', cat: 'content', type: 'earn', pts: 5, reason: 'Content post published — LinkedIn', by: 'System' },
+      { id: 16, member: 'Debaditya', datetime: '2026-08-14, 04:30 PM', cat: 'streak', type: 'earn', pts: 20, reason: '85% weekly task completion bonus', by: 'System' },
 
-  // Komal
-  { id:45, member:'Komal',     datetime:'2026-08-16, 09:50 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:46, member:'Komal',     datetime:'2026-08-15, 04:45 PM', cat:'task',       type:'earn',   pts:3,   reason:'Task rated: Needs revision — Course drag-and-drop',by:'Swapnil' },
-  { id:47, member:'Komal',     datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
-  { id:48, member:'Komal',     datetime:'2026-08-13, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week task reporting streak bonus',          by:'System'    },
+      // Swapnil
+      { id: 17, member: 'Swapnil', datetime: '2026-08-16, 09:55 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 18, member: 'Swapnil', datetime: '2026-08-15, 05:00 PM', cat: 'task', type: 'earn', pts: 5, reason: 'Task rated: Meets expectation — SkillSense', by: 'Nikita' },
+      { id: 19, member: 'Swapnil', datetime: '2026-08-14, 02:30 PM', cat: 'learning', type: 'earn', pts: 5, reason: 'Attended learning hour', by: 'System' },
+      { id: 20, member: 'Swapnil', datetime: '2026-08-13, 09:00 AM', cat: 'attendance', type: 'deduct', pts: -5, reason: 'Missed alternate-day task sync (4:00–4:30 PM)', by: 'System' },
 
-  // Shreya
-  { id:49, member:'Shreya',    datetime:'2026-08-16, 10:15 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:50, member:'Shreya',    datetime:'2026-08-15, 05:00 PM', cat:'task',       type:'earn',   pts:3,   reason:'Task rated: Needs revision — LMS progress dashboard',by:'Swapnil'},
-  { id:51, member:'Shreya',    datetime:'2026-08-14, 04:30 PM', cat:'attendance', type:'deduct', pts:-5,  reason:'Missed alternate-day task sync',                 by:'System'    },
-  { id:52, member:'Shreya',    datetime:'2026-08-13, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
+      // Nikita
+      { id: 21, member: 'Nikita', datetime: '2026-08-16, 10:20 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 22, member: 'Nikita', datetime: '2026-08-15, 04:30 PM', cat: 'task', type: 'earn', pts: 5, reason: 'Task rated: Meets expectation — Fun Day logistics', by: 'Deepavali' },
+      { id: 23, member: 'Nikita', datetime: '2026-08-14, 02:30 PM', cat: 'learning', type: 'earn', pts: 5, reason: 'Attended learning hour', by: 'System' },
+      { id: 24, member: 'Nikita', datetime: '2026-08-14, 04:30 PM', cat: 'streak', type: 'earn', pts: 10, reason: 'Full week presence streak bonus', by: 'System' },
 
-  // Vishal
-  { id:53, member:'Vishal',    datetime:'2026-08-16, 09:35 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:54, member:'Vishal',    datetime:'2026-08-15, 04:00 PM', cat:'task',       type:'earn',   pts:5,   reason:'Task rated: Meets expectation — Meal recommendation',by:'Deepavali'},
-  { id:55, member:'Vishal',    datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
-  { id:56, member:'Vishal',    datetime:'2026-08-14, 04:30 PM', cat:'streak',     type:'earn',   pts:10,  reason:'Full week presence streak bonus',                by:'System'    },
+      // Vedant
+      { id: 25, member: 'Vedant', datetime: '2026-08-16, 10:30 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 26, member: 'Vedant', datetime: '2026-08-15, 05:30 PM', cat: 'task', type: 'earn', pts: 8, reason: 'Task rated: Exceeds expectation — MindSpace onboarding', by: 'Ganesh' },
+      { id: 27, member: 'Vedant', datetime: '2026-08-14, 02:30 PM', cat: 'learning', type: 'earn', pts: 5, reason: 'Attended learning hour', by: 'System' },
+      { id: 28, member: 'Vedant', datetime: '2026-08-13, 11:45 AM', cat: 'attendance', type: 'deduct', pts: -10, reason: 'Late arrival — outside reporting window', by: 'System' },
 
-  // Suraj
-  { id:57, member:'Suraj',     datetime:'2026-08-16, 10:00 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:58, member:'Suraj',     datetime:'2026-08-15, 05:30 PM', cat:'task',       type:'earn',   pts:8,   reason:'Task rated: Exceeds expectation — LinkedIn posts', by:'Debaditya' },
-  { id:59, member:'Suraj',     datetime:'2026-08-15, 02:30 PM', cat:'content',    type:'earn',   pts:5,   reason:'Content post published — X / Twitter',           by:'System'    },
-  { id:60, member:'Suraj',     datetime:'2026-08-14, 11:00 AM', cat:'attendance', type:'deduct', pts:-10, reason:'Absent without prior notice',                    by:'System'    },
+      // Nakul
+      { id: 29, member: 'Nakul', datetime: '2026-08-16, 10:05 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 30, member: 'Nakul', datetime: '2026-08-15, 04:00 PM', cat: 'task', type: 'earn', pts: 3, reason: 'Task rated: Needs revision — Session timeout fix', by: 'Ganesh' },
+      { id: 31, member: 'Nakul', datetime: '2026-08-14, 02:30 PM', cat: 'learning', type: 'earn', pts: 5, reason: 'Attended learning hour', by: 'System' },
+      { id: 32, member: 'Nakul', datetime: '2026-08-13, 04:30 PM', cat: 'streak', type: 'earn', pts: 10, reason: 'Full week task reporting streak bonus', by: 'System' },
 
-  // Nandini
-  { id:61, member:'Nandini',   datetime:'2026-08-16, 09:55 AM', cat:'attendance', type:'earn',   pts:5,   reason:'On-time reporting',                              by:'System'    },
-  { id:62, member:'Nandini',   datetime:'2026-08-15, 04:30 PM', cat:'task',       type:'earn',   pts:8,   reason:'Task rated: Exceeds expectation — Dashboard wireframes',by:'Ganesh'},
-  { id:63, member:'Nandini',   datetime:'2026-08-14, 02:30 PM', cat:'learning',   type:'earn',   pts:5,   reason:'Attended learning hour',                         by:'System'    },
-  { id:64, member:'Nandini',   datetime:'2026-08-14, 04:30 PM', cat:'streak',     type:'earn',   pts:20,  reason:'85% weekly task completion bonus',               by:'System'    },
-];
+      // Ashutosh
+      { id: 33, member: 'Ashutosh', datetime: '2026-08-16, 09:40 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 34, member: 'Ashutosh', datetime: '2026-08-15, 06:00 PM', cat: 'task', type: 'earn', pts: 5, reason: 'Task rated: Meets expectation — Website backend', by: 'Debaditya' },
+      { id: 35, member: 'Ashutosh', datetime: '2026-08-14, 02:30 PM', cat: 'content', type: 'earn', pts: 5, reason: 'Content post published — Instagram', by: 'System' },
+      { id: 36, member: 'Ashutosh', datetime: '2026-08-13, 05:00 PM', cat: 'learning', type: 'deduct', pts: -15, reason: 'Missed learning hour (2:00–2:30 PM)', by: 'System' },
 
-const PER_PAGE = 10;
-let currentPage = 1;
-let activeCategory = 'all';
-let activeMember = null;
+      // Prerna
+      { id: 37, member: 'Prerna', datetime: '2026-08-16, 10:45 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 38, member: 'Prerna', datetime: '2026-08-15, 03:30 PM', cat: 'task', type: 'earn', pts: 5, reason: 'Task rated: Meets expectation — E-Zest logistics', by: 'Santosh' },
+      { id: 39, member: 'Prerna', datetime: '2026-08-14, 02:30 PM', cat: 'learning', type: 'earn', pts: 5, reason: 'Attended learning hour', by: 'System' },
+      { id: 40, member: 'Prerna', datetime: '2026-08-14, 04:30 PM', cat: 'streak', type: 'earn', pts: 10, reason: 'Full week presence streak bonus', by: 'System' },
 
-// ── HELPERS ───────────────────────────────────────────
-function initials(name) {
-  const parts = name.trim().split(' ');
-  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
-  return name.slice(0, 2).toUpperCase();
-}
+      // Prem
+      { id: 41, member: 'Prem', datetime: '2026-08-16, 11:00 AM', cat: 'attendance', type: 'deduct', pts: -10, reason: 'Late arrival — outside 9:30–11:30 AM window', by: 'System' },
+      { id: 42, member: 'Prem', datetime: '2026-08-15, 05:15 PM', cat: 'task', type: 'earn', pts: 5, reason: 'Task rated: Meets expectation — NutriSure tracking', by: 'Deepavali' },
+      { id: 43, member: 'Prem', datetime: '2026-08-14, 02:30 PM', cat: 'learning', type: 'earn', pts: 5, reason: 'Attended learning hour', by: 'System' },
+      { id: 44, member: 'Prem', datetime: '2026-08-13, 04:30 PM', cat: 'task', type: 'earn', pts: 5, reason: 'Daily check-in completed', by: 'Deepavali' },
 
-function catChip(cat) {
-  const map = {
-    attendance: ['cat-attendance', 'ATTENDANCE'],
-    task:       ['cat-task',       'TASK'],
-    learning:   ['cat-learning',   'LEARNING'],
-    content:    ['cat-content',    'CONTENT'],
-    streak:     ['cat-streak',     'STREAK'],
-    conduct:    ['cat-conduct',    'CONDUCT'],
-  };
-  const [cls, label] = map[cat] || ['cat-task', cat.toUpperCase()];
-  return `<span class="cat-chip ${cls}">${label}</span>`;
-}
+      // Komal
+      { id: 45, member: 'Komal', datetime: '2026-08-16, 09:50 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 46, member: 'Komal', datetime: '2026-08-15, 04:45 PM', cat: 'task', type: 'earn', pts: 3, reason: 'Task rated: Needs revision — Course drag-and-drop', by: 'Swapnil' },
+      { id: 47, member: 'Komal', datetime: '2026-08-14, 02:30 PM', cat: 'learning', type: 'earn', pts: 5, reason: 'Attended learning hour', by: 'System' },
+      { id: 48, member: 'Komal', datetime: '2026-08-13, 04:30 PM', cat: 'streak', type: 'earn', pts: 10, reason: 'Full week task reporting streak bonus', by: 'System' },
 
-function ptsCell(log) {
-  if (log.type === 'earn')
-    return `<span class="pts-earn">+${log.pts}</span>`;
-  return `<span class="pts-deduct">${log.pts}</span>`;
-}
+      // Shreya
+      { id: 49, member: 'Shreya', datetime: '2026-08-16, 10:15 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 50, member: 'Shreya', datetime: '2026-08-15, 05:00 PM', cat: 'task', type: 'earn', pts: 3, reason: 'Task rated: Needs revision — LMS progress dashboard', by: 'Swapnil' },
+      { id: 51, member: 'Shreya', datetime: '2026-08-14, 04:30 PM', cat: 'attendance', type: 'deduct', pts: -5, reason: 'Missed alternate-day task sync', by: 'System' },
+      { id: 52, member: 'Shreya', datetime: '2026-08-13, 02:30 PM', cat: 'learning', type: 'earn', pts: 5, reason: 'Attended learning hour', by: 'System' },
 
-function computeStats(logs) {
-  const earned   = logs.filter(l => l.type === 'earn').reduce((s,l) => s + l.pts, 0);
-  const deducted = logs.filter(l => l.type === 'deduct').reduce((s,l) => s + Math.abs(l.pts), 0);
-  const net      = earned - deducted;
-  return { earned, deducted, net };
-}
+      // Vishal
+      { id: 53, member: 'Vishal', datetime: '2026-08-16, 09:35 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 54, member: 'Vishal', datetime: '2026-08-15, 04:00 PM', cat: 'task', type: 'earn', pts: 5, reason: 'Task rated: Meets expectation — Meal recommendation', by: 'Deepavali' },
+      { id: 55, member: 'Vishal', datetime: '2026-08-14, 02:30 PM', cat: 'learning', type: 'earn', pts: 5, reason: 'Attended learning hour', by: 'System' },
+      { id: 56, member: 'Vishal', datetime: '2026-08-14, 04:30 PM', cat: 'streak', type: 'earn', pts: 10, reason: 'Full week presence streak bonus', by: 'System' },
 
-// ── MEMBER SELECTOR ───────────────────────────────────
-function renderMemberSelector() {
-  const wrap = document.getElementById('memberSelector');
-  let html = `<button class="member-pill all-members ${activeMember === null ? 'active' : ''}" onclick="setMember(null)">ALL MEMBERS</button>`;
-  html += ALL_MEMBERS.map(m =>
-    `<button class="member-pill ${activeMember === m ? 'active' : ''}" onclick="setMember('${m}')">
+      // Suraj
+      { id: 57, member: 'Suraj', datetime: '2026-08-16, 10:00 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 58, member: 'Suraj', datetime: '2026-08-15, 05:30 PM', cat: 'task', type: 'earn', pts: 8, reason: 'Task rated: Exceeds expectation — LinkedIn posts', by: 'Debaditya' },
+      { id: 59, member: 'Suraj', datetime: '2026-08-15, 02:30 PM', cat: 'content', type: 'earn', pts: 5, reason: 'Content post published — X / Twitter', by: 'System' },
+      { id: 60, member: 'Suraj', datetime: '2026-08-14, 11:00 AM', cat: 'attendance', type: 'deduct', pts: -10, reason: 'Absent without prior notice', by: 'System' },
+
+      // Nandini
+      { id: 61, member: 'Nandini', datetime: '2026-08-16, 09:55 AM', cat: 'attendance', type: 'earn', pts: 5, reason: 'On-time reporting', by: 'System' },
+      { id: 62, member: 'Nandini', datetime: '2026-08-15, 04:30 PM', cat: 'task', type: 'earn', pts: 8, reason: 'Task rated: Exceeds expectation — Dashboard wireframes', by: 'Ganesh' },
+      { id: 63, member: 'Nandini', datetime: '2026-08-14, 02:30 PM', cat: 'learning', type: 'earn', pts: 5, reason: 'Attended learning hour', by: 'System' },
+      { id: 64, member: 'Nandini', datetime: '2026-08-14, 04:30 PM', cat: 'streak', type: 'earn', pts: 20, reason: '85% weekly task completion bonus', by: 'System' },
+    ];
+
+    const PER_PAGE = 10;
+    let currentPage = 1;
+    let activeCategory = 'all';
+    let activeMember = null;
+
+    // ── HELPERS ───────────────────────────────────────────
+    function initials(name) {
+      const parts = name.trim().split(' ');
+      if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+      return name.slice(0, 2).toUpperCase();
+    }
+
+    function catChip(cat) {
+      const map = {
+        attendance: ['cat-attendance', 'ATTENDANCE'],
+        task: ['cat-task', 'TASK'],
+        learning: ['cat-learning', 'LEARNING'],
+        content: ['cat-content', 'CONTENT'],
+        streak: ['cat-streak', 'STREAK'],
+        conduct: ['cat-conduct', 'CONDUCT'],
+      };
+      const [cls, label] = map[cat] || ['cat-task', cat.toUpperCase()];
+      return `<span class="cat-chip ${cls}">${label}</span>`;
+    }
+
+    function ptsCell(log) {
+      if (log.type === 'earn')
+        return `<span class="pts-earn">+${log.pts}</span>`;
+      return `<span class="pts-deduct">${log.pts}</span>`;
+    }
+
+    function computeStats(logs) {
+      const earned = logs.filter(l => l.type === 'earn').reduce((s, l) => s + l.pts, 0);
+      const deducted = logs.filter(l => l.type === 'deduct').reduce((s, l) => s + Math.abs(l.pts), 0);
+      const net = earned - deducted;
+      return { earned, deducted, net };
+    }
+
+    // ── MEMBER SELECTOR ───────────────────────────────────
+    function renderMemberSelector() {
+      const wrap = document.getElementById('memberSelector');
+      let html = `<button class="member-pill all-members ${activeMember === null ? 'active' : ''}" onclick="setMember(null)">ALL MEMBERS</button>`;
+      html += ALL_MEMBERS.map(m =>
+        `<button class="member-pill ${activeMember === m ? 'active' : ''}" onclick="setMember('${m}')">
       <span class="member-avatar-sm">${initials(m)}</span>${m}
     </button>`
-  ).join('');
-  wrap.innerHTML = html;
-}
+      ).join('');
+      wrap.innerHTML = html;
+    }
 
-function setMember(name) {
-  activeMember = name;
-  currentPage = 1;
-  renderMemberSelector();
-  render();
-}
+    function setMember(name) {
+      activeMember = name;
+      currentPage = 1;
+      renderMemberSelector();
+      render();
+    }
 
-// ── CATEGORY FILTER ───────────────────────────────────
-function setFilter(cat, el) {
-  activeCategory = cat;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  currentPage = 1;
-  render();
-}
+    // ── CATEGORY FILTER ───────────────────────────────────
+    function setFilter(cat, el) {
+      activeCategory = cat;
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      currentPage = 1;
+      render();
+    }
 
-// ── FILTERING ─────────────────────────────────────────
-function getFiltered() {
-  return ALL_LOGS.filter(l => {
-    const catMatch = activeCategory === 'all' || l.cat === activeCategory;
-    const memMatch = activeMember === null || l.member === activeMember;
-    return catMatch && memMatch;
-  });
-}
+    // ── FILTERING ─────────────────────────────────────────
+    function getFiltered() {
+      return ALL_LOGS.filter(l => {
+        const catMatch = activeCategory === 'all' || l.cat === activeCategory;
+        const memMatch = activeMember === null || l.member === activeMember;
+        return catMatch && memMatch;
+      });
+    }
 
-// ── STATS ─────────────────────────────────────────────
-function updateStats(stats) {
-  const who = activeMember === null ? 'All Members' : activeMember;
-  document.getElementById('lblEarn').textContent   = `Total Earned (${who})`;
-  document.getElementById('lblDeduct').textContent = `Total Deducted (${who})`;
-  document.getElementById('lblNet').textContent    = `Net (${who})`;
-  document.getElementById('valEarn').textContent   = `+${stats.earned}`;
-  document.getElementById('valDeduct').textContent = `-${stats.deducted}`;
-  document.getElementById('valNet').textContent    = `${stats.net >= 0 ? '+' : ''}${stats.net}`;
-}
+    // ── STATS ─────────────────────────────────────────────
+    function updateStats(stats) {
+      const who = activeMember === null ? 'All Members' : activeMember;
+      document.getElementById('lblEarn').textContent = `Total Earned (${who})`;
+      document.getElementById('lblDeduct').textContent = `Total Deducted (${who})`;
+      document.getElementById('lblNet').textContent = `Net (${who})`;
+      document.getElementById('valEarn').textContent = `+${stats.earned}`;
+      document.getElementById('valDeduct').textContent = `-${stats.deducted}`;
+      document.getElementById('valNet').textContent = `${stats.net >= 0 ? '+' : ''}${stats.net}`;
+    }
 
-// ── TABLE RENDER ──────────────────────────────────────
-function renderTable(logs) {
-  const body = document.getElementById('logBody');
-  if (!logs.length) {
-    body.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text2);">No entries found</td></tr>`;
-    return;
-  }
-  body.innerHTML = logs.map(l => `
+    // ── TABLE RENDER ──────────────────────────────────────
+    function renderTable(logs) {
+      const body = document.getElementById('logBody');
+      if (!logs.length) {
+        body.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px; color:var(--text2);">No entries found</td></tr>`;
+        return;
+      }
+      body.innerHTML = logs.map(l => `
     <tr>
       <td><span class="td-datetime">${l.datetime}</span></td>
       <td>
@@ -566,105 +911,106 @@ function renderTable(logs) {
       <td><span class="td-loggedby">${l.by}</span></td>
     </tr>
   `).join('');
-}
+    }
 
-// ── PAGINATION ────────────────────────────────────────
-function updatePagination(total) {
-  const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
-  if (currentPage > totalPages) currentPage = totalPages;
-  const start = total === 0 ? 0 : (currentPage - 1) * PER_PAGE + 1;
-  const end   = Math.min(currentPage * PER_PAGE, total);
-  document.getElementById('pageInfo').textContent =
-    total === 0 ? 'No entries found' : `Showing ${start} to ${end} of ${total} entries`;
+    // ── PAGINATION ────────────────────────────────────────
+    function updatePagination(total) {
+      const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+      if (currentPage > totalPages) currentPage = totalPages;
+      const start = total === 0 ? 0 : (currentPage - 1) * PER_PAGE + 1;
+      const end = Math.min(currentPage * PER_PAGE, total);
+      document.getElementById('pageInfo').textContent =
+        total === 0 ? 'No entries found' : `Showing ${start} to ${end} of ${total} entries`;
 
-  const pgC = document.getElementById('pgControls');
-  let html = `<button class="pg-btn" onclick="changePage(-1)" ${currentPage===1?'disabled':''}>
+      const pgC = document.getElementById('pgControls');
+      let html = `<button class="pg-btn" onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
   </button>`;
-  for (let i = 1; i <= totalPages; i++) {
-    html += `<button class="pg-btn ${i===currentPage?'active':''}" onclick="setPage(${i})">${i}</button>`;
-  }
-  html += `<button class="pg-btn" onclick="changePage(1)" ${currentPage===totalPages?'disabled':''}>
+      for (let i = 1; i <= totalPages; i++) {
+        html += `<button class="pg-btn ${i === currentPage ? 'active' : ''}" onclick="setPage(${i})">${i}</button>`;
+      }
+      html += `<button class="pg-btn" onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
   </button>`;
-  pgC.innerHTML = html;
-}
+      pgC.innerHTML = html;
+    }
 
-function setPage(p) {
-  currentPage = p;
-  render();
-}
-function changePage(dir) {
-  render(currentPage + dir);
-}
+    function setPage(p) {
+      currentPage = p;
+      render();
+    }
+    function changePage(dir) {
+      render(currentPage + dir);
+    }
 
-// ── MASTER RENDER ─────────────────────────────────────
-function render(forcePage) {
-  if (forcePage !== undefined) {
-    const filtered = getFiltered();
-    const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
-    currentPage = Math.max(1, Math.min(totalPages, forcePage));
-  }
-  const filtered = getFiltered();
-  const stats = computeStats(filtered);
-  updateStats(stats);
-  const paginated = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
-  renderTable(paginated);
-  updatePagination(filtered.length);
-}
+    // ── MASTER RENDER ─────────────────────────────────────
+    function render(forcePage) {
+      if (forcePage !== undefined) {
+        const filtered = getFiltered();
+        const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+        currentPage = Math.max(1, Math.min(totalPages, forcePage));
+      }
+      const filtered = getFiltered();
+      const stats = computeStats(filtered);
+      updateStats(stats);
+      const paginated = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+      renderTable(paginated);
+      updatePagination(filtered.length);
+    }
 
-// ── SIDEBAR COLLAPSE ──────────────────────────────────
-document.getElementById('collapseBtn').addEventListener('click', () => {
-  const sb = document.getElementById('sidebar');
-  sb.classList.toggle('collapsed');
-  const ic = document.getElementById('collapseIcon');
-  ic.innerHTML = sb.classList.contains('collapsed')
-    ? '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="14 9 17 12 14 15"/>'
-    : '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
-});
+    // ── SIDEBAR COLLAPSE ──────────────────────────────────
+    document.getElementById('collapseBtn').addEventListener('click', () => {
+      const sb = document.getElementById('sidebar');
+      sb.classList.toggle('collapsed');
+      const ic = document.getElementById('collapseIcon');
+      ic.innerHTML = sb.classList.contains('collapsed')
+        ? '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="14 9 17 12 14 15"/>'
+        : '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
+    });
 
-// ── SPARKLINES ────────────────────────────────────────
-function drawSparkline(id, data, color) {
-  const canvas = document.getElementById(id);
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width  = canvas.offsetWidth  || 80;
-  const h = canvas.height = canvas.offsetHeight || 40;
-  const max = Math.max(...data);
-  const min = Math.min(...data);
-  const range = max - min || 1;
-  const pad = 4;
-  const pts = data.map((v, i) => ({
-    x: pad + (i / (data.length - 1)) * (w - pad * 2),
-    y: h - pad - ((v - min) / range) * (h - pad * 2)
-  }));
-  // gradient fill
-  const grad = ctx.createLinearGradient(0, 0, 0, h);
-  grad.addColorStop(0, color.replace(')', ',0.25)').replace('rgb', 'rgba'));
-  grad.addColorStop(1, color.replace(')', ',0.0)').replace('rgb', 'rgba'));
-  ctx.beginPath();
-  pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-  ctx.lineTo(pts[pts.length-1].x, h);
-  ctx.lineTo(pts[0].x, h);
-  ctx.closePath();
-  ctx.fillStyle = grad;
-  ctx.fill();
-  // line
-  ctx.beginPath();
-  pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-}
+    // ── SPARKLINES ────────────────────────────────────────
+    function drawSparkline(id, data, color) {
+      const canvas = document.getElementById(id);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.offsetWidth || 80;
+      const h = canvas.height = canvas.offsetHeight || 40;
+      const max = Math.max(...data);
+      const min = Math.min(...data);
+      const range = max - min || 1;
+      const pad = 4;
+      const pts = data.map((v, i) => ({
+        x: pad + (i / (data.length - 1)) * (w - pad * 2),
+        y: h - pad - ((v - min) / range) * (h - pad * 2)
+      }));
+      // gradient fill
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, color.replace(')', ',0.25)').replace('rgb', 'rgba'));
+      grad.addColorStop(1, color.replace(')', ',0.0)').replace('rgb', 'rgba'));
+      ctx.beginPath();
+      pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+      ctx.lineTo(pts[pts.length - 1].x, h);
+      ctx.lineTo(pts[0].x, h);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+      // line
+      ctx.beginPath();
+      pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
 
-// ── INIT ─────────────────────────────────────────────
-renderMemberSelector();
-render();
-setTimeout(() => {
-  drawSparkline('sparkEarn',   [10,40,25,60,80,55,90,70,100,85,110], '#00E5FF');
-  drawSparkline('sparkDeduct', [5,15,8,25,10,30,20,35,15,40,25],     '#FF1744');
-  drawSparkline('sparkNet',    [5,30,20,50,70,45,80,55,90,70,95],    '#4FC3F7');
-}, 100);
-</script>
+    // ── INIT ─────────────────────────────────────────────
+    renderMemberSelector();
+    render();
+    setTimeout(() => {
+      drawSparkline('sparkEarn', [10, 40, 25, 60, 80, 55, 90, 70, 100, 85, 110], '#00E5FF');
+      drawSparkline('sparkDeduct', [5, 15, 8, 25, 10, 30, 20, 35, 15, 40, 25], '#FF1744');
+      drawSparkline('sparkNet', [5, 30, 20, 50, 70, 45, 80, 55, 90, 70, 95], '#4FC3F7');
+    }, 100);
+  </script>
 </body>
+
 </html>

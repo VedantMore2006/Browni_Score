@@ -11,6 +11,94 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <link rel="stylesheet" href="css/global.css">
   <link rel="stylesheet" href="css/dashboard.css">
+  <style>
+    .dash-row-2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 18px; align-items: stretch; }
+    .dash-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; align-items: stretch; }
+
+    .dash-card {
+      background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 6px;
+      padding: 16px 18px; position: relative; overflow: hidden;
+      display: flex; flex-direction: column; min-height: 0;
+    }
+    .dash-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0,200,255,0.25), transparent);
+    }
+
+    .trend-wrap { position: relative; flex: 1; min-height: 220px; }
+
+    .donut-body { display: flex; align-items: center; gap: 18px; flex: 1; min-height: 0; }
+    .donut-canvas-wrap { position: relative; width: 128px; height: 128px; flex-shrink: 0; }
+    .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+    .legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+    .legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .legend-name { flex: 1; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .legend-val { font-weight: 700; color: var(--text-primary); flex-shrink: 0; }
+
+    .attendance-rate-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-dim);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: var(--text-secondary);
+    }
+    .attendance-rate-row b { color: var(--green); font-family: 'Orbitron', sans-serif; font-size: 13px; }
+
+    .dist-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .dist-row:last-child { margin-bottom: 0; }
+    .dist-label { width: 120px; flex-shrink: 0; font-size: 12px; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .dist-bar-track { flex: 1; height: 7px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden; }
+    .dist-bar-fill { height: 100%; border-radius: 4px; }
+    .dist-count { width: 34px; text-align: right; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 12px; color: var(--text-secondary); flex-shrink: 0; }
+    .dist-scroll { flex: 1; min-height: 0; overflow-y: auto; }
+
+    .ud-list { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow-y: auto; }
+    .ud-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+    .ud-row:last-child { border-bottom: none; }
+    .ud-icon { width: 26px; height: 26px; border-radius: 6px; background: rgba(0,200,255,0.1); border: 1px solid rgba(0,200,255,0.25); color: var(--cyan); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .ud-icon svg { width: 13px; height: 13px; }
+    .ud-date { font-size: 10.5px; color: var(--text-secondary); width: 42px; flex-shrink: 0; }
+    .ud-info { flex: 1; min-width: 0; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ud-info b { color: var(--text-primary); font-weight: 600; }
+    .ud-member { color: var(--text-secondary); }
+
+    .chip {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 3px 12px; border-radius: 4px;
+      font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 0.5px; white-space: nowrap;
+      border: 1px solid;
+    }
+    .chip-high   { background: rgba(255, 59, 92, 0.15); border-color: rgba(255, 59, 92, 0.5); color: var(--red); }
+    .chip-medium { background: rgba(0, 200, 255, 0.12); border-color: rgba(0, 200, 255, 0.4); color: var(--cyan); }
+    .chip-low    { background: rgba(68, 85, 102, 0.2);  border-color: rgba(68, 85, 102, 0.5);  color: var(--text-secondary); }
+    .chip-none   { background: rgba(68, 85, 102, 0.12); border-color: rgba(68, 85, 102, 0.35); color: var(--text-muted); }
+
+    .btn-view {
+      display: block; margin-top: 12px; padding: 8px 14px;
+      background: rgba(0,200,255,0.08); border: 1px solid rgba(0,200,255,0.3); border-radius: 5px;
+      color: var(--cyan); font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; text-align: center; text-decoration: none;
+      cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+    }
+    .btn-view:hover { background: rgba(0,200,255,0.15); border-color: var(--cyan); }
+
+    .perf-list { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow-y: auto; gap: 8px; }
+    .perf-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; cursor: pointer; }
+    .perf-medal {
+      width: 22px; flex-shrink: 0; text-align: center;
+      font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 700; color: var(--text-secondary);
+    }
+    .perf-avatar {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 10px;
+      border: 1px solid;
+    }
+    .perf-mid { flex: 1; min-width: 0; }
+    .perf-name { font-size: 12.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .perf-bar-track { height: 5px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; }
+    .perf-bar-fill { height: 100%; border-radius: 3px; }
+    .perf-pts { flex-shrink: 0; font-family: 'Orbitron', sans-serif; font-size: 12px; font-weight: 700; color: var(--text-primary); width: 50px; text-align: right; }
+  </style>
 </head>
 
 <body>
@@ -160,297 +248,109 @@
       <!-- CONTENT -->
       <div class="content">
 
-        <!-- STAT STRIP -->
+        <!-- KPI ROW -->
         <div class="stat-strip">
-          <!-- Weekly Position -->
           <div class="stat-card cyan-accent">
             <div class="stat-icon-wrap cyan-bg">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#00c8ff" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M5 3l3 6 4-2 4 2 3-6H5z" />
-                <path d="M5 3v10a7 7 0 0014 0V3" />
-              </svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#00c8ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
             </div>
             <div class="stat-info">
-              <div class="stat-label">Weekly Position</div>
-              <div class="stat-value cyan">#1</div>
+              <div class="stat-label">Team Members</div>
+              <div class="stat-value cyan" id="kpi-members">0</div>
+              <div class="stat-sub">Active members</div>
             </div>
           </div>
-          <!-- Points This Week -->
-          <div class="stat-card cyan2-accent">
-            <div class="stat-icon-wrap cyan2-bg">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
-                <polyline points="17 6 23 6 23 12" />
-              </svg>
-            </div>
-            <div class="stat-info">
-              <div class="stat-label">Points This Week</div>
-              <div class="stat-value cyan2">+70</div>
-            </div>
-          </div>
-          <!-- Points This Month -->
+
           <div class="stat-card purple-accent">
             <div class="stat-icon-wrap purple-bg">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#9b59ff" stroke-width="2" stroke-linecap="round"
-                stroke-linejoin="round">
-                <polygon
-                  points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#9b59ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
             </div>
             <div class="stat-info">
-              <div class="stat-label">Points This Month</div>
-              <div class="stat-value purple">320</div>
+              <div class="stat-label">Active Projects</div>
+              <div class="stat-value purple" id="kpi-projects">0</div>
+              <div class="stat-sub">Across all domains</div>
             </div>
           </div>
-          <!-- Streaks -->
+
           <div class="stat-card gold-accent">
             <div class="stat-icon-wrap gold-bg">
-              <svg viewBox="0 0 24 24" fill="#f5a623" stroke="#f5a623" stroke-width="0.5" stroke-linecap="round"
-                stroke-linejoin="round">
-                <path d="M12 2C10 7 5 9 5 14a7 7 0 0014 0c0-5-5-7-7-12z" />
-              </svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
             </div>
             <div class="stat-info">
-              <div class="stat-label">Streaks</div>
-              <div class="streak-val-row">
-                <span class="streak-num">4</span><span class="streak-unit" style="color:var(--gold);">W</span>
-              </div>
-              <div class="stat-sub" style="color:var(--gold);opacity:0.7;font-size:9px;letter-spacing:1.2px;">PRESENCE +
-                TASK</div>
+              <div class="stat-label">Total Tasks</div>
+              <div class="stat-value gold" id="kpi-tasks">0</div>
+              <div class="stat-sub">Across all projects</div>
+            </div>
+          </div>
+
+          <div class="stat-card green-accent">
+            <div class="stat-icon-wrap green-bg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Completed Tasks</div>
+              <div class="stat-value green" id="kpi-completed">0</div>
+              <div class="stat-sub" id="kpi-completed-pct">0% overall completion</div>
             </div>
           </div>
         </div>
 
-        <!-- RANK CARD -->
-        <div class="rank-card" style="flex-wrap: wrap; min-height: 120px;">
-          <!-- hex avatar -->
-          <div class="rank-hex-outer">
-            <div
-              style="position:absolute;top:-2px;left:-2px;width:76px;height:76px;clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);background:linear-gradient(135deg,rgba(0,200,255,0.6),rgba(0,200,255,0.15));z-index:0;">
-            </div>
-            <div class="rank-hex-bg" style="position:relative;z-index:1;">
-              <span class="rank-initial">S</span>
-            </div>
-            <!-- animated glow ring -->
-            <div
-              style="position:absolute;top:-6px;left:-6px;width:84px;height:84px;clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);background:transparent;border:0;box-shadow:0 0 16px rgba(0,200,255,0.4);z-index:-1;">
-            </div>
+        <!-- ROW 2: Task Overview trend + Attendance Today -->
+        <div class="dash-row-2">
+          <div class="dash-card" style="min-height:300px;">
+            <div class="card-header"><div class="card-title">Task Overview <span>(Last 7 Days)</span></div></div>
+            <div class="trend-wrap"><canvas id="taskTrendChart"></canvas></div>
           </div>
-
-          <!-- rank info -->
-          <div class="rank-info" style="flex: 1 1 300px;">
-            <div class="rank-title" style="white-space: normal; word-break: break-word;">PLATINUM HUNTER</div>
-            <div class="rank-badge">
-              RANK
-              <span class="rank-badge-pill">S</span>
+          <div class="dash-card">
+            <div class="card-header"><div class="card-title">Attendance <span>(Today)</span></div></div>
+            <div class="donut-body">
+              <div class="donut-canvas-wrap"><canvas id="attendanceChart"></canvas></div>
+              <div class="donut-legend" id="attendanceLegend"></div>
             </div>
-            <div class="rank-progress-wrap" style="width:100%; max-width:500px;">
-              <div class="rank-progress-label">
-                <span>650 / 1000 pts</span> to next rank <span>(SS)</span>
-              </div>
-              <div class="rank-bar-bg">
-                <div class="rank-bar-fill" style="width:65%;"></div>
-              </div>
+            <div class="attendance-rate-row">
+              <span>Attendance Rate</span>
+              <b id="attendanceRate">0%</b>
             </div>
-          </div>
-
-          <!-- total points -->
-          <div class="total-pts-block" style="flex: 0 0 auto;">
-            <div class="total-pts-label">Total Points</div>
-            <div class="total-pts-value">8,450</div>
+            <a class="btn-view" href="attendance.html">View Attendance</a>
           </div>
         </div>
 
-        <!-- TEAM CHART -->
-        <div class="chart-card">
-          <div class="card-header">
-            <div class="card-title">
-              TEAM HUNTER RANKING <span>(ALL MEMBERS)</span>
-            </div>
+        <!-- ROW 3: Top Performers (week/month) + Project Overview -->
+        <div class="dash-row-3">
+          <div class="dash-card">
+            <div class="card-header"><div class="card-title">Top Performers <span>(This Week)</span></div></div>
+            <div class="perf-list" id="perfWeekList"></div>
+            <a class="btn-view" href="leaderboard.html">View Full Leaderboard</a>
           </div>
-          <div class="chart-wrap">
-            <canvas id="teamChart"></canvas>
+
+          <div class="dash-card">
+            <div class="card-header"><div class="card-title">Top Performers <span>(This Month)</span></div></div>
+            <div class="perf-list" id="perfMonthList"></div>
+            <a class="btn-view" href="leaderboard.html">View Full Leaderboard</a>
+          </div>
+
+          <div class="dash-card">
+            <div class="card-header"><div class="card-title">Project Overview</div></div>
+            <div class="dist-scroll" id="projectOverviewList"></div>
+            <a class="btn-view" href="all-tasks.html">View All Projects</a>
           </div>
         </div>
 
-        <!-- BOTTOM ROW -->
-        <div class="bottom-row">
-          <!-- TODAY'S QUESTS -->
-          <div class="quest-card">
+        <!-- ROW 4: Upcoming Deadlines + Task Priority Distribution -->
+        <div class="dash-row-2">
+          <div class="dash-card">
             <div class="card-header">
-              <div class="card-title">TODAY'S QUESTS</div>
-              <span class="view-all">View all</span>
+              <div class="card-title">Upcoming Deadlines</div>
+              <a class="view-all" href="all-tasks.html">View all</a>
             </div>
-            <div class="quest-list">
-              <!-- Quest 1 -->
-              <div class="quest-item">
-                <div class="quest-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#00c8ff" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <polyline points="16 18 22 12 16 6" />
-                    <polyline points="8 6 2 12 8 18" />
-                  </svg>
-                </div>
-                <div class="quest-info">
-                  <div class="quest-name" style="cursor:pointer;" onclick="window.location.href='project.html?id=mindspace'">Code Review (Module X)</div>
-                  <div class="quest-meta">
-                    <span>⏱ 30 min</span>
-                    <span>• Due 11:00 AM</span>
-                  </div>
-                </div>
-                <div class="status-pill inprogress">● In Progress</div>
-              </div>
-              <!-- Quest 2 -->
-              <div class="quest-item">
-                <div class="quest-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                    <circle cx="8.5" cy="8.5" r="1.5" />
-                    <polyline points="21 15 16 10 5 21" />
-                  </svg>
-                </div>
-                <div class="quest-info">
-                  <div class="quest-name" style="cursor:pointer;" onclick="window.location.href='project.html?id=solobeauty'">UI/UX Design Update</div>
-                  <div class="quest-meta">
-                    <span>⏱ 45 min</span>
-                    <span>• Due 1:00 PM</span>
-                  </div>
-                </div>
-                <div class="status-pill pending">● Pending</div>
-              </div>
-              <!-- Quest 3 -->
-              <div class="quest-item">
-                <div class="quest-icon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round">
-                    <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M23 21v-2a4 4 0 00-3-3.87" />
-                    <path d="M16 3.13a4 4 0 010 7.75" />
-                  </svg>
-                </div>
-                <div class="quest-info">
-                  <div class="quest-name" style="cursor:pointer;" onclick="window.location.href='project.html?id=skillsense'">Team Standup</div>
-                  <div class="quest-meta">
-                    <span>⏱ 15 min</span>
-                    <span>• Due 5:00 PM</span>
-                  </div>
-                </div>
-                <div class="status-pill completed">● Completed</div>
-              </div>
-            </div>
-            <div class="quest-empty">No quests due today</div>
+            <div class="ud-list" id="upcomingList"></div>
           </div>
 
-          <!-- RECENT ACTIVITY -->
-          <div class="activity-card">
-            <div class="card-header">
-              <div class="card-title">RECENT ACTIVITY</div>
-              <span class="view-all">View all</span>
-            </div>
-            <div class="activity-list">
-              <div class="activity-item">
-                <div class="act-icon plus">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round">
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </div>
-                <div class="act-text">
-                  <div class="act-name">Task Completed: Code Review</div>
-                  <div class="act-time">10m ago</div>
-                </div>
-                <div class="act-pts pos">+20</div>
-              </div>
-              <div class="activity-item">
-                <div class="act-icon bonus">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                  </svg>
-                </div>
-                <div class="act-text">
-                  <div class="act-name">Bonus: Perfect Attendance</div>
-                  <div class="act-time">35m ago</div>
-                </div>
-                <div class="act-pts pos">+10</div>
-              </div>
-              <div class="activity-item">
-                <div class="act-icon plus">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round">
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </div>
-                <div class="act-text">
-                  <div class="act-name">Task Submitted: UI/UX Update</div>
-                  <div class="act-time">1h ago</div>
-                </div>
-                <div class="act-pts pos">+15</div>
-              </div>
-              <div class="activity-item">
-                <div class="act-icon minus">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b5c" stroke-width="2.5" stroke-linecap="round">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </div>
-                <div class="act-text">
-                  <div class="act-name">Late Check-in Deduction</div>
-                  <div class="act-time">2h ago</div>
-                </div>
-                <div class="act-pts neg">-10</div>
-              </div>
-              <div class="activity-item">
-                <div class="act-icon minus">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b5c" stroke-width="2.5" stroke-linecap="round">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </div>
-                <div class="act-text">
-                  <div class="act-name">Task Missed: Documentation</div>
-                  <div class="act-time">3h ago</div>
-                </div>
-                <div class="act-pts neg">-15</div>
-              </div>
-              <div class="activity-item">
-                <div class="act-icon bonus">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2.5" stroke-linecap="round">
-                    <path d="M12 2C10 7 5 9 5 14a7 7 0 0014 0c0-5-5-7-7-12z" />
-                  </svg>
-                </div>
-                <div class="act-text">
-                  <div class="act-name">Bonus: Weekly Streak</div>
-                  <div class="act-time">5h ago</div>
-                </div>
-                <div class="act-pts pos">+30</div>
-              </div>
-              <div class="activity-item">
-                <div class="act-icon plus">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#00e676" stroke-width="2.5" stroke-linecap="round">
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </div>
-                <div class="act-text">
-                  <div class="act-name">Task Completed: Bug Fixes</div>
-                  <div class="act-time">6h ago</div>
-                </div>
-                <div class="act-pts pos">+10</div>
-              </div>
-              <div class="activity-item">
-                <div class="act-icon minus">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="#ff3b5c" stroke-width="2.5" stroke-linecap="round">
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                </div>
-                <div class="act-text">
-                  <div class="act-name">Manual Adjustment</div>
-                  <div class="act-time">1d ago</div>
-                </div>
-                <div class="act-pts neg">-5</div>
-              </div>
+          <div class="dash-card">
+            <div class="card-header"><div class="card-title">Task Priority Distribution</div></div>
+            <div class="donut-body">
+              <div class="donut-canvas-wrap" style="width:112px;height:112px;"><canvas id="priorityChart"></canvas></div>
+              <div class="donut-legend" id="priorityLegend"></div>
             </div>
           </div>
         </div>
