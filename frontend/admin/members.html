@@ -8,137 +8,295 @@
 <link rel="stylesheet" href="../css/global.css">
 <style>
 
-/* .nav-item.nav-admin.active, .main, base .topbar/.page-title/.status-pill/
-   .status-dot all come from global.css — only page-specific deltas here. */
-.topbar { align-items:flex-start; }
-.topbar-left { display:flex; flex-direction:column; gap:3px; }
-.page-title { line-height:1; }
-.page-subtitle { font-size:13px; color:var(--text2); }
+/* ── TOPBAR & ACTION BUTTONS ── */
+.topbar { align-items: flex-start; }
+.topbar-left { display: flex; flex-direction: column; gap: 3px; }
+.page-title { line-height: 1; }
+.page-subtitle { font-size: 13px; color: var(--text2); }
 
-/* ── CONTENT ── */
-.content { flex:1; display:flex; gap:16px; padding:16px 24px 18px; overflow:hidden; }
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
 
-/* ── LEFT: ADD HUNTER ── */
-.add-card {
-  width:260px; flex-shrink:0;
-  background:var(--panel); border:1px solid var(--border); border-radius:8px;
-  padding:22px 20px; display:flex; flex-direction:column; gap:0;
-  position:relative; overflow:hidden;
+.btn-action-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: 6px; border: none;
+  background: linear-gradient(90deg, #1565C0, #29B6F6, #00E5FF);
+  font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 0.08em;
+  color: #0A0A0F; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 229, 255, 0.25);
+  transition: all 0.2s ease;
 }
-.add-card::before { content:''; position:absolute; top:0;left:0;right:0;height:1px; background:linear-gradient(90deg,transparent,var(--blue),transparent); }
-
-.add-header { display:flex; align-items:center; gap:10px; margin-bottom:20px; padding-bottom:14px; border-bottom:1px solid var(--border); }
-.add-header-icon { color:var(--blue); display:flex; align-items:center; }
-.add-header-icon svg { width:20px; height:20px; }
-.add-title { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:0.08em; color:var(--text); }
-
-.form-field { margin-bottom:14px; }
-.form-label { font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text2); margin-bottom:6px; display:block; }
-.form-input, .form-select {
-  width:100%; padding:10px 12px;
-  background:rgba(10,10,20,0.7); border:1px solid rgba(79,195,247,0.15); border-radius:6px;
-  color:var(--text); font-family:'Inter',sans-serif; font-size:13px;
-  outline:none; transition:border-color 0.2s, box-shadow 0.2s; -webkit-appearance:none;
+.btn-action-primary:hover {
+  box-shadow: 0 4px 24px rgba(0, 229, 255, 0.45);
+  transform: translateY(-1px);
 }
-.form-input:focus,.form-select:focus { border-color:rgba(79,195,247,0.45); box-shadow:0 0 0 3px rgba(79,195,247,0.06); }
-.form-input::placeholder { color:var(--text2); opacity:0.6; }
-.pw-wrap { position:relative; }
-.pw-wrap .form-input { padding-right:38px; }
-.pw-eye { position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text2); cursor:pointer; display:flex; align-items:center; transition:color 0.2s; }
-.pw-eye:hover { color:var(--blue); }
-.pw-eye svg { width:16px; height:16px; }
-.select-wrap { position:relative; }
-.select-wrap::after { content:''; position:absolute; right:12px; top:50%; transform:translateY(-50%); border-left:4px solid transparent; border-right:4px solid transparent; border-top:5px solid var(--text2); pointer-events:none; }
 
-.btn-create {
-  width:100%; padding:13px; margin-top:8px;
-  background:linear-gradient(90deg,#1565C0,#29B6F6,#00E5FF,#00FFFF);
-  border:none; border-radius:6px;
-  font-family:'Bebas Neue',sans-serif; font-size:1.05rem; letter-spacing:0.12em;
-  color:#0A0A0F; cursor:pointer;
-  box-shadow:0 4px 20px rgba(0,229,255,0.25);
-  transition:box-shadow 0.2s, transform 0.15s;
+.btn-action-secondary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border-radius: 6px;
+  border: 1px solid rgba(0, 200, 255, 0.25);
+  background: rgba(0, 200, 255, 0.05);
+  font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; color: var(--blue); cursor: pointer; text-decoration: none;
+  transition: all 0.2s;
 }
-.btn-create:hover { box-shadow:0 4px 28px rgba(0,229,255,0.45); transform:translateY(-1px); }
+.btn-action-secondary:hover {
+  background: rgba(0, 200, 255, 0.12);
+  border-color: var(--blue);
+}
 
-/* ── RIGHT: ALL HUNTERS ── */
+/* ── CONTENT CONTAINER ── */
+.content { flex: 1; display: flex; flex-direction: column; gap: 18px; padding: 20px 28px 28px; overflow-y: auto; }
+
+/* ── KPI STRIP ── */
+.kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; flex-shrink: 0; }
+.kpi-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  position: relative;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.kpi-card.cyan::before { background: linear-gradient(90deg, transparent, var(--blue), transparent); }
+.kpi-card.green::before { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+.kpi-card.purple::before { background: linear-gradient(90deg, transparent, var(--purple), transparent); }
+.kpi-card.gold::before { background: linear-gradient(90deg, transparent, var(--gold), transparent); }
+
+.kpi-info { display: flex; flex-direction: column; gap: 2px; }
+.kpi-label { font-family: 'Rajdhani', sans-serif; font-size: 10.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text2); }
+.kpi-value { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.05em; color: var(--text); line-height: 1.1; margin-top: 2px; }
+.kpi-value.cyan { color: var(--blue); }
+.kpi-value.green { color: var(--green); }
+.kpi-value.purple { color: var(--purple); }
+.kpi-value.gold { color: var(--gold); }
+
+.kpi-icon-wrap {
+  width: 42px; height: 42px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid; flex-shrink: 0;
+}
+.kpi-icon-wrap.cyan { background: rgba(0, 200, 255, 0.08); border-color: rgba(0, 200, 255, 0.25); color: var(--blue); }
+.kpi-icon-wrap.green { background: rgba(0, 230, 118, 0.08); border-color: rgba(0, 230, 118, 0.25); color: var(--green); }
+.kpi-icon-wrap.purple { background: rgba(155, 89, 255, 0.08); border-color: rgba(155, 89, 255, 0.25); color: var(--purple); }
+.kpi-icon-wrap.gold { background: rgba(245, 166, 35, 0.08); border-color: rgba(245, 166, 35, 0.25); color: var(--gold); }
+.kpi-icon-wrap svg { width: 20px; height: 20px; }
+
+/* ── HUNTERS TABLE CARD ── */
 .hunters-card {
-  flex:1; min-width:0;
-  background:var(--panel); border:1px solid var(--border); border-radius:8px;
-  display:flex; flex-direction:column; overflow:hidden;
-  position:relative;
+  flex: 1;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex; flex-direction: column; overflow: hidden;
+  position: relative;
 }
-.hunters-card::before { content:''; position:absolute; top:0;left:0;right:0;height:1px; background:linear-gradient(90deg,transparent,var(--blue),transparent); }
+.hunters-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--blue), var(--teal), transparent); }
 
-.hunters-header { display:flex; align-items:center; justify-content:space-between; padding:16px 18px 12px; border-bottom:1px solid var(--border); flex-shrink:0; }
-.hunters-title-wrap { display:flex; align-items:center; gap:10px; }
-.hunters-icon { color:var(--blue); display:flex; align-items:center; }
-.hunters-icon svg { width:20px; height:20px; }
-.hunters-title { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:0.08em; color:var(--text); }
+/* ── TOOLBAR ── */
+.toolbar-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  gap: 16px; flex-wrap: wrap; flex-shrink: 0;
+}
+.toolbar-left-group { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; flex: 1; }
 
-.search-wrap { position:relative; }
-.search-wrap svg { position:absolute; left:10px; top:50%; transform:translateY(-50%); width:14px; height:14px; color:var(--text2); pointer-events:none; }
-.search-input { padding:8px 12px 8px 32px; background:rgba(10,10,20,0.7); border:1px solid rgba(79,195,247,0.15); border-radius:5px; color:var(--text); font-family:'Inter',sans-serif; font-size:12.5px; outline:none; width:200px; transition:border-color 0.2s; }
-.search-input:focus { border-color:rgba(79,195,247,0.4); }
-.search-input::placeholder { color:var(--text2); opacity:0.6; }
+.search-wrap { position: relative; width: 240px; }
+.search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: var(--text2); pointer-events: none; }
+.search-input {
+  width: 100%; padding: 8px 12px 8px 34px;
+  background: rgba(10, 10, 20, 0.7); border: 1px solid rgba(79, 195, 247, 0.15); border-radius: 6px;
+  color: var(--text); font-family: 'Inter', sans-serif; font-size: 12.5px; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-input:focus { border-color: rgba(79, 195, 247, 0.45); box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.06); }
+.search-input::placeholder { color: var(--text2); opacity: 0.6; }
 
-.table-wrap { flex:1; overflow-y:auto; overflow-x:auto; }
-table { width:100%; border-collapse:collapse; font-size:12.5px; }
-thead tr { background:var(--elevated); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:2; }
-thead th { padding:10px 14px; font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; color:var(--blue); text-align:left; white-space:nowrap; }
-tbody tr { border-bottom:1px solid rgba(79,195,247,0.05); transition:background 0.15s; }
-tbody tr:hover { background:rgba(79,195,247,0.03); }
-tbody tr:last-child { border-bottom:none; }
-td { padding:10px 14px; vertical-align:middle; }
+.filter-select {
+  padding: 8px 28px 8px 12px;
+  background: rgba(10, 10, 20, 0.7); border: 1px solid rgba(79, 195, 247, 0.15); border-radius: 6px;
+  color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 600;
+  outline: none; cursor: pointer; transition: border-color 0.2s;
+  -webkit-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%238899aa' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+}
+.filter-select:focus { border-color: rgba(79, 195, 247, 0.45); }
+
+.btn-tool {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; background: rgba(0, 200, 255, 0.06);
+  border: 1px solid rgba(0, 200, 255, 0.2); border-radius: 6px;
+  color: var(--blue); font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.5px; cursor: pointer; transition: all 0.2s;
+}
+.btn-tool:hover { background: rgba(0, 200, 255, 0.12); border-color: var(--blue); }
+.btn-tool svg { width: 14px; height: 14px; }
+
+/* ── TABLE ── */
+.table-wrap { flex: 1; overflow-y: auto; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+thead tr { background: var(--elevated); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 2; }
+thead th {
+  padding: 12px 16px; font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--blue); text-align: left; white-space: nowrap;
+}
+tbody tr { border-bottom: 1px solid rgba(79, 195, 247, 0.05); transition: background 0.15s; }
+tbody tr:hover { background: rgba(79, 195, 247, 0.03); }
+tbody tr:last-child { border-bottom: none; }
+td { padding: 12px 16px; vertical-align: middle; }
 
 /* name cell */
-.name-cell { display:flex; align-items:center; gap:10px; }
-.h-avatar { width:30px; height:30px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:10px; border:1.5px solid; }
-.h-name { font-size:13px; font-weight:600; color:var(--text); }
+.name-cell { display: flex; align-items: center; gap: 12px; }
+.h-avatar {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 11px;
+  border: 1.5px solid;
+}
+.h-info { display: flex; flex-direction: column; gap: 1px; }
+.h-name { font-size: 13.5px; font-weight: 600; color: var(--text); line-height: 1.2; }
+.h-email { font-size: 11.5px; color: var(--text2); }
 
-.td-username { font-size:12px; color:var(--text2); }
+/* domain badge */
+.domain-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 12px;
+  font-family: 'Rajdhani', sans-serif; font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.5px; border: 1px solid; white-space: nowrap;
+}
+.domain-aiml     { background: rgba(155, 89, 255, 0.1); border-color: rgba(155, 89, 255, 0.35); color: var(--purple); }
+.domain-fullstack{ background: rgba(0, 200, 255, 0.1); border-color: rgba(0, 200, 255, 0.35); color: var(--blue); }
+.domain-uiux     { background: rgba(0, 229, 255, 0.1); border-color: rgba(0, 229, 255, 0.35); color: var(--teal); }
+.domain-content  { background: rgba(245, 166, 35, 0.1); border-color: rgba(245, 166, 35, 0.35); color: var(--gold); }
+.domain-ops      { background: rgba(255, 59, 92, 0.1);  border-color: rgba(255, 59, 92, 0.35);  color: var(--red); }
 
 /* role chips */
-.role-chip { display:inline-flex; align-items:center; justify-content:center; padding:3px 10px; border-radius:4px; font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; letter-spacing:0.3px; border:1px solid; white-space:nowrap; }
-.role-member      { background:rgba(79,195,247,0.06);  border-color:rgba(79,195,247,0.25); color:var(--text2); }
-.role-coordinator { background:rgba(79,195,247,0.1);   border-color:rgba(79,195,247,0.4);  color:var(--blue); }
-.role-admin       { background:rgba(255,23,68,0.08);   border-color:rgba(255,23,68,0.35);  color:var(--red); }
+.role-chip { display: inline-flex; align-items: center; justify-content: center; padding: 3px 10px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; border: 1px solid; white-space: nowrap; }
+.role-member      { background: rgba(79, 195, 247, 0.06); border-color: rgba(79, 195, 247, 0.25); color: var(--text2); }
+.role-coordinator { background: rgba(79, 195, 247, 0.12); border-color: rgba(79, 195, 247, 0.45); color: var(--blue); }
+.role-admin       { background: rgba(255, 23, 68, 0.1); border-color: rgba(255, 23, 68, 0.4); color: var(--red); }
 
 /* rank hex */
-.rank-hex { width:28px; height:28px; clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%); display:flex; align-items:center; justify-content:center; font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; border:1px solid; }
-.rank-e { background:rgba(138,147,168,0.1); border-color:rgba(138,147,168,0.4); color:var(--rank-e); }
-.rank-d { background:rgba(205,127,50,0.1);  border-color:rgba(205,127,50,0.4);  color:var(--rank-d); }
-.rank-c { background:rgba(176,176,176,0.1); border-color:rgba(176,176,176,0.4); color:var(--rank-c); }
-.rank-b { background:rgba(79,195,247,0.1);  border-color:rgba(79,195,247,0.4);  color:var(--rank-b); }
-.rank-a { background:rgba(255,215,0,0.1);   border-color:rgba(255,215,0,0.4);   color:var(--rank-a); }
-.rank-s { background:rgba(0,229,255,0.1);   border-color:rgba(0,229,255,0.4);   color:var(--rank-s); }
-.rank-ss{ background:rgba(154,123,255,0.1); border-color:rgba(154,123,255,0.4); color:var(--rank-ss); }
+.rank-hex { width: 28px; height: 28px; clip-path: polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%); display: flex; align-items: center; justify-content: center; font-family: 'Rajdhani', sans-serif; font-size: 10.5px; font-weight: 700; border: 1px solid; }
+.rank-e  { background: rgba(138, 147, 168, 0.1); border-color: rgba(138, 147, 168, 0.4); color: #8A93A8; }
+.rank-d  { background: rgba(205, 127, 50, 0.1);  border-color: rgba(205, 127, 50, 0.4);  color: #CD7F32; }
+.rank-c  { background: rgba(176, 176, 176, 0.1); border-color: rgba(176, 176, 176, 0.4); color: #B0B0B0; }
+.rank-b  { background: rgba(79, 195, 247, 0.1);  border-color: rgba(79, 195, 247, 0.4);  color: #4FC3F7; }
+.rank-a  { background: rgba(255, 215, 0, 0.1);   border-color: rgba(255, 215, 0, 0.4);   color: #FFD700; }
+.rank-s  { background: rgba(0, 229, 255, 0.1);   border-color: rgba(0, 229, 255, 0.4);   color: #00E5FF; }
+.rank-ss { background: rgba(154, 123, 255, 0.15); border-color: rgba(154, 123, 255, 0.5); color: #9A7BFF; box-shadow: 0 0 8px rgba(154, 123, 255, 0.3); }
 
-.td-pts { font-family:'Bebas Neue',sans-serif; font-size:14px; color:var(--teal); letter-spacing:0.5px; }
+.td-pts { font-family: 'Bebas Neue', sans-serif; font-size: 15px; color: var(--teal); letter-spacing: 0.5px; }
 
 /* status chips */
-.chip-active   { padding:3px 10px; border-radius:4px; font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; background:rgba(0,229,255,0.1);  border:1px solid rgba(0,229,255,0.35);  color:var(--teal); }
-.chip-inactive { padding:3px 10px; border-radius:4px; font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; background:rgba(255,23,68,0.1);  border:1px solid rgba(255,23,68,0.4);   color:var(--red); }
+.chip-active   { padding: 3px 10px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; background: rgba(0, 230, 118, 0.1); border: 1px solid rgba(0, 230, 118, 0.35); color: var(--green); }
+.chip-inactive { padding: 3px 10px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; background: rgba(255, 23, 68, 0.1); border: 1px solid rgba(255, 23, 68, 0.4); color: var(--red); }
 
 /* action buttons */
-.actions-cell { display:flex; align-items:center; gap:5px; }
-.btn-edit       { padding:4px 10px; background:transparent; border:1px solid rgba(79,195,247,0.3);  border-radius:4px; font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; color:var(--blue); cursor:pointer; transition:all 0.2s; white-space:nowrap; }
-.btn-edit:hover { background:rgba(79,195,247,0.08); }
-.btn-deactivate { padding:4px 10px; background:transparent; border:1px solid rgba(255,23,68,0.35); border-radius:4px; font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; color:var(--red); cursor:pointer; transition:all 0.2s; white-space:nowrap; }
-.btn-deactivate:hover { background:rgba(255,23,68,0.08); }
-.btn-reset      { padding:4px 10px; background:transparent; border:1px solid rgba(138,147,168,0.3); border-radius:4px; font-family:'Rajdhani',sans-serif; font-size:10px; font-weight:700; color:var(--text2); cursor:pointer; transition:all 0.2s; white-space:nowrap; }
-.btn-reset:hover { border-color:rgba(138,147,168,0.6); color:var(--text); }
+.actions-cell { display: flex; align-items: center; gap: 6px; }
+.btn-edit       { padding: 5px 12px; background: transparent; border: 1px solid rgba(79, 195, 247, 0.3); border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; color: var(--blue); cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.btn-edit:hover { background: rgba(79, 195, 247, 0.1); border-color: var(--blue); }
+.btn-deactivate { padding: 5px 12px; background: transparent; border: 1px solid rgba(255, 23, 68, 0.35); border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; color: var(--red); cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.btn-deactivate:hover { background: rgba(255, 23, 68, 0.1); border-color: var(--red); }
+.btn-logpts     { padding: 5px 12px; background: transparent; border: 1px solid rgba(245, 166, 35, 0.35); border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700; color: var(--gold); cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.btn-logpts:hover { background: rgba(245, 166, 35, 0.1); border-color: var(--gold); }
 
 /* pagination */
-.pagination-row { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; border-top:1px solid var(--border); background:var(--elevated); flex-shrink:0; }
-.pg-info { font-size:12px; color:var(--text2); }
-.pg-controls { display:flex; align-items:center; gap:4px; }
-.pg-btn { min-width:28px; height:28px; padding:0 6px; background:transparent; border:1px solid var(--border); border-radius:4px; color:var(--text2); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:12px; font-weight:600; font-family:'Inter',sans-serif; transition:all 0.2s; }
-.pg-btn:hover { border-color:rgba(79,195,247,0.4); color:var(--blue); }
-.pg-btn.active { background:rgba(79,195,247,0.12); border-color:var(--blue); color:var(--blue); }
-.pg-btn svg { width:13px; height:13px; }
+.pagination-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-top: 1px solid var(--border); background: var(--elevated); flex-shrink: 0; }
+.pg-info { font-size: 12px; color: var(--text2); }
+.pg-controls { display: flex; align-items: center; gap: 4px; }
+.pg-btn { min-width: 28px; height: 28px; padding: 0 6px; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--text2); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; font-weight: 600; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+.pg-btn:hover { border-color: rgba(79, 195, 247, 0.4); color: var(--blue); }
+.pg-btn.active { background: rgba(79, 195, 247, 0.12); border-color: var(--blue); color: var(--blue); }
 
-/* scrollbar */
+/* ── MODAL DIALOG (GLASSMORPHISM OVERLAY) ── */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(5, 10, 20, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; opacity: 0; pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.modal-backdrop.active { opacity: 1; pointer-events: auto; }
+
+.modal-card {
+  background: var(--panel);
+  border: 1px solid rgba(0, 200, 255, 0.25);
+  border-radius: 10px;
+  width: 100%; max-width: 520px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), 0 0 32px rgba(0, 200, 255, 0.12);
+  position: relative; overflow: hidden;
+  transform: translateY(20px) scale(0.96);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  display: none;
+}
+.modal-backdrop.active .modal-card.active { display: block; transform: translateY(0) scale(1); }
+
+.modal-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--blue), var(--teal), transparent); }
+
+.modal-header { padding: 18px 24px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.modal-title-wrap { display: flex; align-items: center; gap: 10px; }
+.modal-icon { color: var(--blue); display: flex; align-items: center; }
+.modal-icon svg { width: 20px; height: 20px; }
+.modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.35rem; letter-spacing: 0.08em; color: var(--text); }
+.modal-close { background: none; border: none; color: var(--text2); cursor: pointer; padding: 4px; display: flex; align-items: center; border-radius: 4px; transition: color 0.2s, background 0.2s; }
+.modal-close:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); }
+
+.modal-body { padding: 20px 24px 16px; display: flex; flex-direction: column; gap: 14px; max-height: 75vh; overflow-y: auto; }
+.modal-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-field-full { grid-column: span 2; }
+
+.form-label { font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text2); margin-bottom: 6px; display: block; }
+.form-input, .form-select {
+  width: 100%; padding: 10px 12px;
+  background: rgba(10, 10, 20, 0.7); border: 1px solid rgba(79, 195, 247, 0.15); border-radius: 6px;
+  color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px;
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s; -webkit-appearance: none;
+}
+.form-input:focus, .form-select:focus { border-color: rgba(79, 195, 247, 0.45); box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.06); }
+.form-input::placeholder { color: var(--text2); opacity: 0.6; }
+
+.pw-wrap { position: relative; }
+.pw-wrap .form-input { padding-right: 38px; }
+.pw-eye { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text2); cursor: pointer; display: flex; align-items: center; transition: color 0.2s; }
+.pw-eye:hover { color: var(--blue); }
+.pw-eye svg { width: 16px; height: 16px; }
+
+.select-wrap { position: relative; }
+.select-wrap::after { content: ''; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid var(--text2); pointer-events: none; }
+
+.modal-footer { padding: 12px 24px 20px; display: flex; gap: 10px; }
+.btn-confirm {
+  flex: 1; padding: 12px; border: none; border-radius: 6px;
+  background: linear-gradient(90deg, #1565C0, #29B6F6, #00E5FF);
+  font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; letter-spacing: 0.1em;
+  color: #0A0A0F; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 229, 255, 0.25); transition: all 0.2s;
+}
+.btn-confirm:hover { box-shadow: 0 4px 24px rgba(0, 229, 255, 0.45); transform: translateY(-1px); }
+.btn-cancel-outline {
+  flex: 1; padding: 11px; border: 1px solid rgba(255, 23, 68, 0.4); border-radius: 6px;
+  background: transparent; font-family: 'Bebas Neue', sans-serif; font-size: 1rem;
+  letter-spacing: 0.1em; color: var(--red); cursor: pointer; transition: all 0.2s;
+}
+.btn-cancel-outline:hover { background: rgba(255, 23, 68, 0.08); }
+
+/* ── TOAST NOTIFICATION ── */
+.toast-notif {
+  position: fixed; bottom: 24px; right: 24px; z-index: 1100;
+  background: var(--panel); border: 1px solid var(--teal); border-radius: 8px;
+  padding: 12px 18px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: 0 8px 24px rgba(0, 229, 255, 0.2);
+  transform: translateY(100px); opacity: 0; transition: all 0.3s ease;
+  pointer-events: none;
+}
+.toast-notif.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+.toast-icon { color: var(--teal); display: flex; align-items: center; }
+
 </style>
 </head>
 <body>
@@ -172,7 +330,6 @@ td { padding:10px 14px; vertical-align:middle; }
           <div class="profile-role">Administrator</div>
         </div>
       </div>
-      <!-- SS rank — SHADOW MONARCH with pulse glow -->
       <div class="profile-badge-ss">
         <div class="badge-hex-ss">SS</div>
         <span class="badge-text-ss">SHADOW MONARCH</span>
@@ -190,78 +347,113 @@ td { padding:10px 14px; vertical-align:middle; }
     <div class="topbar">
       <div class="topbar-left">
         <h1 class="page-title">MEMBER MANAGEMENT</h1>
-        <p class="page-subtitle">Manage and control all hunters in the system.</p>
+        <p class="page-subtitle">Manage hunters, domains, roles, and ranks across Vitals&amp;Vectors Lab.</p>
       </div>
-      <div class="status-pill">
-        <div class="status-dot"></div>
-        // SYSTEM ONLINE
+      <div class="topbar-actions">
+        <a href="admin_dashboard.html" class="btn-action-secondary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          ADMIN DASHBOARD
+        </a>
+        <button class="btn-action-primary" onclick="openAddMemberModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          ADD MEMBER
+        </button>
       </div>
     </div>
 
     <div class="content">
 
-      <!-- ADD HUNTER CARD -->
-      <div class="add-card">
-        <div class="add-header">
-          <div class="add-header-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+      <!-- KPI STRIP -->
+      <div class="kpi-strip">
+        <div class="kpi-card cyan">
+          <div class="kpi-info">
+            <span class="kpi-label">Total Hunters</span>
+            <span class="kpi-value cyan" id="kpiTotal">24</span>
           </div>
-          <span class="add-title">ADD HUNTER</span>
-        </div>
-
-        <div class="form-field">
-          <label class="form-label">Full Name</label>
-          <input type="text" class="form-input" placeholder="Enter full name" id="fName">
-        </div>
-        <div class="form-field">
-          <label class="form-label">Username</label>
-          <input type="text" class="form-input" placeholder="Enter username" id="fUsername">
-        </div>
-        <div class="form-field">
-          <label class="form-label">Password</label>
-          <div class="pw-wrap">
-            <input type="password" class="form-input" placeholder="Enter password" id="fPassword">
-            <button class="pw-eye" onclick="togglePw()">
-              <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-            </button>
+          <div class="kpi-icon-wrap cyan">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
           </div>
         </div>
-        <div class="form-field">
-          <label class="form-label">Role</label>
-          <div class="select-wrap">
-            <select class="form-select" id="fRole">
-              <option value="" disabled selected>Select role</option>
-              <option>Member</option>
-              <option>U5 Coordinator</option>
-              <option>Admin</option>
-            </select>
+        <div class="kpi-card green">
+          <div class="kpi-info">
+            <span class="kpi-label">Active Members</span>
+            <span class="kpi-value green" id="kpiActive">22</span>
+          </div>
+          <div class="kpi-icon-wrap green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
         </div>
-
-        <button class="btn-create" onclick="createHunter()">CREATE HUNTER</button>
+        <div class="kpi-card purple">
+          <div class="kpi-info">
+            <span class="kpi-label">U5 Coordinators</span>
+            <span class="kpi-value purple" id="kpiCoords">4</span>
+          </div>
+          <div class="kpi-icon-wrap purple">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+        </div>
+        <div class="kpi-card gold">
+          <div class="kpi-info">
+            <span class="kpi-label">Total Lab Points</span>
+            <span class="kpi-value gold" id="kpiPoints">84,250</span>
+          </div>
+          <div class="kpi-icon-wrap gold">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
       </div>
 
-      <!-- ALL HUNTERS CARD -->
+      <!-- HUNTERS TABLE CARD -->
       <div class="hunters-card">
-        <div class="hunters-header">
-          <div class="hunters-title-wrap">
-            <div class="hunters-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+
+        <!-- TOOLBAR -->
+        <div class="toolbar-row">
+          <div class="toolbar-left-group">
+            <div class="search-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" class="search-input" placeholder="Search hunters..." id="searchInput" oninput="filterTable()">
             </div>
-            <span class="hunters-title">ALL HUNTERS</span>
+            <select class="filter-select" id="roleFilter" onchange="filterTable()">
+              <option value="all">All Roles</option>
+              <option value="member">Member</option>
+              <option value="coordinator">U5 Coordinator</option>
+              <option value="admin">Admin</option>
+            </select>
+            <select class="filter-select" id="domainFilter" onchange="filterTable()">
+              <option value="all">All Domains</option>
+              <option value="AI/ML">AI / ML</option>
+              <option value="Full Stack">Full Stack</option>
+              <option value="UI/UX">UI / UX</option>
+              <option value="Content">Content &amp; Media</option>
+              <option value="Operations">Operations</option>
+            </select>
+            <select class="filter-select" id="rankFilter" onchange="filterTable()">
+              <option value="all">All Ranks</option>
+              <option value="ss">SS Rank</option>
+              <option value="s">S Rank</option>
+              <option value="a">A Rank</option>
+              <option value="b">B Rank</option>
+              <option value="c">C Rank</option>
+              <option value="d">D Rank</option>
+              <option value="e">E Rank</option>
+            </select>
           </div>
-          <div class="search-wrap">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" class="search-input" placeholder="Search hunters..." id="searchInput" oninput="filterTable()">
-          </div>
+
+          <button class="btn-tool" onclick="exportCSV()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export CSV
+          </button>
         </div>
 
+        <!-- TABLE WRAPPER -->
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>NAME</th>
-                <th>USERNAME</th>
+                <th>#</th>
+                <th>HUNTER</th>
+                <th>USERNAME / EMAIL</th>
+                <th>PRIMARY DOMAIN</th>
                 <th>ROLE</th>
                 <th>RANK</th>
                 <th>POINTS</th>
@@ -273,105 +465,379 @@ td { padding:10px 14px; vertical-align:middle; }
           </table>
         </div>
 
+        <!-- PAGINATION -->
         <div class="pagination-row">
           <span class="pg-info" id="pgInfo">Showing 1 to 10 of 24 hunters</span>
           <div class="pg-controls">
-            <button class="pg-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-            <button class="pg-btn active" onclick="setPage(1)" id="pg1">1</button>
-            <button class="pg-btn" onclick="setPage(2)" id="pg2">2</button>
-            <button class="pg-btn" onclick="setPage(3)" id="pg3">3</button>
-            <button class="pg-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <button class="pg-btn" onclick="prevPage()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <div id="pgNumbers" style="display:flex;gap:4px;"></div>
+            <button class="pg-btn" onclick="nextPage()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
           </div>
         </div>
+
       </div>
 
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /shell -->
 
+<!-- ── MODAL BACKDROP (POPUP) ── -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <!-- MODAL: ADD MEMBER -->
+  <div class="modal-card" id="modalAddMember">
+    <div class="modal-header">
+      <div class="modal-title-wrap">
+        <div class="modal-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        </div>
+        <span class="modal-title">ADD NEW MEMBER</span>
+      </div>
+      <button class="modal-close" onclick="closeModalAddMember()">&times;</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="modal-form-grid">
+        <div class="form-field">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" placeholder="e.g. Riya Sharma" id="fName">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Username / Email</label>
+          <input type="text" class="form-input" placeholder="e.g. riya.sharma" id="fUsername">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Password</label>
+          <div class="pw-wrap">
+            <input type="password" class="form-input" placeholder="Enter password" id="fPassword">
+            <button class="pw-eye" type="button" onclick="togglePw()">
+              <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Role</label>
+          <div class="select-wrap">
+            <select class="form-select" id="fRole">
+              <option value="member">Member</option>
+              <option value="coordinator">U5 Coordinator</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Primary Domain</label>
+          <div class="select-wrap">
+            <select class="form-select" id="fDomain">
+              <option value="AI/ML">AI / ML</option>
+              <option value="Full Stack">Full Stack</option>
+              <option value="UI/UX">UI / UX</option>
+              <option value="Content">Content &amp; Media</option>
+              <option value="Operations">Operations</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Initial Rank</label>
+          <div class="select-wrap">
+            <select class="form-select" id="fRank">
+              <option value="e">E Rank (Unranked)</option>
+              <option value="d">D Rank (Bronze)</option>
+              <option value="c" selected>C Rank (Iron)</option>
+              <option value="b">B Rank (Silver)</option>
+              <option value="a">A Rank (Gold)</option>
+              <option value="s">S Rank (Platinum)</option>
+              <option value="ss">SS Rank (Shadow Monarch)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-field form-field-full">
+          <label class="form-label">Starting Base Points</label>
+          <input type="number" class="form-input" placeholder="0" id="fPoints" value="0">
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-confirm" onclick="submitCreateMember()">CREATE MEMBER</button>
+      <button class="btn-cancel-outline" onclick="closeModalAddMember()">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-notif" id="toastNotif">
+  <div class="toast-icon">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+  </div>
+  <span id="toastMsg">Action completed successfully.</span>
+</div>
+
 <script>
 const RANK_COLORS = { e:'#8A93A8', d:'#CD7F32', c:'#B0B0B0', b:'#4FC3F7', a:'#FFD700', s:'#00E5FF', ss:'#9A7BFF' };
 
-const HUNTERS = [
-  { initials:'RV', name:'Riya Sharma',    username:'riya.sharma',    role:'member',      rank:'a',  pts:'12,450', status:'active' },
-  { initials:'AS', name:'Aarav Singh',    username:'aarav.singh',    role:'coordinator', rank:'s',  pts:'7,650',  status:'active' },
-  { initials:'AV', name:'Arjun Verma',    username:'arjun.verma',    role:'member',      rank:'b',  pts:'5,980',  status:'active' },
-  { initials:'PP', name:'Pranav Patil',   username:'pranav.patil',   role:'member',      rank:'c',  pts:'4,820',  status:'active' },
-  { initials:'NK', name:'Neha Kulkarni',  username:'neha.kulkarni',  role:'member',      rank:'b',  pts:'4,210',  status:'active' },
-  { initials:'AK', name:'Aniket Kamble',  username:'aniket.kamble',  role:'member',      rank:'b',  pts:'3,780',  status:'active' },
-  { initials:'SM', name:'Siddhant More',  username:'siddhant.more',  role:'coordinator', rank:'s',  pts:'3,450',  status:'active' },
-  { initials:'SP', name:'Sneha Pawar',    username:'sneha.pawar',    role:'member',      rank:'c',  pts:'2,300',  status:'active' },
-  { initials:'RK', name:'Ritik Kadam',    username:'ritik.kadam',    role:'member',      rank:'d',  pts:'1,950',  status:'active' },
-  { initials:'MB', name:'Mayur Bhosale',  username:'mayur.bhosale',  role:'member',      rank:'e',  pts:'870',    status:'inactive'},
+let HUNTERS = [
+  { initials:'GA', name:'Ganesh',    username:'ganesh@vitals.lab',    domain:'Full Stack', role:'coordinator', rank:'s',  pts:16000, status:'active' },
+  { initials:'DE', name:'Debaditya', username:'debaditya@vitals.lab', domain:'AI/ML',      role:'coordinator', rank:'a',  pts:14900, status:'active' },
+  { initials:'DW', name:'Deepavali', username:'deepavali@vitals.lab', domain:'UI/UX',      role:'coordinator', rank:'a',  pts:13000, status:'active' },
+  { initials:'NA', name:'Nandini',   username:'nandini@vitals.lab',   domain:'Content',    role:'member',      rank:'b',  pts:12250, status:'active' },
+  { initials:'SW', name:'Swapnil',   username:'swapnil@vitals.lab',   domain:'Full Stack', role:'member',      rank:'b',  pts:11000, status:'active' },
+  { initials:'SU', name:'Suraj',     username:'suraj@vitals.lab',     domain:'Operations', role:'member',      rank:'b',  pts:10500, status:'active' },
+  { initials:'SA', name:'Santosh',   username:'santosh@vitals.lab',   domain:'AI/ML',      role:'member',      rank:'c',  pts:9750,  status:'active' },
+  { initials:'NK', name:'Nikita',    username:'nikita@vitals.lab',    domain:'UI/UX',      role:'member',      rank:'c',  pts:9250,  status:'active' },
+  { initials:'VE', name:'Vedant',    username:'vedant@vitals.lab',    domain:'Full Stack', role:'member',      rank:'c',  pts:8500,  status:'active' },
+  { initials:'NC', name:'Nakul',     username:'nakul@vitals.lab',     domain:'Content',    role:'member',      rank:'c',  pts:7750,  status:'active' },
+  { initials:'AS', name:'Ashutosh',  username:'ashutosh@vitals.lab',  domain:'Operations', role:'member',      rank:'d',  pts:7000,  status:'active' },
+  { initials:'VS', name:'Vishal',    username:'vishal@vitals.lab',    domain:'AI/ML',      role:'member',      rank:'d',  pts:6500,  status:'active' },
+  { initials:'KO', name:'Komal',     username:'komal@vitals.lab',     domain:'UI/UX',      role:'member',      rank:'d',  pts:5900,  status:'active' },
+  { initials:'PR', name:'Prerna',    username:'prerna@vitals.lab',    domain:'Full Stack', role:'member',      rank:'d',  pts:5500,  status:'active' },
+  { initials:'SH', name:'Shreya',    username:'shreya@vitals.lab',    domain:'Content',    role:'member',      rank:'d',  pts:5000,  status:'active' },
+  { initials:'PM', name:'Prem',      username:'prem@vitals.lab',      domain:'Operations', role:'member',      rank:'e',  pts:4400,  status:'active' },
+  { initials:'KR', name:'Krishna',   username:'krishna@vitals.lab',   domain:'AI/ML',      role:'member',      rank:'e',  pts:3600,  status:'active' },
+  { initials:'UM', name:'Umesh',     username:'umesh@vitals.lab',     domain:'UI/UX',      role:'member',      rank:'e',  pts:2250,  status:'active' },
 ];
+
+let currentPage = 1;
+const pageSize = 10;
+
+function domainClass(d) {
+  if (d === 'AI/ML') return 'domain-aiml';
+  if (d === 'Full Stack') return 'domain-fullstack';
+  if (d === 'UI/UX') return 'domain-uiux';
+  if (d === 'Content') return 'domain-content';
+  return 'domain-ops';
+}
 
 function roleLabel(r) {
   if (r === 'coordinator') return '<span class="role-chip role-coordinator">U5 COORDINATOR</span>';
   if (r === 'admin')       return '<span class="role-chip role-admin">ADMIN</span>';
   return                          '<span class="role-chip role-member">MEMBER</span>';
 }
+
 function rankHex(r) {
   return `<div class="rank-hex rank-${r}">${r.toUpperCase()}</div>`;
 }
+
 function statusChip(s) {
   return s === 'active'
     ? '<span class="chip-active">ACTIVE</span>'
     : '<span class="chip-inactive">INACTIVE</span>';
 }
 
-let allHunters = [...HUNTERS];
+function getFilteredHunters() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const rf = document.getElementById('roleFilter').value;
+  const df = document.getElementById('domainFilter').value;
+  const rkf = document.getElementById('rankFilter').value;
 
-function renderTable(data) {
+  return HUNTERS.filter(h => {
+    const matchQ = !q || h.name.toLowerCase().includes(q) || h.username.toLowerCase().includes(q) || h.domain.toLowerCase().includes(q);
+    const matchRole = rf === 'all' || h.role === rf;
+    const matchDomain = df === 'all' || h.domain === df;
+    const matchRank = rkf === 'all' || h.rank === rkf;
+    return matchQ && matchRole && matchDomain && matchRank;
+  });
+}
+
+function updateKPIs() {
+  document.getElementById('kpiTotal').textContent = HUNTERS.length;
+  document.getElementById('kpiActive').textContent = HUNTERS.filter(h => h.status === 'active').length;
+  document.getElementById('kpiCoords').textContent = HUNTERS.filter(h => h.role === 'coordinator' || h.role === 'admin').length;
+  const totalPts = HUNTERS.reduce((acc, h) => acc + h.pts, 0);
+  document.getElementById('kpiPoints').textContent = totalPts.toLocaleString();
+}
+
+function renderTable() {
+  const filtered = getFilteredHunters();
+  const total = filtered.length;
+  const totalPages = Math.ceil(total / pageSize) || 1;
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const startIdx = (currentPage - 1) * pageSize;
+  const pageData = filtered.slice(startIdx, startIdx + pageSize);
+
   const body = document.getElementById('huntersBody');
   const rc = RANK_COLORS;
-  body.innerHTML = data.map(h => {
-    const c = rc[h.rank];
-    return `<tr>
-      <td><div class="name-cell">
-        <div class="h-avatar" style="border-color:${c};color:${c};background:${c}18">${h.initials}</div>
-        <span class="h-name">${h.name}</span>
-      </div></td>
-      <td class="td-username">${h.username}</td>
-      <td>${roleLabel(h.role)}</td>
-      <td>${rankHex(h.rank)}</td>
-      <td class="td-pts">${h.pts}</td>
-      <td>${statusChip(h.status)}</td>
-      <td><div class="actions-cell">
-        <button class="btn-edit">Edit</button>
-        <button class="btn-deactivate">Deactivate</button>
-        <button class="btn-reset">Reset</button>
-      </div></td>
-    </tr>`;
-  }).join('');
+
+  if (pageData.length === 0) {
+    body.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:28px;color:var(--text2);">No hunters found matching your filters.</td></tr>`;
+  } else {
+    body.innerHTML = pageData.map((h, i) => {
+      const globalIdx = startIdx + i + 1;
+      const c = rc[h.rank] || '#8A93A8';
+      return `<tr>
+        <td style="color:var(--text2);font-weight:600;">${globalIdx}</td>
+        <td>
+          <div class="name-cell">
+            <div class="h-avatar" style="border-color:${c};color:${c};background:${c}18">${h.initials}</div>
+            <div class="h-info">
+              <span class="h-name">${h.name}</span>
+            </div>
+          </div>
+        </td>
+        <td class="h-email">${h.username}</td>
+        <td><span class="domain-badge ${domainClass(h.domain)}">${h.domain}</span></td>
+        <td>${roleLabel(h.role)}</td>
+        <td>${rankHex(h.rank)}</td>
+        <td class="td-pts">${h.pts.toLocaleString()}</td>
+        <td>${statusChip(h.status)}</td>
+        <td>
+          <div class="actions-cell">
+            <button class="btn-edit" onclick="editHunter('${h.username}')">Edit</button>
+            <button class="btn-deactivate" onclick="toggleStatus('${h.username}')">${h.status === 'active' ? 'Deactivate' : 'Activate'}</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Pagination info
+  const endIdx = Math.min(startIdx + pageSize, total);
+  document.getElementById('pgInfo').textContent = total > 0 ? `Showing ${startIdx + 1} to ${endIdx} of ${total} hunters` : '0 hunters';
+
+  // Pagination buttons
+  let pgHtml = '';
+  for (let p = 1; p <= totalPages; p++) {
+    pgHtml += `<button class="pg-btn ${p === currentPage ? 'active' : ''}" onclick="setPage(${p})">${p}</button>`;
+  }
+  document.getElementById('pgNumbers').innerHTML = pgHtml;
+
+  updateKPIs();
 }
 
 function filterTable() {
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  const filtered = HUNTERS.filter(h => h.name.toLowerCase().includes(q) || h.username.toLowerCase().includes(q));
-  renderTable(filtered);
-  document.getElementById('pgInfo').textContent = `Showing 1 to ${Math.min(10,filtered.length)} of ${filtered.length} hunters`;
+  currentPage = 1;
+  renderTable();
 }
 
 function setPage(p) {
-  [1,2,3].forEach(n => document.getElementById(`pg${n}`).classList.toggle('active', n===p));
-  const start = (p-1)*10+1, end = Math.min(p*10,24);
-  document.getElementById('pgInfo').textContent = `Showing ${start} to ${end} of 24 hunters`;
+  currentPage = p;
+  renderTable();
 }
 
-function createHunter() {
-  const name = document.getElementById('fName').value.trim();
-  if (!name) return;
-  alert(`Hunter "${name}" created successfully.`);
-  document.getElementById('fName').value='';
-  document.getElementById('fUsername').value='';
-  document.getElementById('fPassword').value='';
-  document.getElementById('fRole').selectedIndex=0;
+function prevPage() {
+  if (currentPage > 1) { currentPage--; renderTable(); }
 }
+
+function nextPage() {
+  const filtered = getFilteredHunters();
+  const totalPages = Math.ceil(filtered.length / pageSize) || 1;
+  if (currentPage < totalPages) { currentPage++; renderTable(); }
+}
+
+function toggleStatus(username) {
+  const h = HUNTERS.find(x => x.username === username);
+  if (h) {
+    h.status = h.status === 'active' ? 'inactive' : 'active';
+    renderTable();
+    showToast(`${h.name} is now ${h.status.toUpperCase()}.`);
+  }
+}
+
+function editHunter(username) {
+  const h = HUNTERS.find(x => x.username === username);
+  if (h) {
+    document.getElementById('fName').value = h.name;
+    document.getElementById('fUsername').value = h.username;
+    document.getElementById('fRole').value = h.role;
+    document.getElementById('fDomain').value = h.domain;
+    document.getElementById('fRank').value = h.rank;
+    document.getElementById('fPoints').value = h.pts;
+    openAddMemberModal();
+  }
+}
+
+/* ── MODAL POPUP LOGIC ── */
+function openAddMemberModal() {
+  document.getElementById('modalBackdrop').classList.add('active');
+  document.getElementById('modalAddMember').classList.add('active');
+}
+
+function closeModalAddMember() {
+  document.getElementById('modalBackdrop').classList.remove('active');
+  document.getElementById('modalAddMember').classList.remove('active');
+}
+
+function handleBackdropClick(e) {
+  if (e.target === document.getElementById('modalBackdrop')) {
+    closeModalAddMember();
+  }
+}
+document.getElementById('modalBackdrop').addEventListener('click', handleBackdropClick);
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModalAddMember();
+});
 
 function togglePw() {
   const pw = document.getElementById('fPassword');
   pw.type = pw.type === 'password' ? 'text' : 'password';
 }
+
+function submitCreateMember() {
+  const name = document.getElementById('fName').value.trim();
+  const username = document.getElementById('fUsername').value.trim();
+  const role = document.getElementById('fRole').value;
+  const domain = document.getElementById('fDomain').value;
+  const rank = document.getElementById('fRank').value;
+  const pts = parseInt(document.getElementById('fPoints').value) || 0;
+
+  if (!name) {
+    alert('Please enter a full name for the new member.');
+    return;
+  }
+
+  const nameParts = name.split(' ');
+  const initials = nameParts.length >= 2 ? (nameParts[0][0] + nameParts[1][0]).toUpperCase() : name.substring(0, 2).toUpperCase();
+  const userEmail = username ? (username.includes('@') ? username : `${username}@vitals.lab`) : `${name.toLowerCase().replace(/\s+/g, '.')}@vitals.lab`;
+
+  // Check if exists
+  const existingIdx = HUNTERS.findIndex(h => h.username === userEmail || h.name.toLowerCase() === name.toLowerCase());
+  if (existingIdx !== -1) {
+    HUNTERS[existingIdx] = { initials, name, username: userEmail, domain, role, rank, pts, status: 'active' };
+    showToast(`Updated member "${name}".`);
+  } else {
+    HUNTERS.unshift({ initials, name, username: userEmail, domain, role, rank, pts, status: 'active' });
+    showToast(`Member "${name}" created successfully.`);
+  }
+
+  closeModalAddMember();
+  // reset form
+  document.getElementById('fName').value = '';
+  document.getElementById('fUsername').value = '';
+  document.getElementById('fPassword').value = '';
+  document.getElementById('fPoints').value = '0';
+
+  filterTable();
+}
+
+function exportCSV() {
+  const headers = ["Index", "Name", "Email", "Domain", "Role", "Rank", "Points", "Status"];
+  const rows = HUNTERS.map((h, i) => [i + 1, `"${h.name}"`, `"${h.username}"`, `"${h.domain}"`, `"${h.role}"`, `"${h.rank.toUpperCase()}"`, h.pts, h.status]);
+  const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "Vitals_Vectors_Hunters.csv");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  showToast("Exported CSV file successfully.");
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toastNotif');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// Auto open modal if URL params indicate action=add-member
+window.addEventListener('DOMContentLoaded', () => {
+  renderTable();
+  if (window.location.search.includes('action=add-member') || window.location.search.includes('openModal=add-member')) {
+    openAddMemberModal();
+  }
+});
 
 document.getElementById('collapseBtn').addEventListener('click', () => {
   const sb = document.getElementById('sidebar');
@@ -381,8 +847,6 @@ document.getElementById('collapseBtn').addEventListener('click', () => {
     ? '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="14 9 17 12 14 15"/>'
     : '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
 });
-
-renderTable(HUNTERS);
 </script>
 </body>
 </html>

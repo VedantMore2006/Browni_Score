@@ -10,7 +10,6 @@
     rel="stylesheet">
   <link rel="stylesheet" href="../css/global.css">
   <style>
-
     /* .nav-item.nav-admin.active (red active state), .main, .topbar,
        .page-title, .status-pill, .status-dot all now come from global.css. */
 
@@ -186,26 +185,29 @@
 
     .stat-num.red {
       color: var(--red);
-      }
+    }
 
     .stat-num.amber {
       color: var(--amber);
-      }
+    }
 
     .stat-num.blue {
       color: var(--blue);
-      }
+    }
 
     .stat-link {
       font-size: 11px;
       color: var(--text2);
       margin-top: 4px;
       cursor: pointer;
-      transition: color 0.2s;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.2s ease;
     }
 
     .stat-link:hover {
       color: var(--blue);
+      transform: translateX(3px);
     }
 
     /* ── TEAM OVERVIEW TABLE ── */
@@ -213,8 +215,19 @@
       background: var(--panel);
       border: 1px solid var(--border);
       border-radius: 8px;
+      position: relative;
       overflow: hidden;
-      flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .overview-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--blue), var(--teal), transparent);
     }
 
     .overview-header {
@@ -228,7 +241,9 @@
       color: var(--text);
     }
 
-    .table-wrap {
+    .overview-card .table-wrap {
+      max-height: 480px;
+      overflow-y: auto;
       overflow-x: auto;
     }
 
@@ -241,6 +256,9 @@
     thead tr {
       background: var(--elevated);
       border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 2;
     }
 
     thead th {
@@ -482,12 +500,18 @@
       height: 14px;
     }
 
-    /* ── BOTTOM ROW ── */
-    .bottom-row {
+    /* ── MAIN ADMIN GRID (HEROES + ALERTS STACKED LEFT, TEAM OVERVIEW RIGHT) ── */
+    .admin-grid-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 13px;
-      flex-shrink: 0;
+      grid-template-columns: 360px 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .left-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     .alerts-card,
@@ -1142,25 +1166,28 @@
       transition: all 0.2s;
       border: 1px solid;
     }
+
     .btn-confirm-hero.week {
-      background: rgba(255,215,0,0.08);
-      border-color: rgba(255,215,0,0.35);
+      background: rgba(255, 215, 0, 0.08);
+      border-color: rgba(255, 215, 0, 0.35);
       color: var(--gold);
     }
+
     .btn-confirm-hero.week:hover {
-      background: rgba(255,215,0,0.14);
-      box-shadow: 0 0 12px rgba(255,215,0,0.2);
-    }
-    .btn-confirm-hero.month {
-      background: rgba(154,123,255,0.08);
-      border-color: rgba(154,123,255,0.35);
-      color: var(--purple);
-    }
-    .btn-confirm-hero.month:hover {
-      background: rgba(154,123,255,0.14);
-      box-shadow: 0 0 12px rgba(154,123,255,0.2);
+      background: rgba(255, 215, 0, 0.14);
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.2);
     }
 
+    .btn-confirm-hero.month {
+      background: rgba(154, 123, 255, 0.08);
+      border-color: rgba(154, 123, 255, 0.35);
+      color: var(--purple);
+    }
+
+    .btn-confirm-hero.month:hover {
+      background: rgba(154, 123, 255, 0.14);
+      box-shadow: 0 0 12px rgba(154, 123, 255, 0.2);
+    }
   </style>
 </head>
 
@@ -1188,7 +1215,11 @@
               <path d="M9 11l3 3L22 4" />
               <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
             </svg></span><span class="nav-label">Tasks</span></a>
-        <a class="nav-item" href="../point-log.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span><span class="nav-label">Point Log</span></a>
+        <a class="nav-item" href="../point-log.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg></span><span class="nav-label">Point Log</span></a>
         <a class="nav-item" href="../leaderboard.html"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="18" y1="20" x2="18" y2="10" />
@@ -1237,10 +1268,15 @@
             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
             <polyline points="16 17 21 12 16 7" />
             <line x1="21" y1="12" x2="9" y2="12" />
-          </svg><span class="nav-logout-label">Logout</span></div>
+          </svg><span class="nav-logout-label">Logout</span>
+        </div>
         <div class="collapse-btn" id="collapseBtn">
           <svg id="collapseIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/></svg>
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <line x1="9" y1="3" x2="9" y2="21" />
+            <polyline points="16 15 13 12 16 9" />
+          </svg>
         </div>
       </div>
     </nav>
@@ -1252,15 +1288,28 @@
         <div style="display: flex; align-items: center; gap: 14px;">
           <div class="topbar-actions">
             <button class="btn-action-primary" onclick="openAddMemberModal()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
               ADD MEMBER
             </button>
             <button class="btn-action-secondary" onclick="openPointsModal()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <polyline points="12 6 12 12 16 14" />
+              </svg>
               LOG POINTS
             </button>
             <button class="btn-action-danger" onclick="openWarnModal()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
               WARNING
             </button>
           </div>
@@ -1272,24 +1321,6 @@
       </div>
 
       <div class="content">
-
-        <!-- ALERT BANNER -->
-        <div class="alert-banner" id="alertBanner">
-          <div class="alert-left">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-            <span class="alert-text"><span class="alert-count"><span id="alertBannerCount">0</span> ACTIVE ALERTS</span><span class="alert-sep"> —
-              </span><a class="alert-link">VIEW BELOW</a></span>
-          </div>
-          <div class="alert-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-              stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6" />
-            </svg></div>
-        </div>
 
         <!-- QUICK STATS -->
         <div class="stats-row">
@@ -1306,7 +1337,7 @@
             <div class="stat-info">
               <div class="stat-label">Members Below 100 Pts</div>
               <div class="stat-num red" id="statBelowMin">0</div>
-              <div class="stat-link">View members →</div>
+              <a href="members.html" class="stat-link">View members →</a>
             </div>
           </div>
           <div class="stat-card amber-accent">
@@ -1321,7 +1352,7 @@
             <div class="stat-info">
               <div class="stat-label">Members With 2 Warnings</div>
               <div class="stat-num amber" id="statTwoWarns">0</div>
-              <div class="stat-link">View members →</div>
+              <a href="members.html" class="stat-link">View members →</a>
             </div>
           </div>
           <div class="stat-card blue-accent">
@@ -1335,88 +1366,94 @@
             <div class="stat-info">
               <div class="stat-label">Overdue Tasks</div>
               <div class="stat-num blue" id="statOverdue">0</div>
-              <div class="stat-link">View tasks →</div>
+              <a href="assign-tasks.html" class="stat-link">View tasks →</a>
             </div>
           </div>
         </div>
 
-        <!-- TEAM OVERVIEW -->
-        <div class="overview-card">
-          <div class="overview-header" style="display: flex; align-items: center; justify-content: space-between;">
-            <span>TEAM OVERVIEW</span>
-            <button class="btn-action-primary" style="padding: 5px 12px; font-size: 11px;" onclick="openAddMemberModal()">
-              + ADD HUNTER
-            </button>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>POS</th>
-                  <th>HUNTER</th>
-                  <th>TOTAL PTS</th>
-                  <th>THIS WEEK</th>
-                  <th>STREAK</th>
-                  <th>STATUS</th>
-                  <th>WARNINGS</th>
-                  <th>ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody id="teamBody"></tbody>
-            </table>
-          </div>
-        </div>
+        <!-- MAIN GRID: LEFT (HEROES + ALERTS STACKED) & RIGHT (TEAM OVERVIEW) -->
+        <div class="admin-grid-row">
 
-        <!-- BOTTOM ROW -->
-        <div class="bottom-row">
-          <!-- ALERTS -->
-          <div class="alerts-card">
-            <div class="section-title">ALERTS</div>
-            <div class="alert-list" id="alertList"></div>
-            <div class="view-all-link">View all alerts →</div>
+          <!-- LEFT COLUMN: HEROES (TOP) & ALERTS (BOTTOM) -->
+          <div class="left-stack">
+            <!-- HEROES -->
+            <div class="heroes-card">
+              <div class="section-title">HEROES</div>
+              <!-- Hero of Week -->
+              <div class="hero-week">
+                <div class="hero-week-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M5 3l3 6 4-2 4 2 3-6H5z" />
+                    <path d="M5 3v10a7 7 0 0014 0V3" />
+                  </svg>
+                </div>
+                <div class="hero-week-info">
+                  <div class="hw-label">HERO OF THE WEEK</div>
+                  <div class="hw-name" id="heroWeekName">—</div>
+                  <div class="hw-pts" id="heroWeekPts">— PTS THIS WEEK</div>
+                </div>
+                <!-- faint art placeholder -->
+                <div class="hero-art">
+                  <svg viewBox="0 0 80 70" fill="none">
+                    <path d="M40 5 L65 20 L65 50 L40 65 L15 50 L15 20 Z" stroke="rgba(255,215,0,0.3)" stroke-width="1"
+                      fill="rgba(255,215,0,0.04)" />
+                    <path d="M40 15 L55 25 L55 45 L40 55 L25 45 L25 25 Z" stroke="rgba(255,215,0,0.2)"
+                      stroke-width="0.8" fill="none" />
+                  </svg>
+                </div>
+              </div>
+              <button class="btn-confirm-hero week" onclick="confirmHero('week')">👑 Confirm Hero of Week</button>
+              <!-- Hero of Month -->
+              <div class="hero-month">
+                <div class="hm-label">
+                  <div class="hm-label-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                      <polygon
+                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg></div>
+                  HERO OF THE MONTH
+                </div>
+                <div id="heroMonthList"></div>
+              </div>
+              <button class="btn-confirm-hero month" onclick="confirmHero('month')">⭐ Confirm Hero of Month</button>
+              <div class="view-lb-link">View all leaderboard →</div>
+            </div>
+
+            <!-- ALERTS -->
+            <div class="alerts-card">
+              <div class="section-title">ALERTS</div>
+              <div class="alert-list" id="alertList"></div>
+              <div class="view-all-link">View all alerts →</div>
+            </div>
           </div>
 
-          <!-- HEROES -->
-          <div class="heroes-card">
-            <div class="section-title">HEROES</div>
-            <!-- Hero of Week -->
-            <div class="hero-week">
-              <div class="hero-week-icon">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M5 3l3 6 4-2 4 2 3-6H5z" />
-                  <path d="M5 3v10a7 7 0 0014 0V3" />
-                </svg>
-              </div>
-              <div class="hero-week-info">
-                <div class="hw-label">HERO OF THE WEEK</div>
-                <div class="hw-name" id="heroWeekName">—</div>
-                <div class="hw-pts" id="heroWeekPts">— PTS THIS WEEK</div>
-              </div>
-              <!-- faint art placeholder -->
-              <div class="hero-art">
-                <svg viewBox="0 0 80 70" fill="none">
-                  <path d="M40 5 L65 20 L65 50 L40 65 L15 50 L15 20 Z" stroke="rgba(255,215,0,0.3)" stroke-width="1"
-                    fill="rgba(255,215,0,0.04)" />
-                  <path d="M40 15 L55 25 L55 45 L40 55 L25 45 L25 25 Z" stroke="rgba(255,215,0,0.2)" stroke-width="0.8"
-                    fill="none" />
-                </svg>
-              </div>
+          <!-- RIGHT COLUMN: TEAM OVERVIEW -->
+          <div class="overview-card">
+            <div class="overview-header" style="display: flex; align-items: center; justify-content: space-between;">
+              <span>TEAM OVERVIEW</span>
+              <button class="btn-action-primary" style="padding: 5px 12px; font-size: 11px;"
+                onclick="openAddMemberModal()">
+                + ADD HUNTER
+              </button>
             </div>
-            <button class="btn-confirm-hero week" onclick="confirmHero('week')">👑 Confirm Hero of Week</button>
-            <!-- Hero of Month -->
-            <div class="hero-month">
-              <div class="hm-label">
-                <div class="hm-label-icon"><svg viewBox="0 0 24 24" fill="currentColor">
-                    <polygon
-                      points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                  </svg></div>
-                HERO OF THE MONTH
-              </div>
-              <div id="heroMonthList"></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>POS</th>
+                    <th>HUNTER</th>
+                    <th>TOTAL PTS</th>
+                    <th>THIS WEEK</th>
+                    <th>STREAK</th>
+                    <th>STATUS</th>
+                    <th>WARNINGS</th>
+                    <th>ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody id="teamBody"></tbody>
+              </table>
             </div>
-            <button class="btn-confirm-hero month" onclick="confirmHero('month')">⭐ Confirm Hero of Month</button>
-            <div class="view-lb-link">View all leaderboard →</div>
           </div>
+
         </div>
 
       </div><!-- /content -->
@@ -1432,7 +1469,8 @@
       <div class="modal-header">
         <div class="modal-title-wrap">
           <div class="modal-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
               <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
               <circle cx="9" cy="7" r="4" />
               <line x1="19" y1="8" x2="19" y2="14" />
@@ -1441,7 +1479,11 @@
           </div>
           <span class="modal-title">ADD HUNTER / MEMBER</span>
         </div>
-        <button class="modal-close" onclick="closeAllModals()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <button class="modal-close" onclick="closeAllModals()"><svg width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg></button>
       </div>
       <div class="modal-body">
         <div class="form-field">
@@ -1455,9 +1497,15 @@
         <div class="form-field">
           <label class="form-label">Password</label>
           <div style="position: relative;">
-            <input type="password" class="form-input" id="fAddPassword" placeholder="Enter password" style="padding-right: 36px;">
-            <button type="button" onclick="toggleAddPw()" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text2); cursor: pointer; display: flex; align-items: center;">
-              <svg id="addEyeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <input type="password" class="form-input" id="fAddPassword" placeholder="Enter password"
+              style="padding-right: 36px;">
+            <button type="button" onclick="toggleAddPw()"
+              style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text2); cursor: pointer; display: flex; align-items: center;">
+              <svg id="addEyeIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
             </button>
           </div>
         </div>
@@ -1483,14 +1531,19 @@
       <div class="modal-header">
         <div class="modal-title-wrap">
           <div class="modal-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
               <circle cx="12" cy="12" r="10" />
               <polyline points="12 6 12 12 16 14" />
             </svg>
           </div>
           <span class="modal-title">ADD / DEDUCT POINTS</span>
         </div>
-        <button class="modal-close" onclick="closeAllModals()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <button class="modal-close" onclick="closeAllModals()"><svg width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg></button>
       </div>
       <div class="modal-body">
         <div class="form-field">
@@ -1534,7 +1587,8 @@
         </div>
         <div class="form-field">
           <label class="form-label">Reason</label>
-          <textarea class="form-textarea" id="fReason" placeholder="Enter reason for adding or deducting points..."></textarea>
+          <textarea class="form-textarea" id="fReason"
+            placeholder="Enter reason for adding or deducting points..."></textarea>
         </div>
       </div>
       <div class="modal-footer">
@@ -1548,7 +1602,8 @@
       <div class="modal-header">
         <div class="modal-title-wrap">
           <div class="modal-icon" style="color: var(--red);">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
               <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
               <line x1="12" y1="9" x2="12" y2="13" />
               <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -1556,7 +1611,11 @@
           </div>
           <span class="modal-title" style="color: var(--red);">ISSUE WARNING</span>
         </div>
-        <button class="modal-close" onclick="closeAllModals()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <button class="modal-close" onclick="closeAllModals()"><svg width="18" height="18" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg></button>
       </div>
       <div class="modal-body">
         <div class="form-field">
@@ -1579,59 +1638,61 @@
   </div>
 
   <script>
+    const TODAY = new Date().toISOString().split('T')[0];
+
     // ─── SHARED MOCK DATA (same arrays used across all pages) ───
     const MEMBERS = [
-      { name:'Ganesh',    init:'GA', pts_week:70,  pts_month:320, streak:4, rank:'s',  warnings:0, status:'active' },
-      { name:'Debaditya', init:'DE', pts_week:65,  pts_month:298, streak:3, rank:'a',  warnings:0, status:'active' },
-      { name:'Deepavali', init:'DW', pts_week:58,  pts_month:260, streak:3, rank:'a',  warnings:0, status:'active' },
-      { name:'Nandini',   init:'NA', pts_week:55,  pts_month:245, streak:3, rank:'b',  warnings:0, status:'active' },
-      { name:'Swapnil',   init:'SW', pts_week:48,  pts_month:220, streak:2, rank:'b',  warnings:0, status:'active' },
-      { name:'Suraj',     init:'SU', pts_week:45,  pts_month:210, streak:2, rank:'b',  warnings:0, status:'active' },
-      { name:'Santosh',   init:'SA', pts_week:40,  pts_month:195, streak:2, rank:'c',  warnings:1, status:'active' },
-      { name:'Nikita',    init:'NK', pts_week:38,  pts_month:185, streak:2, rank:'c',  warnings:0, status:'active' },
-      { name:'Vedant',    init:'VE', pts_week:35,  pts_month:170, streak:2, rank:'c',  warnings:0, status:'active' },
-      { name:'Nakul',     init:'NC', pts_week:30,  pts_month:155, streak:1, rank:'c',  warnings:0, status:'active' },
-      { name:'Ashutosh',  init:'AS', pts_week:28,  pts_month:140, streak:1, rank:'d',  warnings:1, status:'active' },
-      { name:'Vishal',    init:'VS', pts_week:25,  pts_month:130, streak:1, rank:'d',  warnings:0, status:'active' },
-      { name:'Komal',     init:'KO', pts_week:22,  pts_month:118, streak:1, rank:'d',  warnings:0, status:'active' },
-      { name:'Prerna',    init:'PR', pts_week:20,  pts_month:110, streak:1, rank:'d',  warnings:2, status:'active' },
-      { name:'Shreya',    init:'SH', pts_week:18,  pts_month:100, streak:0, rank:'d',  warnings:0, status:'active' },
-      { name:'Prem',      init:'PM', pts_week:15,  pts_month:88,  streak:0, rank:'e',  warnings:0, status:'active' },
-      { name:'Krishna',   init:'KR', pts_week:12,  pts_month:72,  streak:0, rank:'e',  warnings:2, status:'active' },
-      { name:'SAB',       init:'SB', pts_week:8,   pts_month:45,  streak:0, rank:'e',  warnings:0, status:'active' },
+      { name: 'Ganesh', init: 'GA', pts_week: 70, pts_month: 320, streak: 4, rank: 's', warnings: 0, status: 'active' },
+      { name: 'Debaditya', init: 'DE', pts_week: 65, pts_month: 298, streak: 3, rank: 'a', warnings: 0, status: 'active' },
+      { name: 'Deepavali', init: 'DW', pts_week: 58, pts_month: 260, streak: 3, rank: 'a', warnings: 0, status: 'active' },
+      { name: 'Nandini', init: 'NA', pts_week: 55, pts_month: 245, streak: 3, rank: 'b', warnings: 0, status: 'active' },
+      { name: 'Swapnil', init: 'SW', pts_week: 48, pts_month: 220, streak: 2, rank: 'b', warnings: 0, status: 'active' },
+      { name: 'Suraj', init: 'SU', pts_week: 45, pts_month: 210, streak: 2, rank: 'b', warnings: 0, status: 'active' },
+      { name: 'Santosh', init: 'SA', pts_week: 40, pts_month: 195, streak: 2, rank: 'c', warnings: 1, status: 'active' },
+      { name: 'Nikita', init: 'NK', pts_week: 38, pts_month: 185, streak: 2, rank: 'c', warnings: 0, status: 'active' },
+      { name: 'Vedant', init: 'VE', pts_week: 35, pts_month: 170, streak: 2, rank: 'c', warnings: 0, status: 'active' },
+      { name: 'Nakul', init: 'NC', pts_week: 30, pts_month: 155, streak: 1, rank: 'c', warnings: 0, status: 'active' },
+      { name: 'Ashutosh', init: 'AS', pts_week: 28, pts_month: 140, streak: 1, rank: 'd', warnings: 1, status: 'active' },
+      { name: 'Vishal', init: 'VS', pts_week: 25, pts_month: 130, streak: 1, rank: 'd', warnings: 0, status: 'active' },
+      { name: 'Komal', init: 'KO', pts_week: 22, pts_month: 118, streak: 1, rank: 'd', warnings: 0, status: 'active' },
+      { name: 'Prerna', init: 'PR', pts_week: 20, pts_month: 110, streak: 1, rank: 'd', warnings: 2, status: 'active' },
+      { name: 'Shreya', init: 'SH', pts_week: 18, pts_month: 100, streak: 0, rank: 'd', warnings: 0, status: 'active' },
+      { name: 'Prem', init: 'PM', pts_week: 15, pts_month: 88, streak: 0, rank: 'e', warnings: 0, status: 'active' },
+      { name: 'Krishna', init: 'KR', pts_week: 12, pts_month: 72, streak: 0, rank: 'e', warnings: 2, status: 'active' },
+      { name: 'Umesh', init: 'UM', pts_week: 8, pts_month: 45, streak: 0, rank: 'e', warnings: 0, status: 'active' },
     ];
 
     const RANK_COLORS = {
-      ss:'#9A7BFF', s:'#00E5FF', a:'#FFD700',
-      b:'#4FC3F7',  c:'#B0B0B0', d:'#CD7F32', e:'#8A93A8'
+      ss: '#9A7BFF', s: '#00E5FF', a: '#FFD700',
+      b: '#4FC3F7', c: '#B0B0B0', d: '#CD7F32', e: '#8A93A8'
     };
 
     const ALL_TASKS = [
-      { id:1,  projectId:'mindspace',   title:'Implement user onboarding flow',      lead:'Ganesh',    assignedTo:'Vedant',    deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,             points:0 },
-      { id:2,  projectId:'mindspace',   title:'Fix session timeout bug',              lead:'Ganesh',    assignedTo:'Nakul',     deadline:'2026-08-16', priority:1, status:'completed',   rating:null,             points:0 },
-      { id:3,  projectId:'mindspace',   title:'Design dashboard wireframes',          lead:'Ganesh',    assignedTo:'Nandini',   deadline:'2026-08-18', priority:2, status:'rated',       rating:'exceeds',        points:8 },
-      { id:4,  projectId:'neurovi',     title:'Train classification model v2',        lead:'Ganesh',    assignedTo:'Ashutosh',  deadline:'2026-08-22', priority:1, status:'in_progress', rating:null,             points:0 },
-      { id:5,  projectId:'neurovi',     title:'Write model evaluation report',        lead:'Ganesh',    assignedTo:'Vedant',    deadline:'2026-08-19', priority:2, status:'pending',     rating:null,             points:0 },
-      { id:6,  projectId:'nutrisure',   title:'Build nutrition tracking API',         lead:'Deepavali', assignedTo:'Prem',      deadline:'2026-08-21', priority:1, status:'in_progress', rating:null,             points:0 },
-      { id:7,  projectId:'nutrisure',   title:'Create meal recommendation logic',     lead:'Deepavali', assignedTo:'Vishal',    deadline:'2026-08-17', priority:2, status:'rated',       rating:'meets',          points:5 },
-      { id:8,  projectId:'solobeauty',  title:'Product catalogue UI',                 lead:'Santosh',   assignedTo:'Prem',      deadline:'2026-08-20', priority:2, status:'pending',     rating:null,             points:0 },
-      { id:9,  projectId:'skillsense',  title:'Course module drag-and-drop',          lead:'Swapnil',   assignedTo:'Komal',     deadline:'2026-08-18', priority:1, status:'completed',   rating:null,             points:0 },
-      { id:10, projectId:'skillsense',  title:'Integrate payment gateway',            lead:'Swapnil',   assignedTo:'Ashutosh',  deadline:'2026-08-23', priority:1, status:'pending',     rating:null,             points:0 },
-      { id:11, projectId:'lms',         title:'Student progress dashboard',           lead:'Swapnil',   assignedTo:'Shreya',    deadline:'2026-08-19', priority:2, status:'rated',       rating:'needs_revision', points:3 },
-      { id:12, projectId:'website',     title:'SEO meta tags for all pages',          lead:'Debaditya', assignedTo:'Suraj',     deadline:'2026-08-16', priority:2, status:'completed',   rating:null,             points:0 },
-      { id:13, projectId:'website',     title:'Contact form backend integration',     lead:'Debaditya', assignedTo:'Ashutosh',  deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,             points:0 },
-      { id:14, projectId:'socialmedia', title:'Draft 4 LinkedIn posts for August',    lead:'Debaditya', assignedTo:'Suraj',     deadline:'2026-08-17', priority:2, status:'rated',       rating:'exceeds',        points:8 },
-      { id:15, projectId:'ezest',       title:'Workshop logistics planning',           lead:'Santosh',   assignedTo:'Prerna',    deadline:'2026-08-22', priority:2, status:'pending',     rating:null,             points:0 },
-      { id:16, projectId:'funday',      title:'Finalize venue and schedule',          lead:'Nikita',    assignedTo:'Deepavali', deadline:'2026-08-18', priority:1, status:'in_progress', rating:null,             points:0 },
-      { id:17, projectId:'demoday',     title:'Prepare stakeholder presentations',    lead:'Deepavali', assignedTo:'Prerna',    deadline:'2026-08-25', priority:1, status:'pending',     rating:null,             points:0 },
-      { id:18, projectId:'premises',    title:'Test attendance sync feature',         lead:'Deepavali', assignedTo:'Prem',      deadline:'2026-08-19', priority:1, status:'completed',   rating:null,             points:0 },
+      { id: 1, projectId: 'mindspace', title: 'Implement user onboarding flow', lead: 'Ganesh', assignedTo: 'Vedant', deadline: '2026-08-20', priority: 1, status: 'in_progress', rating: null, points: 0 },
+      { id: 2, projectId: 'mindspace', title: 'Fix session timeout bug', lead: 'Ganesh', assignedTo: 'Nakul', deadline: '2026-08-16', priority: 1, status: 'completed', rating: null, points: 0 },
+      { id: 3, projectId: 'mindspace', title: 'Design dashboard wireframes', lead: 'Ganesh', assignedTo: 'Nandini', deadline: '2026-08-18', priority: 2, status: 'rated', rating: 'exceeds', points: 8 },
+      { id: 4, projectId: 'neurovi', title: 'Train classification model v2', lead: 'Ganesh', assignedTo: 'Ashutosh', deadline: '2026-08-22', priority: 1, status: 'in_progress', rating: null, points: 0 },
+      { id: 5, projectId: 'neurovi', title: 'Write model evaluation report', lead: 'Ganesh', assignedTo: 'Vedant', deadline: '2026-08-19', priority: 2, status: 'pending', rating: null, points: 0 },
+      { id: 6, projectId: 'nutrisure', title: 'Build nutrition tracking API', lead: 'Deepavali', assignedTo: 'Prem', deadline: '2026-08-21', priority: 1, status: 'in_progress', rating: null, points: 0 },
+      { id: 7, projectId: 'nutrisure', title: 'Create meal recommendation logic', lead: 'Deepavali', assignedTo: 'Vishal', deadline: '2026-08-17', priority: 2, status: 'rated', rating: 'meets', points: 5 },
+      { id: 8, projectId: 'solobeauty', title: 'Product catalogue UI', lead: 'Santosh', assignedTo: 'Prem', deadline: '2026-08-20', priority: 2, status: 'pending', rating: null, points: 0 },
+      { id: 9, projectId: 'skillsense', title: 'Course module drag-and-drop', lead: 'Swapnil', assignedTo: 'Komal', deadline: '2026-08-18', priority: 1, status: 'completed', rating: null, points: 0 },
+      { id: 10, projectId: 'skillsense', title: 'Integrate payment gateway', lead: 'Swapnil', assignedTo: 'Ashutosh', deadline: '2026-08-23', priority: 1, status: 'pending', rating: null, points: 0 },
+      { id: 11, projectId: 'lms', title: 'Student progress dashboard', lead: 'Swapnil', assignedTo: 'Shreya', deadline: '2026-08-19', priority: 2, status: 'rated', rating: 'needs_revision', points: 3 },
+      { id: 12, projectId: 'website', title: 'SEO meta tags for all pages', lead: 'Debaditya', assignedTo: 'Suraj', deadline: '2026-08-16', priority: 2, status: 'completed', rating: null, points: 0 },
+      { id: 13, projectId: 'website', title: 'Contact form backend integration', lead: 'Debaditya', assignedTo: 'Ashutosh', deadline: '2026-08-20', priority: 1, status: 'in_progress', rating: null, points: 0 },
+      { id: 14, projectId: 'socialmedia', title: 'Draft 4 LinkedIn posts for August', lead: 'Debaditya', assignedTo: 'Suraj', deadline: '2026-08-17', priority: 2, status: 'rated', rating: 'exceeds', points: 8 },
+      { id: 15, projectId: 'ezest', title: 'Workshop logistics planning', lead: 'Santosh', assignedTo: 'Prerna', deadline: '2026-08-22', priority: 2, status: 'pending', rating: null, points: 0 },
+      { id: 16, projectId: 'funday', title: 'Finalize venue and schedule', lead: 'Nikita', assignedTo: 'Deepavali', deadline: '2026-08-18', priority: 1, status: 'in_progress', rating: null, points: 0 },
+      { id: 17, projectId: 'demoday', title: 'Prepare stakeholder presentations', lead: 'Deepavali', assignedTo: 'Prerna', deadline: '2026-08-25', priority: 1, status: 'pending', rating: null, points: 0 },
+      { id: 18, projectId: 'premises', title: 'Test attendance sync feature', lead: 'Deepavali', assignedTo: 'Prem', deadline: '2026-08-19', priority: 1, status: 'completed', rating: null, points: 0 },
     ];
 
     // ─── TOAST (same pattern used across the app) ───
     function showToast(msg, type = 'info') {
       let c = document.getElementById('toast-container');
       if (!c) { c = document.createElement('div'); c.id = 'toast-container'; c.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px;'; document.body.appendChild(c); }
-      const colors = { success:'#00E5FF', error:'#FF1744', info:'#4FC3F7', warning:'#FFB300' };
+      const colors = { success: '#00E5FF', error: '#FF1744', info: '#4FC3F7', warning: '#FFB300' };
       const t = document.createElement('div');
       t.style.cssText = `padding:12px 20px;border-radius:6px;font-family:'Inter',sans-serif;font-size:13px;border:1px solid ${colors[type]};color:${colors[type]};background:${colors[type]}18;max-width:340px;`;
       t.textContent = msg;
@@ -1643,7 +1704,7 @@
     function computeAlerts() {
       const belowMin = MEMBERS.filter(m => m.pts_month < 100);
       const twoWarns = MEMBERS.filter(m => m.warnings >= 2);
-      const overdue  = ALL_TASKS.filter(t => {
+      const overdue = ALL_TASKS.filter(t => {
         if (t.status === 'rated' || t.status === 'completed') return false;
         return t.deadline < TODAY;
       });
@@ -1652,13 +1713,18 @@
 
     function renderStats() {
       const { belowMin, twoWarns, overdue } = computeAlerts();
-      document.getElementById('statBelowMin').textContent = belowMin.length;
-      document.getElementById('statTwoWarns').textContent = twoWarns.length;
-      document.getElementById('statOverdue').textContent  = overdue.length;
+      const elBelow = document.getElementById('statBelowMin');
+      if (elBelow) elBelow.textContent = belowMin.length;
+      const elWarns = document.getElementById('statTwoWarns');
+      if (elWarns) elWarns.textContent = twoWarns.length;
+      const elOverdue = document.getElementById('statOverdue');
+      if (elOverdue) elOverdue.textContent = overdue.length;
 
       const totalAlerts = belowMin.length + twoWarns.length + overdue.length;
-      document.getElementById('alertBannerCount').textContent = totalAlerts;
-      document.getElementById('alertBanner').style.display = totalAlerts > 0 ? 'flex' : 'none';
+      const bannerCount = document.getElementById('alertBannerCount');
+      if (bannerCount) bannerCount.textContent = totalAlerts;
+      const banner = document.getElementById('alertBanner');
+      if (banner) banner.style.display = totalAlerts > 0 ? 'flex' : 'none';
     }
 
     // ─── SECTION 2: TEAM OVERVIEW TABLE ───
@@ -1876,11 +1942,11 @@
     }
 
     function logPoints() {
-      const member   = document.getElementById('fMember').value;
-      const type     = document.getElementById('fType').value;
+      const member = document.getElementById('fMember').value;
+      const type = document.getElementById('fType').value;
       const category = document.getElementById('fCategory').value;
-      const ptsVal   = document.getElementById('fPoints').value;
-      const reason   = document.getElementById('fReason').value;
+      const ptsVal = document.getElementById('fPoints').value;
+      const reason = document.getElementById('fReason').value;
 
       if (!member || !type || !category || !ptsVal || !reason) {
         showToast('Please fill all fields before logging points.', 'error');
@@ -1954,8 +2020,6 @@
         ? '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="14 9 17 12 14 15"/>'
         : '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
     });
-
-    const TODAY = '2026-08-16';
 
     function init() {
       renderStats();

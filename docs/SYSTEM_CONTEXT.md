@@ -105,7 +105,7 @@ Deepavali, Santosh, Debaditya, Swapnil, Ganesh, Nikita
 
 ### Other team members
 ```
-Vedant, Nakul, Ashutosh, Nandini, Prerna, Prem, Komal, Shreya, Vishal, Suraj, Krishna, SAB
+Vedant, Nakul, Ashutosh, Nandini, Prerna, Prem, Komal, Shreya, Vishal, Suraj, Krishna, Umesh
 ```
 
 ### Lab name

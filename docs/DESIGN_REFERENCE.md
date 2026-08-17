@@ -369,7 +369,7 @@ Right (wide): Active tasks table with rating dropdowns for completed tasks.
 2. Include the left sidebar in its expanded state (220px wide).
 3. Mark the correct nav item as active (blue left border + blue text).
 4. Apply all card styles (dark panels, faint borders, subtle hover glow).
-5. Use real team member names: Ganesh, Deepavali, Debaditya, Swapnil, Nikita, Santosh, Vedant, Nakul, Ashutosh, Nandini, Prerna, Prem, Komal, Shreya, Vishal, Suraj, Krishna, SAB.
+5. Use real team member names: Ganesh, Deepavali, Debaditya, Swapnil, Nikita, Santosh, Vedant, Nakul, Ashutosh, Nandini, Prerna, Prem, Komal, Shreya, Vishal, Suraj, Krishna, Umesh.
 6. Use real project names: MindSpace, NeuroVisualisAI, NutriSure, SoloBeauty, SkillSense, LMS, Website, LinkedIn/Social Media, E-Zest, Fun Day, Demo Day, Learning Time, Premises.
 7. Never show fictional names. Never show placeholder "Lorem ipsum" text.
 8. Show realistic point values — members range from ~45 pts to ~320 pts total.

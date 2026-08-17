@@ -50,24 +50,24 @@ const ALL_TASKS = [
 
 // Real team roster with points data (matches leaderboard.html / point-log.html)
 const MEMBERS = [
-  { name:'Ganesh',    init:'GA', pts_week:70, pts_month:320, rank:'s' },
-  { name:'Debaditya', init:'DE', pts_week:65, pts_month:298, rank:'a' },
-  { name:'Deepavali', init:'DW', pts_week:58, pts_month:260, rank:'a' },
-  { name:'Nandini',   init:'NA', pts_week:55, pts_month:245, rank:'b' },
-  { name:'Swapnil',   init:'SW', pts_week:48, pts_month:220, rank:'b' },
-  { name:'Suraj',     init:'SU', pts_week:45, pts_month:210, rank:'b' },
-  { name:'Santosh',   init:'SA', pts_week:40, pts_month:195, rank:'c' },
-  { name:'Nikita',    init:'NK', pts_week:38, pts_month:185, rank:'c' },
-  { name:'Vedant',    init:'VE', pts_week:35, pts_month:170, rank:'c' },
-  { name:'Nakul',     init:'NC', pts_week:30, pts_month:155, rank:'c' },
-  { name:'Ashutosh',  init:'AS', pts_week:28, pts_month:140, rank:'d' },
-  { name:'Vishal',    init:'VS', pts_week:25, pts_month:130, rank:'d' },
-  { name:'Komal',     init:'KO', pts_week:22, pts_month:118, rank:'d' },
-  { name:'Prerna',    init:'PR', pts_week:20, pts_month:110, rank:'d' },
-  { name:'Shreya',    init:'SH', pts_week:18, pts_month:100, rank:'d' },
-  { name:'Prem',      init:'PM', pts_week:15, pts_month:88,  rank:'e' },
-  { name:'Krishna',   init:'KR', pts_week:12, pts_month:72,  rank:'e' },
-  { name:'SAB',       init:'SB', pts_week:8,  pts_month:45,  rank:'e' },
+  { name: 'Ganesh', init: 'GA', pts_week: 70, pts_month: 320, streak: 4, rank: 's', warnings: 0, status: 'active' },
+  { name: 'Debaditya', init: 'DE', pts_week: 65, pts_month: 298, streak: 3, rank: 'a', warnings: 0, status: 'active' },
+  { name: 'Deepavali', init: 'DW', pts_week: 58, pts_month: 260, streak: 3, rank: 'a', warnings: 0, status: 'active' },
+  { name: 'Nandini', init: 'NA', pts_week: 55, pts_month: 245, streak: 3, rank: 'b', warnings: 0, status: 'active' },
+  { name: 'Swapnil', init: 'SW', pts_week: 48, pts_month: 220, streak: 2, rank: 'b', warnings: 0, status: 'active' },
+  { name: 'Suraj', init: 'SU', pts_week: 45, pts_month: 210, streak: 2, rank: 'b', warnings: 0, status: 'active' },
+  { name: 'Santosh', init: 'SA', pts_week: 40, pts_month: 195, streak: 2, rank: 'c', warnings: 1, status: 'active' },
+  { name: 'Nikita', init: 'NK', pts_week: 38, pts_month: 185, streak: 2, rank: 'c', warnings: 0, status: 'active' },
+  { name: 'Vedant', init: 'VE', pts_week: 35, pts_month: 170, streak: 2, rank: 'c', warnings: 0, status: 'active' },
+  { name: 'Nakul', init: 'NC', pts_week: 30, pts_month: 155, streak: 1, rank: 'c', warnings: 0, status: 'active' },
+  { name: 'Ashutosh', init: 'AS', pts_week: 28, pts_month: 140, streak: 1, rank: 'd', warnings: 1, status: 'active' },
+  { name: 'Vishal', init: 'VS', pts_week: 25, pts_month: 130, streak: 1, rank: 'd', warnings: 0, status: 'active' },
+  { name: 'Komal', init: 'KO', pts_week: 22, pts_month: 118, streak: 1, rank: 'd', warnings: 0, status: 'active' },
+  { name: 'Prerna', init: 'PR', pts_week: 20, pts_month: 110, streak: 1, rank: 'd', warnings: 2, status: 'active' },
+  { name: 'Shreya', init: 'SH', pts_week: 18, pts_month: 100, streak: 0, rank: 'd', warnings: 0, status: 'active' },
+  { name: 'Prem', init: 'PM', pts_week: 15, pts_month: 88, streak: 0, rank: 'e', warnings: 0, status: 'active' },
+  { name: 'Krishna', init: 'KR', pts_week: 12, pts_month: 72, streak: 0, rank: 'e', warnings: 2, status: 'active' },
+  { name: 'Umesh', init: 'UM', pts_week: 8, pts_month: 45, streak: 0, rank: 'e', warnings: 0, status: 'active' },
 ];
 
 const RANK_COLORS = { ss:'#9A7BFF', s:'#00E5FF', a:'#FFD700', b:'#4FC3F7', c:'#B0B0B0', d:'#CD7F32', e:'#8A93A8' };
@@ -77,7 +77,7 @@ const RANK_COLORS = { ss:'#9A7BFF', s:'#00E5FF', a:'#FFD700', b:'#4FC3F7', c:'#B
 const ATTENDANCE_TODAY = MEMBERS.map(m => {
   let status = 'present';
   if (m.name === 'Shreya') status = 'late';
-  if (m.name === 'SAB') status = 'absent';
+  if (m.name === 'Umesh') status = 'absent';
   if (m.name === 'Krishna') status = 'on_leave';
   return { name: m.name, status };
 });
