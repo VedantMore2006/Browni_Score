@@ -39,7 +39,7 @@ Replace the existing `ALL_LOGS` array with this expanded dataset covering all re
 const ALL_MEMBERS = [
   'Deepavali', 'Santosh', 'Debaditya', 'Swapnil', 'Ganesh', 'Nikita',
   'Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Prem',
-  'Komal', 'Shreya', 'Vishal', 'Suraj', 'Krishna', 'SAB'
+  'Komal', 'Shreya', 'Vishal', 'Suraj', 'Krishna', 'Umesh'
 ];
 
 const ALL_LOGS = [

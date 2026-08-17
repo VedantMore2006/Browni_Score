@@ -57,7 +57,7 @@ const MEMBERS = [
   { name:'Shreya',    init:'SH', pts_week:18,  pts_month:100, streak:0, rank:'d'  },
   { name:'Prem',      init:'PM', pts_week:15,  pts_month:88,  streak:0, rank:'e'  },
   { name:'Krishna',   init:'KR', pts_week:12,  pts_month:72,  streak:0, rank:'e'  },
-  { name:'SAB',       init:'SB', pts_week:8,   pts_month:45,  streak:0, rank:'e'  },
+  { name:'Umesh',       init:'UM', pts_week:8,   pts_month:45,  streak:0, rank:'e'  },
 ];
 
 const RANK_COLORS = {

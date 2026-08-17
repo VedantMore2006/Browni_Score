@@ -12,13 +12,13 @@ document.getElementById('collapseBtn').addEventListener('click', () => {
 const TODAY = '2026-08-16';
 
 const PROJECTS = [
-  { id: 'mindspace', name: 'MindSpace', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Swapnil'], color: '#4FC3F7' },
+  { id: 'mindspace', name: 'MindSpace', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Swapnil', 'Krishna'], color: '#4FC3F7' },
   { id: 'neurovi', name: 'NeuroVisualisAI', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Swapnil'], color: '#4FC3F7' },
   { id: 'nutrisure', name: 'NutriSure', lead: 'Deepavali', members: ['Vishal', 'Vedant', 'Prem'], color: '#00E5FF' },
   { id: 'solobeauty', name: 'SoloBeauty', lead: 'Santosh', members: ['Prem', 'Prerna'], color: '#9A7BFF' },
   { id: 'skillsense', name: 'SkillSense', lead: 'Swapnil', members: ['Komal', 'Deepavali', 'Ashutosh', 'Shreya', 'Prem'], color: '#FFB300' },
   { id: 'lms', name: 'LMS', lead: 'Swapnil', members: ['Prem', 'Swapnil', 'Komal', 'Shreya'], color: '#FFB300' },
-  { id: 'website', name: 'Website', lead: 'Debaditya', members: ['Suraj', 'Ashutosh'], color: '#FF1744' },
+  { id: 'website', name: 'Website', lead: 'Debaditya', members: ['Suraj', 'Ashutosh', 'Umesh'], color: '#FF1744' },
   { id: 'socialmedia', name: 'LinkedIn / Social Media', lead: 'Debaditya', members: ['Ashutosh', 'Suraj'], color: '#FF1744' },
   { id: 'ezest', name: 'E-Zest', lead: 'Santosh', members: ['Ganesh', 'Vedant', 'Nikita', 'Nakul', 'Prerna', 'Ashutosh', 'Swapnil', 'Nandini'], color: '#9A7BFF' },
   { id: 'funday', name: 'Fun Day', lead: 'Nikita', members: ['Deepavali', 'Prerna'], color: '#00E5FF' },
@@ -46,6 +46,8 @@ const ALL_TASKS = [
   { id:16, projectId:'funday',      title:'Finalize venue and schedule',        lead:'Nikita',    assignedTo:'Deepavali',deadline:'2026-08-18', priority:1, status:'in_progress', rating:null },
   { id:17, projectId:'demoday',     title:'Prepare stakeholder presentations',  lead:'Deepavali', assignedTo:'Prerna',   deadline:'2026-08-25', priority:1, status:'pending',     rating:null },
   { id:18, projectId:'premises',    title:'Test attendance sync feature',       lead:'Deepavali', assignedTo:'Prem',     deadline:'2026-08-19', priority:1, status:'completed',   rating:null },
+  { id:19, projectId:'mindspace',   title:'Setup analytics tracking dashboard', lead:'Ganesh',    assignedTo:'Krishna',  deadline:'2026-08-21', priority:2, status:'in_progress', rating:null },
+  { id:20, projectId:'website',     title:'Update laboratory documentation',    lead:'Debaditya', assignedTo:'Umesh',    deadline:'2026-08-22', priority:2, status:'pending',     rating:null },
 ];
 
 // Real team roster with points data (matches leaderboard.html / point-log.html)

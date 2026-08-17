@@ -124,13 +124,21 @@
   display:flex; align-items:center; justify-content:center;
   font-family:'Rajdhani',sans-serif; font-size:8px; font-weight:700;
 }
+.rank-hex-sm.ss { background:rgba(154,123,255,0.12);border:1px solid var(--purple); color:var(--purple); }
 .rank-hex-sm.s  { background:rgba(0,229,255,0.12);  border:1px solid var(--teal);   color:var(--teal); }
 .rank-hex-sm.a  { background:rgba(255,215,0,0.12);  border:1px solid var(--gold);   color:var(--gold); }
+.rank-hex-sm.b  { background:rgba(79,195,247,0.12); border:1px solid var(--blue);   color:var(--blue); }
 .rank-hex-sm.c  { background:rgba(176,176,176,0.12);border:1px solid var(--rank-c); color:var(--rank-c); }
+.rank-hex-sm.d  { background:rgba(205,127,50,0.12); border:1px solid var(--bronze); color:var(--bronze); }
+.rank-hex-sm.e  { background:rgba(138,147,168,0.12);border:1px solid var(--rank-e); color:var(--rank-e); }
 .rank-label-text { font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:0.8px; }
+.rank-label-text.ss { color:var(--purple); }
 .rank-label-text.s  { color:var(--teal); }
 .rank-label-text.a  { color:var(--gold); }
+.rank-label-text.b  { color:var(--blue); }
 .rank-label-text.c  { color:var(--rank-c); }
+.rank-label-text.d  { color:var(--bronze); }
+.rank-label-text.e  { color:var(--rank-e); }
 
 /* ── LEADERBOARD TABLE ── */
 .lb-table-wrap {
@@ -224,18 +232,15 @@ td.td-pos { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--tex
     </div>
     <div class="sidebar-bottom">
       <div class="profile-row">
-        <div class="profile-avatar">AS</div>
+        <div class="profile-avatar">V&amp;V</div>
         <div class="profile-info">
-          <div class="profile-name">Aarav Singh</div>
-          <div class="profile-role">Coordinator</div>
+          <div class="profile-name">Lab Portal</div>
+          <div class="profile-role">Public View</div>
         </div>
       </div>
-      <div class="profile-badge">
-        <div class="badge-hex">S</div>
-        <span class="badge-text">SILVER HUNTER</span>
-      </div>
-      <div class="nav-logout">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span class="nav-logout-label">Logout</span></div>
+      <a class="nav-logout" href="login.html" style="text-decoration:none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg><span class="nav-logout-label">Admin Login</span>
+      </a>
       <div class="collapse-btn" id="collapseBtn">
         <svg id="collapseIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/></svg>
       </div>

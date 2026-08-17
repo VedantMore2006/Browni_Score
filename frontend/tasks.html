@@ -10,23 +10,6 @@
 <link rel="stylesheet" href="css/dashboard.css">
 <style>
 
-:root {
-  --bg:       #0A0A0F;
-  --panel:    #0D0D1A;
-  --elevated: #12121F;
-  --blue:     #4FC3F7;
-  --blue-glow: rgba(79,195,247,0.3);
-  --teal:     #00E5FF;
-  --purple:   #9A7BFF;
-  --red:      #FF1744;
-  --amber:    #FFB300;
-  --gold:     #FFD700;
-  --border:   rgba(79,195,247,0.1);
-  --border-h: rgba(79,195,247,0.35);
-  --text:     #E8E8F0;
-  --text2:    #8A8AA3;
-  --text3:    #4A4A6A;
-}
 html, body { height: 100%; font-family: 'Inter', sans-serif; color: var(--text); background: var(--bg); overflow: hidden; }
 body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(79,195,247,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(79,195,247,0.025) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: 0; }
 body::after { content: ''; position: fixed; top: -10%; left: 50%; transform: translateX(-50%); width: 900px; height: 500px; background: radial-gradient(ellipse at center top, rgba(79,195,247,0.07) 0%, transparent 65%); pointer-events: none; z-index: 0; }
@@ -209,18 +192,15 @@ table.mini td { padding: 9px 10px; color: var(--text); vertical-align: middle; }
     </div>
     <div class="sidebar-bottom">
       <div class="profile-row">
-        <div class="profile-avatar">AS</div>
+        <div class="profile-avatar">V&amp;V</div>
         <div class="profile-info">
-          <div class="profile-name">Aarav Singh</div>
-          <div class="profile-role">Coordinator</div>
+          <div class="profile-name">Lab Portal</div>
+          <div class="profile-role">Public View</div>
         </div>
       </div>
-      <div class="profile-badge">
-        <div class="badge-hex">S</div>
-        <span class="badge-text">SILVER HUNTER</span>
-      </div>
-      <div class="nav-logout">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span class="nav-logout-label">Logout</span></div>
+      <a class="nav-logout" href="login.html" style="text-decoration:none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg><span class="nav-logout-label">Admin Login</span>
+      </a>
       <div class="collapse-btn" id="collapseBtn">
         <svg id="collapseIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/></svg>
       </div>
@@ -233,8 +213,9 @@ table.mini td { padding: 9px 10px; color: var(--text); vertical-align: middle; }
         <h1 class="page-title" style="font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:0.08em; margin:0;">TASK DASHBOARD</h1>
         <div style="font-size:11px; color:var(--text2); letter-spacing:0.5px; margin-top:2px;">Overview of team work, tasks &amp; progress</div>
       </div>
-      <div style="font-family:'Rajdhani',sans-serif; font-size:11px; font-weight:700; letter-spacing:1px; background:rgba(0,229,255,0.1); color:var(--teal); padding:4px 10px; border-radius:12px; border:1px solid rgba(0,229,255,0.3); display:flex; align-items:center; gap:6px;">
-        <div style="width:6px; height:6px; background:var(--teal); border-radius:50%; box-shadow:0 0 6px var(--teal);"></div> // SYSTEM ONLINE
+      <div class="status-pill">
+        <div class="status-dot"></div>
+        // SYSTEM ONLINE
       </div>
     </div>
 
@@ -306,7 +287,7 @@ table.mini td { padding: 9px 10px; color: var(--text); vertical-align: middle; }
         <div class="dash-card">
           <div class="card-header"><div class="card-title">Projects Overview</div></div>
           <div id="projectsOverviewList" style="flex:1;min-height:0;overflow-y:auto;"></div>
-          <a class="btn-view" href="all-tasks.html">View All Projects</a>
+          <a class="btn-view" href="all-tasks.html">View All Tasks</a>
         </div>
       </div>
 
@@ -350,13 +331,13 @@ table.mini td { padding: 9px 10px; color: var(--text); vertical-align: middle; }
 <script>
 
 const PROJECTS = [
-  { id: 'mindspace', name: 'MindSpace', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Swapnil'], color: '#4FC3F7' },
+  { id: 'mindspace', name: 'MindSpace', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Swapnil', 'Krishna'], color: '#4FC3F7' },
   { id: 'neurovi', name: 'NeuroVisualisAI', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Swapnil'], color: '#4FC3F7' },
   { id: 'nutrisure', name: 'NutriSure', lead: 'Deepavali', members: ['Vishal', 'Vedant', 'Prem'], color: '#00E5FF' },
   { id: 'solobeauty', name: 'SoloBeauty', lead: 'Santosh', members: ['Prem', 'Prerna'], color: '#9A7BFF' },
   { id: 'skillsense', name: 'SkillSense', lead: 'Swapnil', members: ['Komal', 'Deepavali', 'Ashutosh', 'Shreya', 'Prem'], color: '#FFB300' },
   { id: 'lms', name: 'LMS', lead: 'Swapnil', members: ['Prem', 'Swapnil', 'Komal', 'Shreya'], color: '#FFB300' },
-  { id: 'website', name: 'Website', lead: 'Debaditya', members: ['Suraj', 'Ashutosh'], color: '#FF1744' },
+  { id: 'website', name: 'Website', lead: 'Debaditya', members: ['Suraj', 'Ashutosh', 'Umesh'], color: '#FF1744' },
   { id: 'socialmedia', name: 'LinkedIn / Social Media', lead: 'Debaditya', members: ['Ashutosh', 'Suraj'], color: '#FF1744' },
   { id: 'ezest', name: 'E-Zest', lead: 'Santosh', members: ['Ganesh', 'Vedant', 'Nikita', 'Nakul', 'Prerna', 'Ashutosh', 'Swapnil', 'Nandini'], color: '#9A7BFF' },
   { id: 'funday', name: 'Fun Day', lead: 'Nikita', members: ['Deepavali', 'Prerna'], color: '#00E5FF' },
@@ -386,6 +367,8 @@ const ALL_TASKS = [
   { id:16, projectId:'funday',      title:'Finalize venue and schedule',        lead:'Nikita',    assignedTo:'Deepavali',duration:1,   deadline:'2026-08-18', priority:1, status:'in_progress', rating:null,          points:0  },
   { id:17, projectId:'demoday',     title:'Prepare stakeholder presentations',  lead:'Deepavali', assignedTo:'Prerna',   duration:5,   deadline:'2026-08-25', priority:1, status:'pending',     rating:null,          points:0  },
   { id:18, projectId:'premises',    title:'Test attendance sync feature',       lead:'Deepavali', assignedTo:'Prem',     duration:2,   deadline:'2026-08-19', priority:1, status:'completed',   rating:null,          points:0  },
+  { id:19, projectId:'mindspace',   title:'Setup analytics tracking dashboard', lead:'Ganesh',    assignedTo:'Krishna',  duration:2,   deadline:'2026-08-21', priority:2, status:'in_progress', rating:null,          points:0  },
+  { id:20, projectId:'website',     title:'Update laboratory documentation',    lead:'Debaditya', assignedTo:'Umesh',    duration:3,   deadline:'2026-08-22', priority:2, status:'pending',     rating:null,          points:0  },
 ];
 
 document.getElementById('collapseBtn')?.addEventListener('click', () => {
