@@ -1,510 +1,1023 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vitals&Vectors — Task Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<link rel="stylesheet" href="css/global.css">
-<link rel="stylesheet" href="css/dashboard.css">
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vitals&Vectors — Task Dashboard</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&family=Orbitron:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <style>
+    html,
+    body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      overflow: hidden;
+    }
 
-html, body { height: 100%; font-family: 'Inter', sans-serif; color: var(--text); background: var(--bg); overflow: hidden; }
-body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(79,195,247,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(79,195,247,0.025) 1px, transparent 1px); background-size: 50px 50px; pointer-events: none; z-index: 0; }
-body::after { content: ''; position: fixed; top: -10%; left: 50%; transform: translateX(-50%); width: 900px; height: 500px; background: radial-gradient(ellipse at center top, rgba(79,195,247,0.07) 0%, transparent 65%); pointer-events: none; z-index: 0; }
-.shell { display: flex; height: 100vh; position: relative; z-index: 1; }
-.main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: linear-gradient(rgba(79, 195, 247, 0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(79, 195, 247, 0.025) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-.chip-pending    { background:rgba(255,179,0,0.12);  border-color:rgba(255,179,0,0.5);  color:var(--amber); }
-.chip-progress   { background:rgba(79,195,247,0.12); border-color:rgba(79,195,247,0.4); color:var(--blue); }
-.chip-completed  { background:rgba(0,229,255,0.12);  border-color:rgba(0,229,255,0.4);  color:var(--teal); }
-.chip-rated      { background:rgba(154,123,255,0.12);border-color:rgba(154,123,255,0.4);color:var(--purple); }
+    body::after {
+      content: '';
+      position: fixed;
+      top: -10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 500px;
+      background: radial-gradient(ellipse at center top, rgba(79, 195, 247, 0.07) 0%, transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
 
-.chip-high   { background:rgba(255,23,68,0.15);  border-color:rgba(255,23,68,0.5);  color:#FF5252; }
-.chip-medium { background:rgba(79,195,247,0.12); border-color:rgba(79,195,247,0.4); color:var(--blue); }
-.chip-low    { background:rgba(74,74,106,0.2);   border-color:rgba(74,74,106,0.5);  color:var(--text2); }
+    .shell {
+      display: flex;
+      height: 100vh;
+      position: relative;
+      z-index: 1;
+    }
 
-.chip {
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 3px 12px; border-radius: 4px;
-  font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700;
-  letter-spacing: 0.5px; white-space: nowrap;
-  border: 1px solid;
-}
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: hidden;
+    }
 
-.pill-proj {
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 4px 10px; border-radius: 12px;
-  font-size: 11px; font-weight: 600; cursor: pointer;
-  border: 1px solid; transition: transform 0.2s;
-}
-.pill-proj:hover { transform: translateY(-1px); }
+    .chip-pending {
+      background: rgba(255, 179, 0, 0.12);
+      border-color: rgba(255, 179, 0, 0.5);
+      color: var(--amber);
+    }
 
-.avatar-chip {
-  display: inline-flex; align-items: center; gap: 6px; cursor: pointer; transition: opacity 0.2s;
-}
-.avatar-chip:hover { opacity: 0.8; }
-.avatar-circle {
-  width: 26px; height: 26px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 10px;
-  border: 1px solid; flex-shrink: 0;
-}
+    .chip-progress {
+      background: rgba(79, 195, 247, 0.12);
+      border-color: rgba(79, 195, 247, 0.4);
+      color: var(--blue);
+    }
 
-.tasks-main { flex: 1; min-height: 0; padding: 22px 24px; display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+    .chip-completed {
+      background: rgba(0, 229, 255, 0.12);
+      border-color: rgba(0, 229, 255, 0.4);
+      color: var(--teal);
+    }
 
-/* ─── Row 1: top stat strip (Team Progress uses a ring instead of an icon) ─── */
-.stat-strip { grid-template-columns: repeat(4, 1fr); }
-.stat-ring {
-  width: 54px; height: 54px; border-radius: 50%; position: relative; flex-shrink: 0;
-  background: conic-gradient(var(--teal) calc(var(--pct) * 1%), rgba(255,255,255,0.06) 0);
-}
-.stat-ring::after { content: ''; position: absolute; inset: 6px; border-radius: 50%; background: var(--elevated); }
-.stat-ring-label { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 13px; color: var(--teal); z-index: 1; }
+    .chip-rated {
+      background: rgba(154, 123, 255, 0.12);
+      border-color: rgba(154, 123, 255, 0.4);
+      color: var(--purple);
+    }
 
-/* ─── Row 2 / Row 3 grid ─── */
-.dash-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: stretch; }
-.dash-row-2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; align-items: stretch; }
-.dash-col { display: flex; flex-direction: column; gap: 16px; min-height: 0; }
+    .chip-high {
+      background: rgba(255, 23, 68, 0.15);
+      border-color: rgba(255, 23, 68, 0.5);
+      color: #FF5252;
+    }
 
-.dash-card {
-  background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 6px;
-  padding: 16px 18px; position: relative; overflow: hidden;
-  display: flex; flex-direction: column; min-height: 0;
-}
-.dash-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0,200,255,0.25), transparent);
-}
+    .chip-medium {
+      background: rgba(79, 195, 247, 0.12);
+      border-color: rgba(79, 195, 247, 0.4);
+      color: var(--blue);
+    }
 
-.donut-body { display: flex; align-items: center; gap: 18px; flex: 1; min-height: 0; }
-.donut-canvas-wrap { position: relative; width: 128px; height: 128px; flex-shrink: 0; }
-.donut-legend { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
-.legend-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
-.legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-.legend-name { flex: 1; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.legend-val { font-weight: 700; color: var(--text); flex-shrink: 0; }
+    .chip-low {
+      background: rgba(74, 74, 106, 0.2);
+      border-color: rgba(74, 74, 106, 0.5);
+      color: var(--text2);
+    }
 
-.btn-view {
-  display: block; margin-top: 12px; padding: 8px 14px;
-  background: rgba(79,195,247,0.08); border: 1px solid rgba(79,195,247,0.3); border-radius: 5px;
-  color: var(--blue); font-family: 'Rajdhani', sans-serif; font-size: 11px; font-weight: 700;
-  letter-spacing: 1px; text-transform: uppercase; text-align: center; text-decoration: none;
-  cursor: pointer; transition: all 0.15s; flex-shrink: 0;
-}
-.btn-view:hover { background: rgba(79,195,247,0.15); border-color: var(--blue); }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 12px;
+      border-radius: 4px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      border: 1px solid;
+    }
 
-/* Team Activity rows */
-.ta-list { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow-y: auto; }
-.ta-row { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
-.ta-row:last-child { border-bottom: none; }
-.ta-icon { width: 30px; height: 30px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.ta-icon svg { width: 15px; height: 15px; }
-.ta-info { flex: 1; min-width: 0; }
-.ta-val { font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 0.03em; color: var(--text); line-height: 1; }
-.ta-label { font-size: 10.5px; color: var(--text2); margin-top: 2px; }
-.ta-delta { font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .pill-proj {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid;
+      transition: transform 0.2s;
+    }
 
-/* Projects overview / distribution bar rows (also reused inside the project list) */
-.dist-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-.dist-row:last-child { margin-bottom: 0; }
-.dist-label { width: 130px; flex-shrink: 0; font-size: 12px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.dist-bar-track { flex: 1; height: 7px; background: rgba(255,255,255,0.04); border-radius: 4px; overflow: hidden; }
-.dist-bar-fill { height: 100%; border-radius: 4px; }
-.dist-count { width: 34px; text-align: right; font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 12px; color: var(--text2); flex-shrink: 0; }
+    .pill-proj:hover {
+      transform: translateY(-1px);
+    }
 
-/* Live task monitor mini table */
-.mini-table-wrap { flex: 1; min-height: 0; overflow-y: auto; }
-table.mini { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-table.mini thead th { padding: 8px 10px; font-family: 'Rajdhani', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); text-align: left; white-space: nowrap; position: sticky; top: 0; background: var(--bg-card); }
-table.mini tbody tr { border-bottom: 1px solid rgba(79,195,247,0.05); }
-table.mini tbody tr:hover { background: rgba(79,195,247,0.03); }
-table.mini td { padding: 9px 10px; color: var(--text); vertical-align: middle; }
+    .avatar-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
 
-/* Upcoming deadlines */
-.ud-list { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow-y: auto; }
-.ud-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
-.ud-row:last-child { border-bottom: none; }
-.ud-icon { width: 26px; height: 26px; border-radius: 6px; background: rgba(79,195,247,0.1); border: 1px solid rgba(79,195,247,0.25); color: var(--blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.ud-icon svg { width: 13px; height: 13px; }
-.ud-date { font-size: 10.5px; color: var(--text2); width: 42px; flex-shrink: 0; }
-.ud-info { flex: 1; min-width: 0; font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ud-info b { color: var(--text); font-weight: 600; }
-.ud-member { color: var(--text2); }
+    .avatar-chip:hover {
+      opacity: 0.8;
+    }
 
-/* Bottom activity ticker */
-.activity-ticker {
-  flex-shrink: 0; background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
-  padding: 9px 18px; font-size: 11.5px; color: var(--text2);
-  display: flex; align-items: center; gap: 8px; overflow-x: auto; white-space: nowrap;
-}
-.activity-ticker .tick-label { color: var(--teal); font-weight: 700; letter-spacing: 1px; font-size: 10px; margin-right: 6px; flex-shrink: 0; }
-.activity-ticker .tick-time { color: var(--text3); margin-right: 4px; }
-.activity-ticker .tick-sep { color: var(--text3); margin: 0 10px; }
-</style>
+    .avatar-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 10px;
+      border: 1px solid;
+      flex-shrink: 0;
+    }
+
+    .tasks-main {
+      flex: 1;
+      min-height: 0;
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+
+    /* ─── Row 1: top stat strip (Team Progress uses a ring instead of an icon) ─── */
+    .stat-strip {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .stat-ring {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      position: relative;
+      flex-shrink: 0;
+      background: conic-gradient(var(--teal) calc(var(--pct) * 1%), rgba(255, 255, 255, 0.06) 0);
+    }
+
+    .stat-ring::after {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      background: var(--elevated);
+    }
+
+    .stat-ring-label {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 13px;
+      color: var(--teal);
+      z-index: 1;
+    }
+
+    /* ─── Row 2 / Row 3 grid ─── */
+    .dash-row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .dash-row-2 {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .dash-col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 0;
+    }
+
+    .dash-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 6px;
+      padding: 16px 18px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .dash-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(0, 200, 255, 0.25), transparent);
+    }
+
+    .donut-body {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .donut-canvas-wrap {
+      position: relative;
+      width: 128px;
+      height: 128px;
+      flex-shrink: 0;
+    }
+
+    .donut-legend {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .legend-name {
+      flex: 1;
+      color: var(--text2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .legend-val {
+      font-weight: 700;
+      color: var(--text);
+      flex-shrink: 0;
+    }
+
+    .btn-view {
+      display: block;
+      margin-top: 12px;
+      padding: 8px 14px;
+      background: rgba(79, 195, 247, 0.08);
+      border: 1px solid rgba(79, 195, 247, 0.3);
+      border-radius: 5px;
+      color: var(--blue);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .btn-view:hover {
+      background: rgba(79, 195, 247, 0.15);
+      border-color: var(--blue);
+    }
+
+    /* Team Activity rows */
+    .ta-list {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .ta-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .ta-row:last-child {
+      border-bottom: none;
+    }
+
+    .ta-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ta-icon svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    .ta-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .ta-val {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.15rem;
+      letter-spacing: 0.03em;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .ta-label {
+      font-size: 10.5px;
+      color: var(--text2);
+      margin-top: 2px;
+    }
+
+    .ta-delta {
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* Projects overview / distribution bar rows (also reused inside the project list) */
+    .dist-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .dist-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .dist-label {
+      width: 130px;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .dist-bar-track {
+      flex: 1;
+      height: 7px;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .dist-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+
+    .dist-count {
+      width: 34px;
+      text-align: right;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--text2);
+      flex-shrink: 0;
+    }
+
+    /* Live task monitor mini table */
+    .mini-table-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    table.mini {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+
+    table.mini thead th {
+      padding: 8px 10px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text2);
+      text-align: left;
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      background: var(--bg-card);
+    }
+
+    table.mini tbody tr {
+      border-bottom: 1px solid rgba(79, 195, 247, 0.05);
+    }
+
+    table.mini tbody tr:hover {
+      background: rgba(79, 195, 247, 0.03);
+    }
+
+    table.mini td {
+      padding: 9px 10px;
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    /* Upcoming deadlines */
+    .ud-list {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .ud-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .ud-row:last-child {
+      border-bottom: none;
+    }
+
+    .ud-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: rgba(79, 195, 247, 0.1);
+      border: 1px solid rgba(79, 195, 247, 0.25);
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .ud-icon svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    .ud-date {
+      font-size: 10.5px;
+      color: var(--text2);
+      width: 42px;
+      flex-shrink: 0;
+    }
+
+    .ud-info {
+      flex: 1;
+      min-width: 0;
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ud-info b {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .ud-member {
+      color: var(--text2);
+    }
+
+    /* Bottom activity ticker */
+    .activity-ticker {
+      flex-shrink: 0;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 9px 18px;
+      font-size: 11.5px;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .activity-ticker .tick-label {
+      color: var(--teal);
+      font-weight: 700;
+      letter-spacing: 1px;
+      font-size: 10px;
+      margin-right: 6px;
+      flex-shrink: 0;
+    }
+
+    .activity-ticker .tick-time {
+      color: var(--text3);
+      margin-right: 4px;
+    }
+
+    .activity-ticker .tick-sep {
+      color: var(--text3);
+      margin: 0 10px;
+    }
+  </style>
 </head>
+
 <body>
-<div class="shell">
+  <div class="shell">
 
-  <nav class="sidebar" id="sidebar">
-    <div class="logo-area">
-      <div class="logo-wordmark">
-        <div class="logo-vv">V&amp;V</div>
-        <div class="logo-sub">Vitals&amp;Vectors</div>
-      </div>
-    </div>
-    <div class="nav-menu">
-      <a class="nav-item" href="dashboard.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
-        <span class="nav-label">Dashboard</span>
-      </a>
-      <a class="nav-item active" href="tasks.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></span>
-        <span class="nav-label">Tasks</span>
-      </a>
-      <a class="nav-item" href="point-log.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-        <span class="nav-label">Point Log</span>
-      </a>
-      <a class="nav-item" href="leaderboard.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
-        <span class="nav-label">Leaderboard</span>
-      </a>
-      <a class="nav-item" href="attendance.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
-        <span class="nav-label">Attendance</span>
-      </a>
-      <a class="nav-item" href="rules.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
-        <span class="nav-label">Rules</span>
-      </a>
-      <div class="nav-divider"></div>
-      <a class="nav-item" href="settings.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg></span>
-        <span class="nav-label">About</span>
-      </a>
-      <div class="nav-divider"></div>
-      <a class="nav-item nav-admin" href="admin/admin_dashboard.html">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-        <span class="nav-label">Admin panel</span>
-      </a>
-    </div>
-    <div class="sidebar-bottom">
-      <div class="profile-row">
-        <div class="profile-avatar">V&amp;V</div>
-        <div class="profile-info">
-          <div class="profile-name">Lab Portal</div>
-          <div class="profile-role">Public View</div>
+    <nav class="sidebar" id="sidebar">
+      <div class="logo-area">
+        <div class="logo-wordmark">
+          <div class="logo-vv">V&amp;V</div>
+          <div class="logo-sub">Vitals&amp;Vectors</div>
         </div>
       </div>
-      <a class="nav-logout" href="login.html" style="text-decoration:none;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg><span class="nav-logout-label">Admin Login</span>
-      </a>
-      <div class="collapse-btn" id="collapseBtn">
-        <svg id="collapseIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/></svg>
+      <div class="nav-menu">
+        <a class="nav-item" href="dashboard.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg></span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a class="nav-item active" href="tasks.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4" />
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
+            </svg></span>
+          <span class="nav-label">Tasks</span>
+        </a>
+        <a class="nav-item" href="point-log.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg></span>
+          <span class="nav-label">Point Log</span>
+        </a>
+        <a class="nav-item" href="leaderboard.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10" />
+              <line x1="12" y1="20" x2="12" y2="4" />
+              <line x1="6" y1="20" x2="6" y2="14" />
+            </svg></span>
+          <span class="nav-label">Leaderboard</span>
+        </a>
+        <a class="nav-item" href="attendance.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg></span>
+          <span class="nav-label">Attendance</span>
+        </a>
+        <a class="nav-item" href="rules.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg></span>
+          <span class="nav-label">Rules</span>
+        </a>
+        <div class="nav-divider"></div>
+        <a class="nav-item" href="settings.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14" />
+            </svg></span>
+          <span class="nav-label">About</span>
+        </a>
+        <div class="nav-divider"></div>
+        <a class="nav-item nav-admin" href="admin/admin_dashboard.html">
+          <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            </svg></span>
+          <span class="nav-label">Admin panel</span>
+        </a>
       </div>
-    </div>
-  </nav>
-
-  <div class="main">
-    <div class="topbar" style="display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1px solid var(--border); background:var(--panel);">
-      <div>
-        <h1 class="page-title" style="font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:0.08em; margin:0;">TASK DASHBOARD</h1>
-        <div style="font-size:11px; color:var(--text2); letter-spacing:0.5px; margin-top:2px;">Overview of team work, tasks &amp; progress</div>
-      </div>
-      <div class="status-pill">
-        <div class="status-dot"></div>
-        // SYSTEM ONLINE
-      </div>
-    </div>
-
-    <div class="tasks-main">
-
-      <!-- ROW 1: top stat strip -->
-      <div class="stat-strip">
-        <div class="stat-card cyan-accent">
-          <div class="stat-icon-wrap cyan-bg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#00c8ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-          </div>
-          <div class="stat-info">
-            <div class="stat-label">Team Members</div>
-            <div class="stat-value cyan" id="st-members">0</div>
-            <div class="stat-sub" style="font-size:10px;color:var(--text2);margin-top:2px;">Across all active projects</div>
+      <div class="sidebar-bottom">
+        <div class="profile-row">
+          <div class="profile-avatar">V&amp;V</div>
+          <div class="profile-info">
+            <div class="profile-name">Lab Portal</div>
+            <div class="profile-role">Public View</div>
           </div>
         </div>
-
-        <div class="stat-card cyan2-accent">
-          <div class="stat-ring" id="progressRing" style="--pct:0">
-            <div class="stat-ring-label" id="progressRingLabel">0%</div>
-          </div>
-          <div class="stat-info">
-            <div class="stat-label">Team Progress</div>
-            <div class="stat-value cyan2" id="st-progress-frac">0 / 0</div>
-            <div class="stat-sub" style="font-size:10px;color:var(--text2);margin-top:2px;">Tasks completed</div>
-          </div>
-        </div>
-
-        <div class="stat-card purple-accent">
-          <div class="stat-icon-wrap purple-bg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#9b59ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-          </div>
-          <div class="stat-info">
-            <div class="stat-label">Number of Projects</div>
-            <div class="stat-value purple" id="st-projects">0</div>
-            <div class="stat-sub" style="font-size:10px;color:var(--text2);margin-top:2px;">Active projects</div>
-          </div>
-        </div>
-
-        <div class="stat-card gold-accent">
-          <div class="stat-icon-wrap gold-bg">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9z"/><path d="M11 3 8 9l4 12 4-12-3-6"/><path d="M2 9h20"/></svg>
-          </div>
-          <div class="stat-info">
-            <div class="stat-label">Total Points</div>
-            <div class="stat-value gold" id="st-points">0</div>
-            <div class="stat-sub" style="font-size:10px;color:var(--text2);margin-top:2px;">Team score</div>
-          </div>
+        <a class="nav-logout" href="login.html" style="text-decoration:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+            <polyline points="10 17 15 12 10 7" />
+            <line x1="15" y1="12" x2="3" y2="12" />
+          </svg><span class="nav-logout-label">Admin Login</span>
+        </a>
+        <div class="collapse-btn" id="collapseBtn">
+          <svg id="collapseIcon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <line x1="9" y1="3" x2="9" y2="21" />
+            <polyline points="16 15 13 12 16 9" />
+          </svg>
         </div>
       </div>
+    </nav>
 
-      <!-- ROW 2: today's overview / team activity / projects overview -->
-      <div class="dash-row-3">
-        <div class="dash-card">
-          <div class="card-header"><div class="card-title">Today's Task Overview</div></div>
-          <div class="donut-body">
-            <div class="donut-canvas-wrap"><canvas id="todayChart"></canvas></div>
-            <div class="donut-legend" id="todayLegend"></div>
-          </div>
-          <a class="btn-view" href="all-tasks.html">View All Tasks</a>
+    <div class="main">
+      <div class="topbar"
+        style="display:flex; justify-content:space-between; align-items:center; padding:16px 24px; border-bottom:1px solid var(--border); background:var(--panel);">
+        <div>
+          <h1 class="page-title"
+            style="font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:0.08em; margin:0;">TASK
+            DASHBOARD</h1>
+          <div style="font-size:11px; color:var(--text2); letter-spacing:0.5px; margin-top:2px;">Overview of team work,
+            tasks &amp; progress</div>
         </div>
-
-        <div class="dash-card">
-          <div class="card-header"><div class="card-title">Team Activity <span>(Today)</span></div></div>
-          <div class="ta-list" id="teamActivityList"></div>
-        </div>
-
-        <div class="dash-card">
-          <div class="card-header"><div class="card-title">Projects Overview</div></div>
-          <div id="projectsOverviewList" style="flex:1;min-height:0;overflow-y:auto;"></div>
-          <a class="btn-view" href="all-tasks.html">View All Tasks</a>
+        <div class="status-pill">
+          <div class="status-dot"></div>
+          // SYSTEM ONLINE
         </div>
       </div>
 
-      <!-- ROW 3: live task monitor / task distribution + upcoming deadlines -->
-      <div class="dash-row-2">
-        <div class="dash-card">
-          <div class="card-header"><div class="card-title">Live Task Monitor</div></div>
-          <div class="mini-table-wrap">
-            <table class="mini">
-              <thead><tr><th>MEMBER</th><th>PROJECT</th><th>TASK</th><th>PRIORITY</th><th>DEADLINE</th><th>STATUS</th></tr></thead>
-              <tbody id="liveMonitorBody"></tbody>
-            </table>
-          </div>
-          <a class="btn-view" href="all-tasks.html">View All Tasks</a>
-        </div>
+      <div class="tasks-main">
 
-        <div class="dash-col">
-          <div class="dash-card" style="flex:0 0 auto;">
-            <div class="card-header"><div class="card-title">Task Distribution</div></div>
-            <div class="donut-body">
-              <div class="donut-canvas-wrap" style="width:108px;height:108px;"><canvas id="distChart"></canvas></div>
-              <div class="donut-legend" id="distLegend"></div>
+        <!-- ROW 1: top stat strip -->
+        <div class="stat-strip">
+          <div class="stat-card cyan-accent">
+            <div class="stat-icon-wrap cyan-bg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#00c8ff" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 00-3-3.87" />
+                <path d="M16 3.13a4 4 0 010 7.75" />
+              </svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Team Members</div>
+              <div class="stat-value cyan" id="st-members">0</div>
+              <div class="stat-sub" style="font-size:10px;color:var(--text2);margin-top:2px;">Across all active projects
+              </div>
             </div>
           </div>
-          <div class="dash-card" style="flex:1;">
+
+          <div class="stat-card cyan2-accent">
+            <div class="stat-ring" id="progressRing" style="--pct:0">
+              <div class="stat-ring-label" id="progressRingLabel">0%</div>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Team Progress</div>
+              <div class="stat-value cyan2" id="st-progress-frac">0 / 0</div>
+              <div class="stat-sub" style="font-size:10px;color:var(--text2);margin-top:2px;">Tasks completed</div>
+            </div>
+          </div>
+
+          <div class="stat-card purple-accent">
+            <div class="stat-icon-wrap purple-bg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#9b59ff" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                <polyline points="2 17 12 22 22 17" />
+                <polyline points="2 12 12 17 22 12" />
+              </svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Number of Projects</div>
+              <div class="stat-value purple" id="st-projects">0</div>
+              <div class="stat-sub" style="font-size:10px;color:var(--text2);margin-top:2px;">Active projects</div>
+            </div>
+          </div>
+
+          <div class="stat-card gold-accent">
+            <div class="stat-icon-wrap gold-bg">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#f5a623" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M6 3h12l4 6-10 12L2 9z" />
+                <path d="M11 3 8 9l4 12 4-12-3-6" />
+                <path d="M2 9h20" />
+              </svg>
+            </div>
+            <div class="stat-info">
+              <div class="stat-label">Total Points</div>
+              <div class="stat-value gold" id="st-points">0</div>
+              <div class="stat-sub" style="font-size:10px;color:var(--text2);margin-top:2px;">Team score</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ROW 2: today's overview / team activity / projects overview -->
+        <div class="dash-row-3">
+          <div class="dash-card">
             <div class="card-header">
-              <div class="card-title">Upcoming Deadlines</div>
-              <a class="view-all" href="all-tasks.html">View All</a>
+              <div class="card-title">Today's Task Overview</div>
             </div>
-            <div class="ud-list" id="upcomingList"></div>
+            <div class="donut-body">
+              <div class="donut-canvas-wrap"><canvas id="todayChart"></canvas></div>
+              <div class="donut-legend" id="todayLegend"></div>
+            </div>
+            <a class="btn-view" href="all-tasks.html">View All Tasks</a>
+          </div>
+
+          <div class="dash-card">
+            <div class="card-header">
+              <div class="card-title">Team Activity <span>(Today)</span></div>
+            </div>
+            <div class="ta-list" id="teamActivityList"></div>
+          </div>
+
+          <div class="dash-card">
+            <div class="card-header">
+              <div class="card-title">Projects Overview</div>
+            </div>
+            <div id="projectsOverviewList" style="flex:1;min-height:0;overflow-y:auto;"></div>
+            <a class="btn-view" href="all-tasks.html">View All Tasks</a>
           </div>
         </div>
+
+        <!-- ROW 3: live task monitor / task distribution + upcoming deadlines -->
+        <div class="dash-row-2">
+          <div class="dash-card">
+            <div class="card-header">
+              <div class="card-title">Live Task Monitor</div>
+            </div>
+            <div class="mini-table-wrap">
+              <table class="mini">
+                <thead>
+                  <tr>
+                    <th>MEMBER</th>
+                    <th>PROJECT</th>
+                    <th>TASK</th>
+                    <th>PRIORITY</th>
+                    <th>DEADLINE</th>
+                    <th>STATUS</th>
+                  </tr>
+                </thead>
+                <tbody id="liveMonitorBody"></tbody>
+              </table>
+            </div>
+            <a class="btn-view" href="all-tasks.html">View All Tasks</a>
+          </div>
+
+          <div class="dash-col">
+            <div class="dash-card" style="flex:0 0 auto;">
+              <div class="card-header">
+                <div class="card-title">Task Distribution</div>
+              </div>
+              <div class="donut-body">
+                <div class="donut-canvas-wrap" style="width:108px;height:108px;"><canvas id="distChart"></canvas></div>
+                <div class="donut-legend" id="distLegend"></div>
+              </div>
+            </div>
+            <div class="dash-card" style="flex:1;">
+              <div class="card-header">
+                <div class="card-title">Upcoming Deadlines</div>
+                <a class="view-all" href="all-tasks.html">View All</a>
+              </div>
+              <div class="ud-list" id="upcomingList"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FOOTER TICKER -->
+        <div class="activity-ticker" id="activityTicker"></div>
+
       </div>
-
-      <!-- FOOTER TICKER -->
-      <div class="activity-ticker" id="activityTicker"></div>
-
     </div>
   </div>
-</div>
-<script>
+  <script>
 
-const PROJECTS = [
-  { id: 'mindspace', name: 'MindSpace', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Swapnil', 'Krishna'], color: '#4FC3F7' },
-  { id: 'neurovi', name: 'NeuroVisualisAI', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Swapnil'], color: '#4FC3F7' },
-  { id: 'nutrisure', name: 'NutriSure', lead: 'Deepavali', members: ['Vishal', 'Vedant', 'Prem'], color: '#00E5FF' },
-  { id: 'solobeauty', name: 'SoloBeauty', lead: 'Santosh', members: ['Prem', 'Prerna'], color: '#9A7BFF' },
-  { id: 'skillsense', name: 'SkillSense', lead: 'Swapnil', members: ['Komal', 'Deepavali', 'Ashutosh', 'Shreya', 'Prem'], color: '#FFB300' },
-  { id: 'lms', name: 'LMS', lead: 'Swapnil', members: ['Prem', 'Swapnil', 'Komal', 'Shreya'], color: '#FFB300' },
-  { id: 'website', name: 'Website', lead: 'Debaditya', members: ['Suraj', 'Ashutosh', 'Umesh'], color: '#FF1744' },
-  { id: 'socialmedia', name: 'LinkedIn / Social Media', lead: 'Debaditya', members: ['Ashutosh', 'Suraj'], color: '#FF1744' },
-  { id: 'ezest', name: 'E-Zest', lead: 'Santosh', members: ['Ganesh', 'Vedant', 'Nikita', 'Nakul', 'Prerna', 'Ashutosh', 'Swapnil', 'Nandini'], color: '#9A7BFF' },
-  { id: 'funday', name: 'Fun Day', lead: 'Nikita', members: ['Deepavali', 'Prerna'], color: '#00E5FF' },
-  { id: 'demoday', name: 'Demo Day', lead: 'Deepavali', members: ['Prerna'], color: '#00E5FF' },
-  { id: 'learningtime', name: 'Learning Time', lead: 'Vedant', members: [], color: '#4FC3F7' },
-  { id: 'premises', name: 'Premises', lead: 'Deepavali', members: ['Prem'], color: '#00E5FF' },
-];
+    const PROJECTS = [
+      { id: 'mindspace', name: 'MindSpace', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Swapnil', 'Krishna'], color: '#4FC3F7' },
+      { id: 'neurovi', name: 'NeuroVisualisAI', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Swapnil'], color: '#4FC3F7' },
+      { id: 'nutrisure', name: 'NutriSure', lead: 'Deepavali', members: ['Vishal', 'Vedant', 'Prem'], color: '#00E5FF' },
+      { id: 'solobeauty', name: 'SoloBeauty', lead: 'Santosh', members: ['Prem', 'Prerna'], color: '#9A7BFF' },
+      { id: 'skillsense', name: 'SkillSense', lead: 'Swapnil', members: ['Komal', 'Deepavali', 'Ashutosh', 'Shreya', 'Prem'], color: '#FFB300' },
+      { id: 'lms', name: 'LMS', lead: 'Swapnil', members: ['Prem', 'Swapnil', 'Komal', 'Shreya'], color: '#FFB300' },
+      { id: 'website', name: 'Website', lead: 'Debaditya', members: ['Suraj', 'Ashutosh', 'Umesh'], color: '#FF1744' },
+      { id: 'socialmedia', name: 'LinkedIn / Social Media', lead: 'Debaditya', members: ['Ashutosh', 'Suraj'], color: '#FF1744' },
+      { id: 'ezest', name: 'E-Zest', lead: 'Santosh', members: ['Ganesh', 'Vedant', 'Nikita', 'Nakul', 'Prerna', 'Ashutosh', 'Swapnil', 'Nandini'], color: '#9A7BFF' },
+      { id: 'funday', name: 'Fun Day', lead: 'Nikita', members: ['Deepavali', 'Prerna'], color: '#00E5FF' },
+      { id: 'demoday', name: 'Demo Day', lead: 'Deepavali', members: ['Prerna'], color: '#00E5FF' },
+      { id: 'learningtime', name: 'Learning Time', lead: 'Vedant', members: [], color: '#4FC3F7' },
+      { id: 'premises', name: 'Premises', lead: 'Deepavali', members: ['Prem'], color: '#00E5FF' },
+    ];
 
-const U5_LEADS = ['Deepavali', 'Santosh', 'Debaditya', 'Swapnil', 'Ganesh', 'Nikita'];
+    const U5_LEADS = ['Deepavali', 'Santosh', 'Debaditya', 'Swapnil', 'Ganesh', 'Nikita'];
 
-const ALL_TASKS = [
-  { id:1,  projectId:'mindspace',   title:'Implement user onboarding flow',    lead:'Ganesh',    assignedTo:'Vedant',   duration:3,   deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:2,  projectId:'mindspace',   title:'Fix session timeout bug',            lead:'Ganesh',    assignedTo:'Nakul',    duration:1,   deadline:'2026-08-16', priority:1, status:'completed',   rating:null,          points:0  },
-  { id:3,  projectId:'mindspace',   title:'Design dashboard wireframes',        lead:'Ganesh',    assignedTo:'Nandini',  duration:4,   deadline:'2026-08-18', priority:2, status:'rated',       rating:'exceeds',     points:8  },
-  { id:4,  projectId:'neurovi',     title:'Train classification model v2',      lead:'Ganesh',    assignedTo:'Ashutosh', duration:6,   deadline:'2026-08-22', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:5,  projectId:'neurovi',     title:'Write model evaluation report',      lead:'Ganesh',    assignedTo:'Vedant',   duration:2,   deadline:'2026-08-19', priority:2, status:'pending',     rating:null,          points:0  },
-  { id:6,  projectId:'nutrisure',   title:'Build nutrition tracking API',       lead:'Deepavali', assignedTo:'Prem',     duration:5,   deadline:'2026-08-21', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:7,  projectId:'nutrisure',   title:'Create meal recommendation logic',   lead:'Deepavali', assignedTo:'Vishal',   duration:3,   deadline:'2026-08-17', priority:2, status:'rated',       rating:'meets',       points:5  },
-  { id:8,  projectId:'solobeauty',  title:'Product catalogue UI',               lead:'Santosh',   assignedTo:'Prem',     duration:4,   deadline:'2026-08-20', priority:2, status:'pending',     rating:null,          points:0  },
-  { id:9,  projectId:'skillsense',  title:'Course module drag-and-drop',        lead:'Swapnil',   assignedTo:'Komal',    duration:3,   deadline:'2026-08-18', priority:1, status:'completed',   rating:null,          points:0  },
-  { id:10, projectId:'skillsense',  title:'Integrate payment gateway',          lead:'Swapnil',   assignedTo:'Ashutosh', duration:2,   deadline:'2026-08-23', priority:1, status:'pending',     rating:null,          points:0  },
-  { id:11, projectId:'lms',         title:'Student progress dashboard',         lead:'Swapnil',   assignedTo:'Shreya',   duration:4,   deadline:'2026-08-19', priority:2, status:'rated',       rating:'needs_revision', points:3 },
-  { id:12, projectId:'website',     title:'SEO meta tags for all pages',        lead:'Debaditya', assignedTo:'Suraj',    duration:1,   deadline:'2026-08-16', priority:2, status:'completed',   rating:null,          points:0  },
-  { id:13, projectId:'website',     title:'Contact form backend integration',   lead:'Debaditya', assignedTo:'Ashutosh', duration:2,   deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:14, projectId:'socialmedia', title:'Draft 4 LinkedIn posts for August',  lead:'Debaditya', assignedTo:'Suraj',    duration:2,   deadline:'2026-08-17', priority:2, status:'rated',       rating:'exceeds',     points:8  },
-  { id:15, projectId:'ezest',       title:'Workshop logistics planning',         lead:'Santosh',   assignedTo:'Prerna',   duration:3,   deadline:'2026-08-22', priority:2, status:'pending',     rating:null,          points:0  },
-  { id:16, projectId:'funday',      title:'Finalize venue and schedule',        lead:'Nikita',    assignedTo:'Deepavali',duration:1,   deadline:'2026-08-18', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:17, projectId:'demoday',     title:'Prepare stakeholder presentations',  lead:'Deepavali', assignedTo:'Prerna',   duration:5,   deadline:'2026-08-25', priority:1, status:'pending',     rating:null,          points:0  },
-  { id:18, projectId:'premises',    title:'Test attendance sync feature',       lead:'Deepavali', assignedTo:'Prem',     duration:2,   deadline:'2026-08-19', priority:1, status:'completed',   rating:null,          points:0  },
-  { id:19, projectId:'mindspace',   title:'Setup analytics tracking dashboard', lead:'Ganesh',    assignedTo:'Krishna',  duration:2,   deadline:'2026-08-21', priority:2, status:'in_progress', rating:null,          points:0  },
-  { id:20, projectId:'website',     title:'Update laboratory documentation',    lead:'Debaditya', assignedTo:'Umesh',    duration:3,   deadline:'2026-08-22', priority:2, status:'pending',     rating:null,          points:0  },
-];
+    const ALL_TASKS = [
+      { id: 1, projectId: 'mindspace', title: 'Implement user onboarding flow', lead: 'Ganesh', assignedTo: 'Vedant', duration: 3, deadline: '2026-08-20', priority: 1, status: 'in_progress', rating: null, points: 0 },
+      { id: 2, projectId: 'mindspace', title: 'Fix session timeout bug', lead: 'Ganesh', assignedTo: 'Nakul', duration: 1, deadline: '2026-08-16', priority: 1, status: 'completed', rating: null, points: 0 },
+      { id: 3, projectId: 'mindspace', title: 'Design dashboard wireframes', lead: 'Ganesh', assignedTo: 'Nandini', duration: 4, deadline: '2026-08-18', priority: 2, status: 'rated', rating: 'exceeds', points: 8 },
+      { id: 4, projectId: 'neurovi', title: 'Train classification model v2', lead: 'Ganesh', assignedTo: 'Ashutosh', duration: 6, deadline: '2026-08-22', priority: 1, status: 'in_progress', rating: null, points: 0 },
+      { id: 5, projectId: 'neurovi', title: 'Write model evaluation report', lead: 'Ganesh', assignedTo: 'Vedant', duration: 2, deadline: '2026-08-19', priority: 2, status: 'pending', rating: null, points: 0 },
+      { id: 6, projectId: 'nutrisure', title: 'Build nutrition tracking API', lead: 'Deepavali', assignedTo: 'Prem', duration: 5, deadline: '2026-08-21', priority: 1, status: 'in_progress', rating: null, points: 0 },
+      { id: 7, projectId: 'nutrisure', title: 'Create meal recommendation logic', lead: 'Deepavali', assignedTo: 'Vishal', duration: 3, deadline: '2026-08-17', priority: 2, status: 'rated', rating: 'meets', points: 5 },
+      { id: 8, projectId: 'solobeauty', title: 'Product catalogue UI', lead: 'Santosh', assignedTo: 'Prem', duration: 4, deadline: '2026-08-20', priority: 2, status: 'pending', rating: null, points: 0 },
+      { id: 9, projectId: 'skillsense', title: 'Course module drag-and-drop', lead: 'Swapnil', assignedTo: 'Komal', duration: 3, deadline: '2026-08-18', priority: 1, status: 'completed', rating: null, points: 0 },
+      { id: 10, projectId: 'skillsense', title: 'Integrate payment gateway', lead: 'Swapnil', assignedTo: 'Ashutosh', duration: 2, deadline: '2026-08-23', priority: 1, status: 'pending', rating: null, points: 0 },
+      { id: 11, projectId: 'lms', title: 'Student progress dashboard', lead: 'Swapnil', assignedTo: 'Shreya', duration: 4, deadline: '2026-08-19', priority: 2, status: 'rated', rating: 'needs_revision', points: 3 },
+      { id: 12, projectId: 'website', title: 'SEO meta tags for all pages', lead: 'Debaditya', assignedTo: 'Suraj', duration: 1, deadline: '2026-08-16', priority: 2, status: 'completed', rating: null, points: 0 },
+      { id: 13, projectId: 'website', title: 'Contact form backend integration', lead: 'Debaditya', assignedTo: 'Ashutosh', duration: 2, deadline: '2026-08-20', priority: 1, status: 'in_progress', rating: null, points: 0 },
+      { id: 14, projectId: 'socialmedia', title: 'Draft 4 LinkedIn posts for August', lead: 'Debaditya', assignedTo: 'Suraj', duration: 2, deadline: '2026-08-17', priority: 2, status: 'rated', rating: 'exceeds', points: 8 },
+      { id: 15, projectId: 'ezest', title: 'Workshop logistics planning', lead: 'Santosh', assignedTo: 'Prerna', duration: 3, deadline: '2026-08-22', priority: 2, status: 'pending', rating: null, points: 0 },
+      { id: 16, projectId: 'funday', title: 'Finalize venue and schedule', lead: 'Nikita', assignedTo: 'Deepavali', duration: 1, deadline: '2026-08-18', priority: 1, status: 'in_progress', rating: null, points: 0 },
+      { id: 17, projectId: 'demoday', title: 'Prepare stakeholder presentations', lead: 'Deepavali', assignedTo: 'Prerna', duration: 5, deadline: '2026-08-25', priority: 1, status: 'pending', rating: null, points: 0 },
+      { id: 18, projectId: 'premises', title: 'Test attendance sync feature', lead: 'Deepavali', assignedTo: 'Prem', duration: 2, deadline: '2026-08-19', priority: 1, status: 'completed', rating: null, points: 0 },
+      { id: 19, projectId: 'mindspace', title: 'Setup analytics tracking dashboard', lead: 'Ganesh', assignedTo: 'Krishna', duration: 2, deadline: '2026-08-21', priority: 2, status: 'in_progress', rating: null, points: 0 },
+      { id: 20, projectId: 'website', title: 'Update laboratory documentation', lead: 'Debaditya', assignedTo: 'Umesh', duration: 3, deadline: '2026-08-22', priority: 2, status: 'pending', rating: null, points: 0 },
+    ];
 
-document.getElementById('collapseBtn')?.addEventListener('click', () => {
-  const sb = document.getElementById('sidebar');
-  const ic = document.getElementById('collapseIcon');
-  sb.classList.toggle('collapsed');
-  if (sb.classList.contains('collapsed')) {
-    ic.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="14 9 17 12 14 15"/>';
-  } else {
-    ic.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
-  }
-});
+    document.getElementById('collapseBtn')?.addEventListener('click', () => {
+      const sb = document.getElementById('sidebar');
+      const ic = document.getElementById('collapseIcon');
+      sb.classList.toggle('collapsed');
+      if (sb.classList.contains('collapsed')) {
+        ic.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="14 9 17 12 14 15"/>';
+      } else {
+        ic.innerHTML = '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
+      }
+    });
 
-const TODAY = '2026-08-16';
+    const TODAY = '2026-08-16';
 
-if (!Chart.registry.plugins.get('centerText')) {
-  Chart.register({
-    id: 'centerText',
-    afterDraw(chart) {
-      const cfg = chart.config.options.plugins.centerText;
-      if (!cfg) return;
-      const { ctx, chartArea: { width, height, left, top } } = chart;
-      ctx.save();
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.font = "700 22px 'Bebas Neue', sans-serif";
-      ctx.fillStyle = cfg.color || '#E8E8F0';
-      ctx.fillText(cfg.value, left + width / 2, top + height / 2 - 8);
-      ctx.font = "700 9px 'Rajdhani', sans-serif";
-      ctx.fillStyle = '#8A8AA3';
-      ctx.fillText(cfg.label, left + width / 2, top + height / 2 + 10);
-      ctx.restore();
+    if (!Chart.registry.plugins.get('centerText')) {
+      Chart.register({
+        id: 'centerText',
+        afterDraw(chart) {
+          const cfg = chart.config.options.plugins.centerText;
+          if (!cfg) return;
+          const { ctx, chartArea: { width, height, left, top } } = chart;
+          ctx.save();
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.font = "700 22px 'Bebas Neue', sans-serif";
+          ctx.fillStyle = cfg.color || '#E8E8F0';
+          ctx.fillText(cfg.value, left + width / 2, top + height / 2 - 8);
+          ctx.font = "700 9px 'Rajdhani', sans-serif";
+          ctx.fillStyle = '#8A8AA3';
+          ctx.fillText(cfg.label, left + width / 2, top + height / 2 + 10);
+          ctx.restore();
+        }
+      });
     }
-  });
-}
 
-function makeDonut(canvasId, labels, values, colors, centerValue, centerLabel) {
-  const ctx = document.getElementById(canvasId).getContext('2d');
-  return new Chart(ctx, {
-    type: 'doughnut',
-    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 0, hoverOffset: 4 }] },
-    options: {
-      responsive: true, maintainAspectRatio: false, cutout: '72%',
-      plugins: { legend: { display: false }, centerText: { value: centerValue, label: centerLabel } }
+    function makeDonut(canvasId, labels, values, colors, centerValue, centerLabel) {
+      const ctx = document.getElementById(canvasId).getContext('2d');
+      return new Chart(ctx, {
+        type: 'doughnut',
+        data: { labels, datasets: [{ data: values, backgroundColor: colors, borderWidth: 0, hoverOffset: 4 }] },
+        options: {
+          responsive: true, maintainAspectRatio: false, cutout: '72%',
+          plugins: { legend: { display: false }, centerText: { value: centerValue, label: centerLabel } }
+        }
+      });
     }
-  });
-}
 
-function renderLegend(containerId, rows) {
-  document.getElementById(containerId).innerHTML = rows.map(r => `
+    function renderLegend(containerId, rows) {
+      document.getElementById(containerId).innerHTML = rows.map(r => `
     <div class="legend-row">
       <div class="legend-dot" style="background:${r.color}"></div>
       <div class="legend-name">${r.name}</div>
       <div class="legend-val">${r.val}</div>
     </div>
   `).join('');
-}
+    }
 
-function priorityChip(p) {
-  if (p === 1) return '<span class="chip chip-high">High</span>';
-  if (p === 2) return '<span class="chip chip-medium">Medium</span>';
-  return '<span class="chip chip-low">Low</span>';
-}
+    function priorityChip(p) {
+      if (p === 1) return '<span class="chip chip-high">High</span>';
+      if (p === 2) return '<span class="chip chip-medium">Medium</span>';
+      return '<span class="chip chip-low">Low</span>';
+    }
 
-function statusChip(t) {
-  if (t.status === 'pending') return '<span class="chip chip-pending">Pending</span>';
-  if (t.status === 'in_progress') return '<span class="chip chip-progress">In Progress</span>';
-  if (t.status === 'completed' && !t.rating) return '<span class="chip chip-completed">Completed</span>';
-  if (t.status === 'rated') return '<span class="chip chip-rated">Rated</span>';
-  return '';
-}
+    function statusChip(t) {
+      if (t.status === 'pending') return '<span class="chip chip-pending">Pending</span>';
+      if (t.status === 'in_progress') return '<span class="chip chip-progress">In Progress</span>';
+      if (t.status === 'completed' && !t.rating) return '<span class="chip chip-completed">Completed</span>';
+      if (t.status === 'rated') return '<span class="chip chip-rated">Rated</span>';
+      return '';
+    }
 
-function fmtDate(d) {
-  return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-}
+    function fmtDate(d) {
+      return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+    }
 
-function init() {
-  // ── Row 1: stat strip ──
-  const memberSet = new Set();
-  PROJECTS.forEach(p => p.members.forEach(m => memberSet.add(m)));
-  document.getElementById('st-members').innerText = memberSet.size;
+    function init() {
+      // ── Row 1: stat strip ──
+      const memberSet = new Set();
+      PROJECTS.forEach(p => p.members.forEach(m => memberSet.add(m)));
+      document.getElementById('st-members').innerText = memberSet.size;
 
-  const totalTasks = ALL_TASKS.length;
-  const doneTasks = ALL_TASKS.filter(t => t.status === 'completed' || t.status === 'rated').length;
-  const progressPct = totalTasks ? Math.round(doneTasks / totalTasks * 100) : 0;
-  document.getElementById('progressRing').style.setProperty('--pct', progressPct);
-  document.getElementById('progressRingLabel').innerText = progressPct + '%';
-  document.getElementById('st-progress-frac').innerText = `${doneTasks} / ${totalTasks}`;
+      const totalTasks = ALL_TASKS.length;
+      const doneTasks = ALL_TASKS.filter(t => t.status === 'completed' || t.status === 'rated').length;
+      const progressPct = totalTasks ? Math.round(doneTasks / totalTasks * 100) : 0;
+      document.getElementById('progressRing').style.setProperty('--pct', progressPct);
+      document.getElementById('progressRingLabel').innerText = progressPct + '%';
+      document.getElementById('st-progress-frac').innerText = `${doneTasks} / ${totalTasks}`;
 
-  document.getElementById('st-projects').innerText = PROJECTS.length;
-  document.getElementById('st-points').innerText = ALL_TASKS.reduce((s, t) => s + t.points, 0).toLocaleString();
+      document.getElementById('st-projects').innerText = PROJECTS.length;
+      document.getElementById('st-points').innerText = ALL_TASKS.reduce((s, t) => s + t.points, 0).toLocaleString();
 
-  // ── Row 2 left: Today's Task Overview donut ──
-  const openTasks = ALL_TASKS.filter(t => t.status === 'pending' || t.status === 'in_progress');
-  const delayedCount = openTasks.filter(t => t.deadline < TODAY).length;
-  const progressCount = openTasks.filter(t => t.status === 'in_progress' && t.deadline >= TODAY).length;
-  const pendingCount = openTasks.filter(t => t.status === 'pending' && t.deadline >= TODAY).length;
-  const completedCount = doneTasks;
+      // ── Row 2 left: Today's Task Overview donut ──
+      const openTasks = ALL_TASKS.filter(t => t.status === 'pending' || t.status === 'in_progress');
+      const delayedCount = openTasks.filter(t => t.deadline < TODAY).length;
+      const progressCount = openTasks.filter(t => t.status === 'in_progress' && t.deadline >= TODAY).length;
+      const pendingCount = openTasks.filter(t => t.status === 'pending' && t.deadline >= TODAY).length;
+      const completedCount = doneTasks;
 
-  makeDonut('todayChart',
-    ['Completed', 'In Progress', 'Pending', 'Delayed'],
-    [completedCount, progressCount, pendingCount, delayedCount],
-    ['#00E5FF', '#4FC3F7', '#FFB300', '#FF1744'],
-    totalTasks, 'TOTAL TASKS');
+      makeDonut('todayChart',
+        ['Completed', 'In Progress', 'Pending', 'Delayed'],
+        [completedCount, progressCount, pendingCount, delayedCount],
+        ['#00E5FF', '#4FC3F7', '#FFB300', '#FF1744'],
+        totalTasks, 'TOTAL TASKS');
 
-  const pct = n => totalTasks ? Math.round(n / totalTasks * 100) : 0;
-  renderLegend('todayLegend', [
-    { color: '#00E5FF', name: 'Completed', val: `${completedCount} (${pct(completedCount)}%)` },
-    { color: '#4FC3F7', name: 'In Progress', val: `${progressCount} (${pct(progressCount)}%)` },
-    { color: '#FFB300', name: 'Pending', val: `${pendingCount} (${pct(pendingCount)}%)` },
-    { color: '#FF1744', name: 'Delayed', val: `${delayedCount} (${pct(delayedCount)}%)` },
-  ]);
+      const pct = n => totalTasks ? Math.round(n / totalTasks * 100) : 0;
+      renderLegend('todayLegend', [
+        { color: '#00E5FF', name: 'Completed', val: `${completedCount} (${pct(completedCount)}%)` },
+        { color: '#4FC3F7', name: 'In Progress', val: `${progressCount} (${pct(progressCount)}%)` },
+        { color: '#FFB300', name: 'Pending', val: `${pendingCount} (${pct(pendingCount)}%)` },
+        { color: '#FF1744', name: 'Delayed', val: `${delayedCount} (${pct(delayedCount)}%)` },
+      ]);
 
-  // ── Row 2 middle: Team Activity (Today) ──
-  const highPriorityOpen = openTasks.filter(t => t.priority === 1).length;
-  const activityRows = [
-    { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>', bg:'rgba(0,229,255,0.1)', val: completedCount, label: 'Tasks Completed' },
-    { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#FF1744" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', bg:'rgba(255,23,68,0.1)', val: delayedCount, label: 'Tasks Delayed' },
-    { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#8A8AA3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>', bg:'rgba(138,138,163,0.1)', val: 1, label: 'Member Inactive' },
-    { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#FFB300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C10 7 5 9 5 14a7 7 0 0014 0c0-5-5-7-7-12z"/></svg>', bg:'rgba(255,179,0,0.1)', val: highPriorityOpen, label: 'High Priority Tasks' },
-  ];
-  document.getElementById('teamActivityList').innerHTML = activityRows.map(r => `
+      // ── Row 2 middle: Team Activity (Today) ──
+      const highPriorityOpen = openTasks.filter(t => t.priority === 1).length;
+      const activityRows = [
+        { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#00E5FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>', bg: 'rgba(0,229,255,0.1)', val: completedCount, label: 'Tasks Completed' },
+        { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#FF1744" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>', bg: 'rgba(255,23,68,0.1)', val: delayedCount, label: 'Tasks Delayed' },
+        { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#8A8AA3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>', bg: 'rgba(138,138,163,0.1)', val: 1, label: 'Member Inactive' },
+        { icon: '<svg viewBox="0 0 24 24" fill="none" stroke="#FFB300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C10 7 5 9 5 14a7 7 0 0014 0c0-5-5-7-7-12z"/></svg>', bg: 'rgba(255,179,0,0.1)', val: highPriorityOpen, label: 'High Priority Tasks' },
+      ];
+      document.getElementById('teamActivityList').innerHTML = activityRows.map(r => `
     <div class="ta-row">
       <div class="ta-icon" style="background:${r.bg}">${r.icon}</div>
       <div class="ta-info"><div class="ta-val">${r.val}</div><div class="ta-label">${r.label}</div></div>
     </div>
   `).join('');
 
-  // ── Row 2 right: Projects Overview (progress bars) ──
-  const projectProgress = PROJECTS.map(p => {
-    const pTasks = ALL_TASKS.filter(t => t.projectId === p.id);
-    const done = pTasks.filter(t => t.status === 'completed' || t.status === 'rated').length;
-    return { p, total: pTasks.length, pct: pTasks.length ? Math.round(done / pTasks.length * 100) : 0 };
-  }).filter(x => x.total > 0).sort((a, b) => b.pct - a.pct);
+      // ── Row 2 right: Projects Overview (progress bars) ──
+      const projectProgress = PROJECTS.map(p => {
+        const pTasks = ALL_TASKS.filter(t => t.projectId === p.id);
+        const done = pTasks.filter(t => t.status === 'completed' || t.status === 'rated').length;
+        return { p, total: pTasks.length, pct: pTasks.length ? Math.round(done / pTasks.length * 100) : 0 };
+      }).filter(x => x.total > 0).sort((a, b) => b.pct - a.pct);
 
-  document.getElementById('projectsOverviewList').innerHTML = projectProgress.map(x => `
+      document.getElementById('projectsOverviewList').innerHTML = projectProgress.map(x => `
     <div class="dist-row">
       <div class="dist-label" style="color:${x.p.color}">${x.p.name}</div>
       <div class="dist-bar-track"><div class="dist-bar-fill" style="width:${x.pct}%; background:${x.p.color}"></div></div>
@@ -512,11 +1025,11 @@ function init() {
     </div>
   `).join('');
 
-  // ── Row 3 left: Live Task Monitor (5 most urgent open tasks) ──
-  const liveTasks = openTasks.slice().sort((a, b) => a.deadline.localeCompare(b.deadline)).slice(0, 5);
-  document.getElementById('liveMonitorBody').innerHTML = liveTasks.map(t => {
-    const p = PROJECTS.find(pr => pr.id === t.projectId);
-    return `<tr>
+      // ── Row 3 left: Live Task Monitor (5 most urgent open tasks) ──
+      const liveTasks = openTasks.slice().sort((a, b) => a.deadline.localeCompare(b.deadline)).slice(0, 5);
+      document.getElementById('liveMonitorBody').innerHTML = liveTasks.map(t => {
+        const p = PROJECTS.find(pr => pr.id === t.projectId);
+        return `<tr>
       <td>
         <div class="avatar-chip" onclick="window.location.href='hunter.html?name=' + encodeURIComponent('${t.assignedTo}')">
           <div class="avatar-circle" style="background:${p.color}33; border-color:${p.color}; color:${p.color}">${t.assignedTo.charAt(0)}</div>
@@ -529,26 +1042,26 @@ function init() {
       <td style="color:${t.deadline < TODAY ? 'var(--red)' : 'var(--text2)'}">${fmtDate(t.deadline)}</td>
       <td>${statusChip(t)}</td>
     </tr>`;
-  }).join('');
+      }).join('');
 
-  // ── Row 3 right top: Task Distribution donut (top 5 projects + Other) ──
-  const projCounts = PROJECTS.map(p => ({ p, count: ALL_TASKS.filter(t => t.projectId === p.id).length }))
-    .filter(x => x.count > 0).sort((a, b) => b.count - a.count);
-  const top5 = projCounts.slice(0, 5);
-  const otherCount = projCounts.slice(5).reduce((s, x) => s + x.count, 0);
-  const distLabels = top5.map(x => x.p.name);
-  const distValues = top5.map(x => x.count);
-  const distColors = top5.map(x => x.p.color);
-  if (otherCount > 0) { distLabels.push('Other Initiatives'); distValues.push(otherCount); distColors.push('#4A4A6A'); }
+      // ── Row 3 right top: Task Distribution donut (top 5 projects + Other) ──
+      const projCounts = PROJECTS.map(p => ({ p, count: ALL_TASKS.filter(t => t.projectId === p.id).length }))
+        .filter(x => x.count > 0).sort((a, b) => b.count - a.count);
+      const top5 = projCounts.slice(0, 5);
+      const otherCount = projCounts.slice(5).reduce((s, x) => s + x.count, 0);
+      const distLabels = top5.map(x => x.p.name);
+      const distValues = top5.map(x => x.count);
+      const distColors = top5.map(x => x.p.color);
+      if (otherCount > 0) { distLabels.push('Other Initiatives'); distValues.push(otherCount); distColors.push('#4A4A6A'); }
 
-  makeDonut('distChart', distLabels, distValues, distColors, totalTasks, 'TOTAL TASKS');
-  renderLegend('distLegend', distLabels.map((name, i) => ({
-    color: distColors[i], name, val: `${pct(distValues[i])}%`
-  })));
+      makeDonut('distChart', distLabels, distValues, distColors, totalTasks, 'TOTAL TASKS');
+      renderLegend('distLegend', distLabels.map((name, i) => ({
+        color: distColors[i], name, val: `${pct(distValues[i])}%`
+      })));
 
-  // ── Row 3 right bottom: Upcoming Deadlines ──
-  const upcoming = openTasks.filter(t => t.deadline >= TODAY).slice().sort((a, b) => a.deadline.localeCompare(b.deadline)).slice(0, 4);
-  document.getElementById('upcomingList').innerHTML = upcoming.map(t => `
+      // ── Row 3 right bottom: Upcoming Deadlines ──
+      const upcoming = openTasks.filter(t => t.deadline >= TODAY).slice().sort((a, b) => a.deadline.localeCompare(b.deadline)).slice(0, 4);
+      document.getElementById('upcomingList').innerHTML = upcoming.map(t => `
     <div class="ud-row">
       <div class="ud-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
       <div class="ud-date">${fmtDate(t.deadline)}</div>
@@ -557,18 +1070,19 @@ function init() {
     </div>
   `).join('');
 
-  // ── Footer ticker (mock recent activity — no event-log data source exists yet) ──
-  const recentlyDone = ALL_TASKS.filter(t => t.status === 'completed' || t.status === 'rated');
-  const ticker = [
-    { time: '10:18 AM', text: `${liveTasks[0]?.assignedTo || 'A member'} is working on ${liveTasks[0]?.title || 'a task'}` },
-    { time: '10:12 AM', text: `${openTasks[0]?.assignedTo || 'A member'} requested help on ${openTasks[0]?.title || 'a task'}` },
-    { time: '10:05 AM', text: `${recentlyDone[0]?.assignedTo || 'A member'} completed ${recentlyDone[0]?.title || 'a task'}` },
-  ];
-  document.getElementById('activityTicker').innerHTML = '<span class="tick-label">RECENT ACTIVITY</span>' +
-    ticker.map(t => `<span class="tick-time">${t.time}</span>${t.text}`).join('<span class="tick-sep">•</span>');
-}
+      // ── Footer ticker (mock recent activity — no event-log data source exists yet) ──
+      const recentlyDone = ALL_TASKS.filter(t => t.status === 'completed' || t.status === 'rated');
+      const ticker = [
+        { time: '10:18 AM', text: `${liveTasks[0]?.assignedTo || 'A member'} is working on ${liveTasks[0]?.title || 'a task'}` },
+        { time: '10:12 AM', text: `${openTasks[0]?.assignedTo || 'A member'} requested help on ${openTasks[0]?.title || 'a task'}` },
+        { time: '10:05 AM', text: `${recentlyDone[0]?.assignedTo || 'A member'} completed ${recentlyDone[0]?.title || 'a task'}` },
+      ];
+      document.getElementById('activityTicker').innerHTML = '<span class="tick-label">RECENT ACTIVITY</span>' +
+        ticker.map(t => `<span class="tick-time">${t.time}</span>${t.text}`).join('<span class="tick-sep">•</span>');
+    }
 
-init();
-</script>
+    init();
+  </script>
 </body>
+
 </html>

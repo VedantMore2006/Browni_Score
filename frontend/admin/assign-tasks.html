@@ -16,7 +16,22 @@
 .page-subtitle { font-size:13px; color:var(--text2); }
 
 /* ── CONTENT ── */
-.content { flex:1; display:flex; gap:14px; padding:16px 24px 0; overflow:hidden; min-height:0; }
+.content { flex:1; display:flex; gap:14px; padding:16px 24px 0; overflow:auto; min-height:0; }
+
+.btn-action-primary {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px; border-radius: 6px;
+  border: none;
+  background: linear-gradient(90deg, #1565C0, #29B6F6, #00E5FF);
+  font-family: 'Rajdhani', sans-serif; font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; color: #0A0A0F; cursor: pointer; text-decoration: none;
+  box-shadow: 0 4px 15px rgba(0, 229, 255, 0.25);
+  transition: all 0.2s;
+}
+.btn-action-primary:hover {
+  box-shadow: 0 4px 22px rgba(0, 229, 255, 0.45);
+  transform: translateY(-1px);
+}
 
 .btn-action-secondary {
   display: inline-flex; align-items: center; gap: 8px;
@@ -32,16 +47,43 @@
   border-color: var(--blue);
 }
 
-/* ── LEFT: ASSIGN QUEST ── */
-.assign-card {
-  width:270px; flex-shrink:0;
-  background:var(--panel); border:1px solid var(--border); border-radius:8px;
-  padding:20px 18px; display:flex; flex-direction:column;
-  position:relative; overflow:hidden;
+/* ── ASSIGN QUEST MODAL ── */
+.modal-backdrop {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(5, 5, 12, 0.78);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: none; align-items: center; justify-content: center;
+  padding: 20px;
 }
-.assign-card::before { content:''; position:absolute; top:0;left:0;right:0;height:1px; background:linear-gradient(90deg,transparent,var(--blue),var(--purple),transparent); }
+.modal-backdrop.active {
+  display: flex;
+}
+.modal-box {
+  width: 100%; max-width: 440px; max-height: 90vh; overflow-y: auto;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+  padding: 22px 24px; display: flex; flex-direction: column;
+  position: relative;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7), 0 0 35px rgba(0, 229, 255, 0.15);
+}
+.modal-box::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--blue), var(--purple), transparent);
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
+}
+.assign-title-row {
+  display: flex; align-items: center; gap: 10px;
+}
+.modal-close {
+  background: transparent; border: none; color: var(--text2); font-size: 24px; line-height: 1; cursor: pointer; transition: color 0.2s;
+}
+.modal-close:hover {
+  color: var(--red);
+}
 
-.assign-header { display:flex; align-items:center; gap:10px; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border); }
 .assign-icon { color:var(--teal); display:flex; align-items:center; }
 .assign-icon svg { width:20px; height:20px; }
 .assign-title { font-family:'Bebas Neue',sans-serif; font-size:1.25rem; letter-spacing:0.08em; color:var(--teal); }
@@ -78,8 +120,7 @@
 /* ── RIGHT: ACTIVE QUESTS ── */
 .quests-wrap {
   flex:1; min-width:0;
-  display:flex; flex-direction:column;
-  gap:0; overflow:hidden;
+  display:flex; flex-direction:column; gap:0; overflow:auto;
 }
 
 .quests-card {
@@ -222,10 +263,6 @@ td:first-child { text-align:center; color:var(--text2); font-size:12px; }
           <div class="profile-role">Admin Control</div>
         </div>
       </div>
-      <div class="profile-badge-ss">
-        <div class="badge-hex-ss">SS</div>
-        <span class="badge-text-ss">SHADOW MONARCH</span>
-      </div>
       <a class="nav-logout" href="../login.html" style="text-decoration:none;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span class="nav-logout-label">Logout</span>
       </a>
@@ -243,6 +280,10 @@ td:first-child { text-align:center; color:var(--text2); font-size:12px; }
         <p class="page-subtitle">Assign and manage quests for your team.</p>
       </div>
       <div style="display:flex; align-items:center; gap:12px;">
+        <button class="btn-action-primary" onclick="openAssignModal()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          ASSIGN QUEST
+        </button>
         <a href="admin_dashboard.html" class="btn-action-secondary">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
           ADMIN DASHBOARD
@@ -256,71 +297,7 @@ td:first-child { text-align:center; color:var(--text2); font-size:12px; }
 
     <div class="content">
 
-      <!-- ASSIGN QUEST -->
-      <div class="assign-card">
-        <div class="assign-header">
-          <div class="assign-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
-          </div>
-          <span class="assign-title">ASSIGN QUEST</span>
-        </div>
-
-        
-        <div class="form-field">
-          <label class="form-label">PROJECT</label>
-          <div class="select-wrap">
-            <select class="form-select" id="fProject" onchange="onProjectSelect()">
-              <option value="" disabled selected>Select project</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-field">
-          <label class="form-label">TASK LEAD (AUTO-ASSIGNED)</label>
-          <input type="text" class="form-input" id="fLead" placeholder="Selected project lead" readonly style="opacity:0.7;">
-        </div>
-        <div class="form-field">
-          <label class="form-label">TASK TITLE</label>
-          <input type="text" class="form-input" placeholder="Describe the task clearly" id="fTitle">
-        </div>
-        <div class="form-field">
-          <label class="form-label">ASSIGN TO</label>
-          <div class="select-wrap">
-            <select class="form-select" id="fAssignTo" disabled>
-              <option value="" disabled selected>Select project first</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-field">
-          <label class="form-label">DURATION (HOURS)</label>
-          <div class="input-icon-wrap">
-            <input type="number" class="form-input" placeholder="e.g. 3" id="fDuration" min="0.5" step="0.5">
-            <span class="input-suffix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
-          </div>
-        </div>
-        <div class="form-field">
-          <label class="form-label">DEADLINE</label>
-          <div class="input-icon-wrap">
-            <input type="datetime-local" class="form-input" id="fDeadline" placeholder="YYYY-MM-DD  hh:mm">
-            <span class="input-suffix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
-          </div>
-        </div>
-        <div class="form-field">
-          <label class="form-label">PRIORITY</label>
-          <div class="select-wrap">
-            <select class="form-select" id="fPriority">
-              <option value="" disabled selected>Select priority</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </select>
-          </div>
-        </div>
-
-        <button class="btn-assign" onclick="assignTask()">ASSIGN TASK</button>
-    
-      </div>
-
-      <!-- ACTIVE QUESTS -->
+      <!-- ACTIVE QUESTS (MAIN PAGE CONTENT) -->
       <div class="quests-wrap">
         <div class="quests-card">
           <div class="quests-header">
@@ -340,7 +317,6 @@ td:first-child { text-align:center; color:var(--text2); font-size:12px; }
             <div class="tab" data-val="awaiting" style="padding:10px 16px; cursor:pointer; border-bottom:2px solid transparent;" onclick="switchTab(this)">Awaiting Rating</div>
             <div class="tab" data-val="rated" style="padding:10px 16px; cursor:pointer; border-bottom:2px solid transparent;" onclick="switchTab(this)">Rated</div>
           </div>
-    
 
           <div class="table-wrap">
             <table>
@@ -404,6 +380,71 @@ td:first-child { text-align:center; color:var(--text2); font-size:12px; }
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /shell -->
+<div class="modal-backdrop" id="assignModal" onclick="if(event.target===this) closeAssignModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="assign-title-row">
+        <div class="assign-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+        </div>
+        <span class="assign-title">ASSIGN QUEST</span>
+      </div>
+      <button class="modal-close" onclick="closeAssignModal()" title="Close">&times;</button>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label">PROJECT</label>
+      <div class="select-wrap">
+        <select class="form-select" id="fProject" onchange="onProjectSelect()">
+          <option value="" disabled selected>Select project</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field">
+      <label class="form-label">TASK LEAD (AUTO-ASSIGNED)</label>
+      <input type="text" class="form-input" id="fLead" placeholder="Selected project lead" readonly style="opacity:0.7;">
+    </div>
+    <div class="form-field">
+      <label class="form-label">TASK TITLE</label>
+      <input type="text" class="form-input" placeholder="Describe the task clearly" id="fTitle">
+    </div>
+    <div class="form-field">
+      <label class="form-label">ASSIGN TO</label>
+      <div class="select-wrap">
+        <select class="form-select" id="fAssignTo" disabled>
+          <option value="" disabled selected>Select project first</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-field">
+      <label class="form-label">DURATION (HOURS)</label>
+      <div class="input-icon-wrap">
+        <input type="number" class="form-input" placeholder="e.g. 3" id="fDuration" min="0.5" step="0.5">
+        <span class="input-suffix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+      </div>
+    </div>
+    <div class="form-field">
+      <label class="form-label">DEADLINE</label>
+      <div class="input-icon-wrap">
+        <input type="datetime-local" class="form-input" id="fDeadline" placeholder="YYYY-MM-DD  hh:mm">
+        <span class="input-suffix"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+      </div>
+    </div>
+    <div class="form-field">
+      <label class="form-label">PRIORITY</label>
+      <div class="select-wrap">
+        <select class="form-select" id="fPriority">
+          <option value="" disabled selected>Select priority</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="btn-assign" onclick="assignTask()" style="margin-top:8px;">ASSIGN TASK</button>
+  </div>
+</div>
 
 <!-- RATE DROPDOWN POPUP (bottom-right) -->
 <div class="rate-dropdown-popup" id="ratePopup">
@@ -429,6 +470,14 @@ td:first-child { text-align:center; color:var(--text2); font-size:12px; }
 </div>
 
 <script>
+
+function openAssignModal() {
+  document.getElementById('assignModal').classList.add('active');
+}
+
+function closeAssignModal() {
+  document.getElementById('assignModal').classList.remove('active');
+}
 
 const PROJECTS = [
   { id: 'mindspace', name: 'MindSpace', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Swapnil', 'Krishna'], color: '#4FC3F7' },
@@ -467,7 +516,6 @@ const ALL_TASKS = [
   { id:19, projectId:'mindspace',   title:'Setup analytics tracking dashboard', lead:'Ganesh',    assignedTo:'Krishna',  duration:2,   deadline:'2026-08-21', priority:2, status:'in_progress', rating:null,          points:0  },
   { id:20, projectId:'website',     title:'Update laboratory documentation',    lead:'Debaditya', assignedTo:'Umesh',    duration:3,   deadline:'2026-08-22', priority:2, status:'pending',     rating:null,          points:0  },
 ];
-
 
 function showToast(msg) {
   let c = document.getElementById('toast-container');
@@ -512,6 +560,7 @@ function assignTask() {
   document.getElementById('fDuration').value = '';
   document.getElementById('fDeadline').value = '';
   document.getElementById('fPriority').selectedIndex = 0;
+  closeAssignModal();
 }
 
 function switchTab(el) {
