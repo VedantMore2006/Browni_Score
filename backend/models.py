@@ -57,6 +57,9 @@ class Task(Base):
     assigned_to = Column(Integer, ForeignKey("members.id"), nullable=False)
     assigned_by = Column(Integer, ForeignKey("members.id"), nullable=False)
 
+    project_id = Column(String, nullable=True, index=True)
+    project_lead_name = Column(String, nullable=True)
+
     status = Column(String, default="pending")  # pending/in_progress/completed/rated
     rating = Column(String, nullable=True)  # needs_revision/meets/exceeds
     points_awarded = Column(Integer, default=0)

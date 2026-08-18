@@ -1,44 +1,79 @@
-
 import models
 import schemas
-from auth import get_current_user, hash_password, require_role
+from auth import get_current_user, hash_password, require_role, verify_password
 from database import get_db
 from fastapi import APIRouter, Depends, HTTPException
+from logger import logger
+from ranking import rank_label
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/members", tags=["members"])
 
 
-@router.get("", response_model=list[schemas.MemberOut])
-def list_members(
-    db: Session = Depends(get_db),
-    user: models.Member = Depends(get_current_user),
-):
-    if user.role == "member":
-        return [db.query(models.Member).filter(models.Member.id == user.id).first()]
-    return db.query(models.Member).order_by(models.Member.points_total.desc()).all()
+def _enrich(m: models.Member) -> dict:
+    """Return MemberOut dict with rank_label populated."""
+    d = schemas.MemberOut.model_validate(m).model_dump()
+    d["rank_label"] = rank_label(m.rank)
+    return d
 
 
-@router.get("/me", response_model=schemas.MemberOut)
+# ── Public endpoints ────────────────────────────────────────────────────────
+
+@router.get("", response_model=list[dict])
+def list_members(db: Session = Depends(get_db)):
+    """Public: list all members sorted by monthly points."""
+    members = db.query(models.Member).order_by(
+        models.Member.points_this_month.desc()
+    ).all()
+    return [_enrich(m) for m in members]
+
+
+@router.get("/by-name/{name}", response_model=dict)
+def get_member_by_name(name: str, db: Session = Depends(get_db)):
+    """Public: get one member by name string (used by hunter.html?name=Ganesh)."""
+    member = db.query(models.Member).filter(
+        models.Member.name.ilike(name)
+    ).first()
+    if not member:
+        raise HTTPException(status_code=404, detail=f"Member '{name}' not found")
+    return _enrich(member)
+
+
+@router.get("/me", response_model=dict)
 def get_me(user: models.Member = Depends(get_current_user)):
-    return user
+    return _enrich(user)
 
 
-@router.get("/{member_id}", response_model=schemas.MemberOut)
-def get_member(
-    member_id: int,
-    db: Session = Depends(get_db),
-    user: models.Member = Depends(get_current_user),
-):
-    if user.role == "member" and user.id != member_id:
-        raise HTTPException(status_code=403, detail="Cannot view other members")
+@router.get("/{member_id}", response_model=dict)
+def get_member(member_id: int, db: Session = Depends(get_db)):
+    """Public: get one member by ID."""
     member = db.query(models.Member).filter(models.Member.id == member_id).first()
     if not member:
         raise HTTPException(status_code=404, detail="Member not found")
-    return member
+    return _enrich(member)
 
 
-@router.post("", response_model=schemas.MemberOut)
+# ── Auth-required endpoints ─────────────────────────────────────────────────
+
+@router.patch("/me/password")
+def change_own_password(
+    payload: schemas.ChangePasswordRequest,
+    db: Session = Depends(get_db),
+    user: models.Member = Depends(get_current_user),
+):
+    """Allow a logged-in member to change their own password."""
+    if not verify_password(payload.current_password, user.password_hash):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    if len(payload.new_password) < 6:
+        raise HTTPException(status_code=400, detail="New password must be at least 6 characters")
+    user.password_hash = hash_password(payload.new_password)
+    db.commit()
+    return {"status": "password updated"}
+
+
+# ── Admin-only endpoints ────────────────────────────────────────────────────
+
+@router.post("", response_model=dict)
 def create_member(
     payload: schemas.MemberCreate,
     db: Session = Depends(get_db),
@@ -59,10 +94,11 @@ def create_member(
     db.add(member)
     db.commit()
     db.refresh(member)
-    return member
+    logger.info(f"Member created: name={member.name} role={member.role} by=admin")
+    return _enrich(member)
 
 
-@router.patch("/{member_id}", response_model=schemas.MemberOut)
+@router.patch("/{member_id}", response_model=dict)
 def update_member(
     member_id: int,
     payload: schemas.MemberUpdate,
@@ -82,10 +118,10 @@ def update_member(
 
     db.commit()
     db.refresh(member)
-    return member
+    return _enrich(member)
 
 
-@router.post("/{member_id}/deactivate", response_model=schemas.MemberOut)
+@router.post("/{member_id}/deactivate", response_model=dict)
 def deactivate_member(
     member_id: int,
     db: Session = Depends(get_db),
@@ -97,10 +133,11 @@ def deactivate_member(
     member.status = "suspended"
     db.commit()
     db.refresh(member)
-    return member
+    logger.info(f"Member deactivated: name={member.name} by=admin")
+    return _enrich(member)
 
 
-@router.post("/{member_id}/reset-password", response_model=schemas.MemberOut)
+@router.post("/{member_id}/reset-password", response_model=dict)
 def reset_password(
     member_id: int,
     payload: schemas.PasswordReset,
@@ -113,7 +150,7 @@ def reset_password(
     member.password_hash = hash_password(payload.new_password)
     db.commit()
     db.refresh(member)
-    return member
+    return _enrich(member)
 
 
 @router.get("/{member_id}/audit-log")

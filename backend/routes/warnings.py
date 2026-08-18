@@ -1,9 +1,9 @@
-
 import models
 import schemas
-from auth import get_current_user, require_role
+from auth import require_role
 from database import get_db
 from fastapi import APIRouter, Depends, HTTPException
+from logger import logger
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/warnings", tags=["warnings"])
@@ -31,9 +31,13 @@ def issue_warning(
 
     if member.warnings_count >= 3:
         member.status = "suspended"
+        logger.warning(f"Member suspended: name={member.name} warnings=3")
 
     db.commit()
     db.refresh(warning)
+    logger.warning(
+        f"Warning issued: member={member.name} number={member.warnings_count} reason={payload.reason}"
+    )
     return warning
 
 
@@ -41,10 +45,9 @@ def issue_warning(
 def member_warnings(
     member_id: int,
     db: Session = Depends(get_db),
-    user: models.Member = Depends(get_current_user),
+    # Public endpoint — consistent with public portal model
 ):
-    if user.role == "member" and user.id != member_id:
-        raise HTTPException(status_code=403, detail="Cannot view other members' warnings")
+    """Public: get warnings for a member (visible on hunter profile page)."""
     return (
         db.query(models.Warning)
         .filter(models.Warning.member_id == member_id)

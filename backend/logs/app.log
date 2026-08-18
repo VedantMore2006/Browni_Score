@@ -1,0 +1,13 @@
+[2026-08-18 12:32:17] [INFO] [vv] GET / → 200 (63.0ms)
+[2026-08-18 12:32:17] [ERROR] [vv] Health check failed: Textual SQL expression 'SELECT 1' should be explicitly declared as text('SELECT 1')
+[2026-08-18 12:32:17] [INFO] [vv] GET /health → 200 (2.3ms)
+[2026-08-18 12:32:17] [INFO] [vv] GET /projects → 200 (2.7ms)
+[2026-08-18 12:32:18] [INFO] [vv] GET /members → 200 (6.6ms)
+[2026-08-18 12:32:18] [INFO] [vv] GET /leaderboard/weekly → 200 (5.9ms)
+[2026-08-18 12:32:42] [INFO] [vv] GET /health → 200 (64.8ms)
+[2026-08-18 12:32:50] [INFO] [vv] POST /auth/login → 200 (606.2ms)
+[2026-08-18 12:33:00] [INFO] [vv] Members seeded: created=['Deepavali', 'Santosh', 'Debaditya', 'Swapnil', 'Ganesh', 'Nikita', 'Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Prem', 'Komal', 'Shreya', 'Vishal', 'Suraj', 'Krishna', 'Umesh'] skipped=[]
+[2026-08-18 12:33:00] [INFO] [vv] POST /admin/seed-members → 200 (9771.9ms)
+[2026-08-18 12:33:00] [INFO] [vv] GET /tasks → 200 (12.0ms)
+[2026-08-18 12:33:00] [INFO] [vv] GET /points/all → 200 (8.4ms)
+[2026-08-18 12:33:00] [INFO] [vv] GET /projects/mindspace → 200 (2.0ms)
