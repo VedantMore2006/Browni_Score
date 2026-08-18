@@ -322,28 +322,31 @@
   </div><!-- /main -->
 </div><!-- /shell -->
 
+<script src="js/api.js"></script>
 <script>
 // ── MEMBER DATA ──────────────────────────────────────
-const MEMBERS = [
-  { initials: 'GA', name: 'Ganesh', time: '09:15 AM', status: 'present', color: '#00E5FF' },
-  { initials: 'DE', name: 'Debaditya', time: '09:30 AM', status: 'present', color: '#FFD700' },
-  { initials: 'DW', name: 'Deepavali', time: '09:45 AM', status: 'present', color: '#FFD700' },
-  { initials: 'NA', name: 'Nandini', time: '10:02 AM', status: 'late', color: '#4FC3F7' },
-  { initials: 'SW', name: 'Swapnil', time: '10:15 AM', status: 'late', color: '#4FC3F7' },
-  { initials: 'SU', name: 'Suraj', time: '10:30 AM', status: 'late', color: '#4FC3F7' },
-  { initials: 'SA', name: 'Santosh', time: '--:--', status: 'not_recorded', color: '#B0B0B0' },
-  { initials: 'NK', name: 'Nikita', time: '--:--', status: 'not_recorded', color: '#B0B0B0' },
-  { initials: 'VE', name: 'Vedant', time: '--:--', status: 'absent', color: '#B0B0B0' },
-  { initials: 'NC', name: 'Nakul', time: '09:50 AM', status: 'present', color: '#B0B0B0' },
-  { initials: 'AS', name: 'Ashutosh', time: '09:55 AM', status: 'present', color: '#CD7F32' },
-  { initials: 'VS', name: 'Vishal', time: '--:--', status: 'absent', color: '#CD7F32' },
-  { initials: 'KO', name: 'Komal', time: '--:--', status: 'not_recorded', color: '#CD7F32' },
-  { initials: 'PR', name: 'Prerna', time: '11:45 AM', status: 'late', color: '#CD7F32' },
-  { initials: 'SH', name: 'Shreya', time: '09:20 AM', status: 'present', color: '#CD7F32' },
-  { initials: 'PM', name: 'Prem', time: '--:--', status: 'not_recorded', color: '#8A93A8' },
-  { initials: 'KR', name: 'Krishna', time: '--:--', status: 'absent', color: '#8A93A8' },
-  { initials: 'UM', name: 'Umesh', time: '--:--', status: 'not_recorded', color: '#8A93A8' },
-];
+let MEMBERS = [];
+
+function adaptMember(m) {
+  const RANK_COLORS = { e:'#8A93A8', d:'#CD7F32', c:'#B0B0B0', b:'#4FC3F7', a:'#FFD700', s:'#00E5FF', ss:'#9A7BFF' };
+  return {
+    initials: m.name.substring(0, 2).toUpperCase(),
+    name: m.name,
+    time: '--:--',
+    status: 'not_recorded',
+    color: RANK_COLORS[m.rank] || '#8A93A8'
+  };
+}
+
+async function loadData() {
+  try {
+    const raw = await api.getMembers();
+    MEMBERS = raw.map(adaptMember);
+    renderMemberCards();
+  } catch (err) {
+    showApiError(err);
+  }
+}
 
 const ATTENDANCE_DATA = [
   { date:'2026-08-15', checkIn:'10:21', checkOut:'--:--', duration:'00h 00m', override:false },
@@ -468,8 +471,8 @@ document.getElementById('collapseBtn').addEventListener('click', () => {
     : '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
 });
 
-// ── INIT ─────────────────────────────────────────────
-renderMemberCards();
+// ── INIT ──────────────────────────────────────────────
+loadData();
 renderAttendanceTable(); // detail panel visible by default to match screenshot
 </script>
 </body>

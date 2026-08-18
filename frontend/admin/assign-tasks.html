@@ -469,6 +469,7 @@ td:first-child { text-align:center; color:var(--text2); font-size:12px; }
   </div>
 </div>
 
+<script src="../js/api.js"></script>
 <script>
 
 function openAssignModal() {
@@ -479,43 +480,9 @@ function closeAssignModal() {
   document.getElementById('assignModal').classList.remove('active');
 }
 
-const PROJECTS = [
-  { id: 'mindspace', name: 'MindSpace', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Nandini', 'Prerna', 'Swapnil', 'Krishna'], color: '#4FC3F7' },
-  { id: 'neurovi', name: 'NeuroVisualisAI', lead: 'Ganesh', members: ['Vedant', 'Nakul', 'Ashutosh', 'Swapnil'], color: '#4FC3F7' },
-  { id: 'nutrisure', name: 'NutriSure', lead: 'Deepavali', members: ['Vishal', 'Vedant', 'Prem'], color: '#00E5FF' },
-  { id: 'solobeauty', name: 'SoloBeauty', lead: 'Santosh', members: ['Prem', 'Prerna'], color: '#9A7BFF' },
-  { id: 'skillsense', name: 'SkillSense', lead: 'Swapnil', members: ['Komal', 'Deepavali', 'Ashutosh', 'Shreya', 'Prem'], color: '#FFB300' },
-  { id: 'lms', name: 'LMS', lead: 'Swapnil', members: ['Prem', 'Swapnil', 'Komal', 'Shreya'], color: '#FFB300' },
-  { id: 'website', name: 'Website', lead: 'Debaditya', members: ['Suraj', 'Ashutosh', 'Umesh'], color: '#FF1744' },
-  { id: 'socialmedia', name: 'LinkedIn / Social Media', lead: 'Debaditya', members: ['Ashutosh', 'Suraj'], color: '#FF1744' },
-  { id: 'ezest', name: 'E-Zest', lead: 'Santosh', members: ['Ganesh', 'Vedant', 'Nikita', 'Nakul', 'Prerna', 'Ashutosh', 'Swapnil', 'Nandini'], color: '#9A7BFF' },
-  { id: 'funday', name: 'Fun Day', lead: 'Nikita', members: ['Deepavali', 'Prerna'], color: '#00E5FF' },
-  { id: 'demoday', name: 'Demo Day', lead: 'Deepavali', members: ['Prerna'], color: '#00E5FF' },
-  { id: 'learningtime', name: 'Learning Time', lead: 'Vedant', members: [], color: '#4FC3F7' },
-  { id: 'premises', name: 'Premises', lead: 'Deepavali', members: ['Prem'], color: '#00E5FF' },
-];
-const ALL_TASKS = [
-  { id:1,  projectId:'mindspace',   title:'Implement user onboarding flow',    lead:'Ganesh',    assignedTo:'Vedant',   duration:3,   deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:2,  projectId:'mindspace',   title:'Fix session timeout bug',            lead:'Ganesh',    assignedTo:'Nakul',    duration:1,   deadline:'2026-08-16', priority:1, status:'completed',   rating:null,          points:0  },
-  { id:3,  projectId:'mindspace',   title:'Design dashboard wireframes',        lead:'Ganesh',    assignedTo:'Nandini',  duration:4,   deadline:'2026-08-18', priority:2, status:'rated',       rating:'exceeds',     points:8  },
-  { id:4,  projectId:'neurovi',     title:'Train classification model v2',      lead:'Ganesh',    assignedTo:'Ashutosh', duration:6,   deadline:'2026-08-22', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:5,  projectId:'neurovi',     title:'Write model evaluation report',      lead:'Ganesh',    assignedTo:'Vedant',   duration:2,   deadline:'2026-08-19', priority:2, status:'pending',     rating:null,          points:0  },
-  { id:6,  projectId:'nutrisure',   title:'Build nutrition tracking API',       lead:'Deepavali', assignedTo:'Prem',     duration:5,   deadline:'2026-08-21', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:7,  projectId:'nutrisure',   title:'Create meal recommendation logic',   lead:'Deepavali', assignedTo:'Vishal',   duration:3,   deadline:'2026-08-17', priority:2, status:'rated',       rating:'meets',       points:5  },
-  { id:8,  projectId:'solobeauty',  title:'Product catalogue UI',               lead:'Santosh',   assignedTo:'Prem',     duration:4,   deadline:'2026-08-20', priority:2, status:'pending',     rating:null,          points:0  },
-  { id:9,  projectId:'skillsense',  title:'Course module drag-and-drop',        lead:'Swapnil',   assignedTo:'Komal',    duration:3,   deadline:'2026-08-18', priority:1, status:'completed',   rating:null,          points:0  },
-  { id:10, projectId:'skillsense',  title:'Integrate payment gateway',          lead:'Swapnil',   assignedTo:'Ashutosh', duration:2,   deadline:'2026-08-23', priority:1, status:'pending',     rating:null,          points:0  },
-  { id:11, projectId:'lms',         title:'Student progress dashboard',         lead:'Swapnil',   assignedTo:'Shreya',   duration:4,   deadline:'2026-08-19', priority:2, status:'rated',       rating:'needs_revision', points:3 },
-  { id:12, projectId:'website',     title:'SEO meta tags for all pages',        lead:'Debaditya', assignedTo:'Suraj',    duration:1,   deadline:'2026-08-16', priority:2, status:'completed',   rating:null,          points:0  },
-  { id:13, projectId:'website',     title:'Contact form backend integration',   lead:'Debaditya', assignedTo:'Ashutosh', duration:2,   deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:14, projectId:'socialmedia', title:'Draft 4 LinkedIn posts for August',  lead:'Debaditya', assignedTo:'Suraj',    duration:2,   deadline:'2026-08-17', priority:2, status:'rated',       rating:'exceeds',     points:8  },
-  { id:15, projectId:'ezest',       title:'Workshop logistics planning',         lead:'Santosh',   assignedTo:'Prerna',   duration:3,   deadline:'2026-08-22', priority:2, status:'pending',     rating:null,          points:0  },
-  { id:16, projectId:'funday',      title:'Finalize venue and schedule',        lead:'Nikita',    assignedTo:'Deepavali',duration:1,   deadline:'2026-08-18', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:17, projectId:'demoday',     title:'Prepare stakeholder presentations',  lead:'Deepavali', assignedTo:'Prerna',   duration:5,   deadline:'2026-08-25', priority:1, status:'pending',     rating:null,          points:0  },
-  { id:18, projectId:'premises',    title:'Test attendance sync feature',       lead:'Deepavali', assignedTo:'Prem',     duration:2,   deadline:'2026-08-19', priority:1, status:'completed',   rating:null,          points:0  },
-  { id:19, projectId:'mindspace',   title:'Setup analytics tracking dashboard', lead:'Ganesh',    assignedTo:'Krishna',  duration:2,   deadline:'2026-08-21', priority:2, status:'in_progress', rating:null,          points:0  },
-  { id:20, projectId:'website',     title:'Update laboratory documentation',    lead:'Debaditya', assignedTo:'Umesh',    duration:3,   deadline:'2026-08-22', priority:2, status:'pending',     rating:null,          points:0  },
-];
+let PROJECTS = [];
+let ALL_TASKS = [];
+let activeQuests = [];
 
 function showToast(msg) {
   let c = document.getElementById('toast-container');
@@ -529,10 +496,45 @@ function showToast(msg) {
 
 let currentTab = 'all';
 let searchQuery = '';
-let activeQuests = [...ALL_TASKS];
+
+function adaptTask(t) {
+  return {
+    id:         t.id,
+    projectId:  t.project_id,
+    title:      t.title,
+    lead:       t.project_lead_name || t.assigned_by_name,
+    assignedTo: t.assigned_to_name,
+    duration:   t.duration_hrs,
+    deadline:   t.deadline ? t.deadline.slice(0, 10) : null,
+    priority:   t.priority,
+    status:     t.status,
+    rating:     t.rating,
+    points:     t.points_awarded || 0,
+  };
+}
+
+async function loadData() {
+  try {
+    if (!isLoggedIn()) {
+      window.location.href = '../login.html';
+      return;
+    }
+    const [rawProjects, rawTasks] = await Promise.all([
+      api.getProjects(),
+      api.getTasks()
+    ]);
+    PROJECTS = rawProjects;
+    ALL_TASKS = rawTasks.map(adaptTask);
+    activeQuests = [...ALL_TASKS];
+    init();
+  } catch (e) {
+    showApiError(e);
+  }
+}
 
 function init() {
   const pSelect = document.getElementById('fProject');
+  pSelect.innerHTML = '<option value="" disabled selected>Select a project</option>';
   PROJECTS.forEach(p => {
     pSelect.innerHTML += `<option value="${p.id}">${p.name}</option>`;
   });
@@ -543,24 +545,52 @@ function onProjectSelect() {
   const pid = document.getElementById('fProject').value;
   const p = PROJECTS.find(x => x.id === pid);
   if(p) {
-    document.getElementById('fLead').value = p.lead;
+    document.getElementById('fLead').value = p.lead_name || p.lead;
     const aSelect = document.getElementById('fAssignTo');
     aSelect.disabled = false;
     aSelect.innerHTML = '<option value="" disabled selected>Select member</option>' + p.members.map(m => `<option value="${m}">${m}</option>`).join('');
   }
 }
 
-function assignTask() {
-  showToast("Task assignment will connect to backend in the next phase.");
-  document.getElementById('fProject').selectedIndex = 0;
-  document.getElementById('fLead').value = '';
-  document.getElementById('fTitle').value = '';
-  document.getElementById('fAssignTo').innerHTML = '<option value="" disabled selected>Select project first</option>';
-  document.getElementById('fAssignTo').disabled = true;
-  document.getElementById('fDuration').value = '';
-  document.getElementById('fDeadline').value = '';
-  document.getElementById('fPriority').selectedIndex = 0;
-  closeAssignModal();
+async function assignTask() {
+  const pSelect = document.getElementById('fProject');
+  const title = document.getElementById('fTitle').value;
+  const assignTo = document.getElementById('fAssignTo').value;
+  const duration = document.getElementById('fDuration').value;
+  const deadline = document.getElementById('fDeadline').value;
+  const priority = document.getElementById('fPriority').value;
+
+  if(!pSelect.value || !title || !assignTo || !duration || !deadline || !priority) {
+    showToast("Please fill all fields before assigning.");
+    return;
+  }
+
+  try {
+    await api.createTask({
+      project_id: pSelect.value,
+      title: title,
+      assigned_to_name: assignTo,
+      duration_hrs: parseInt(duration),
+      deadline: deadline + 'T00:00:00Z',
+      priority: parseInt(priority)
+    });
+    showToast("Task assigned successfully!");
+    closeAssignModal();
+    
+    // Clear fields
+    document.getElementById('fProject').selectedIndex = 0;
+    document.getElementById('fLead').value = '';
+    document.getElementById('fTitle').value = '';
+    document.getElementById('fAssignTo').innerHTML = '<option value="" disabled selected>Select project first</option>';
+    document.getElementById('fAssignTo').disabled = true;
+    document.getElementById('fDuration').value = '';
+    document.getElementById('fDeadline').value = '';
+    document.getElementById('fPriority').selectedIndex = 0;
+    
+    loadData();
+  } catch (err) {
+    showApiError(err);
+  }
 }
 
 function switchTab(el) {
@@ -618,15 +648,15 @@ function renderQuests() {
   
   const body = document.getElementById('questsBody');
   body.innerHTML = filtered.map((q, i) => {
-    const p = PROJECTS.find(pr => pr.id === q.projectId);
+    const p = PROJECTS.find(pr => pr.id === q.projectId) || { color: '#888' };
     return `<tr>
       <td>${i+1}</td>
       <td class="td-title">${q.title}</td>
       <td><div class="assignee-cell">
-        <div class="h-avatar" style="border-color:${p.color};color:${p.color};background:${p.color}18">${q.assignedTo.charAt(0)}</div>
+        <div class="h-avatar" style="border-color:${p.color};color:${p.color};background:${p.color}18">${q.assignedTo ? q.assignedTo.charAt(0) : '?'}</div>
         <span class="h-name">${q.assignedTo}</span>
       </div></td>
-      <td class="td-deadline">${new Date(q.deadline).toLocaleDateString('en-GB')}</td>
+      <td class="td-deadline">${q.deadline ? new Date(q.deadline).toLocaleDateString('en-GB') : '-'}</td>
       <td>${priorityChip(q.priority)}</td>
       <td>${statusChip(q.status, q.rating)}</td>
       <td>${rateCell(q)}</td>
@@ -636,19 +666,25 @@ function renderQuests() {
   document.getElementById('pgInfo').textContent = `Showing 1 to ${filtered.length} of ${filtered.length} quests`;
 }
 
-function handleRate(sel, id) {
+async function handleRate(sel, id) {
   if(!sel.value) return;
-  const task = activeQuests.find(t => t.id === id);
-  if(task) {
-    task.rating = sel.value === '8' ? 'exceeds' : sel.value === '5' ? 'meets' : 'needs_revision';
-    task.points = parseInt(sel.value);
-    task.status = 'rated';
+  const ratingMap = {
+    '3': 'needs_revision',
+    '5': 'meets',
+    '8': 'exceeds'
+  };
+  const ratingStr = ratingMap[sel.value];
+  try {
+    await api.rateTask(id, ratingStr);
+    showToast("Rating saved successfully.");
+    loadData();
+  } catch (err) {
+    showApiError(err);
+    sel.value = ""; // Reset on error
   }
-  showToast("Rating will be saved to backend in the next phase.");
-  renderQuests();
 }
 
-init();
+loadData();
 </script>
 </body>
 </html>

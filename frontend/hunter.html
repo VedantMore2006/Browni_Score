@@ -224,36 +224,10 @@ const PROJECTS = [
   { id: 'website', name: 'Website', lead: 'Debaditya', members: ['Suraj', 'Ashutosh', 'Umesh'], color: '#FF1744' },
   { id: 'socialmedia', name: 'LinkedIn / Social Media', lead: 'Debaditya', members: ['Ashutosh', 'Suraj'], color: '#FF1744' },
   { id: 'ezest', name: 'E-Zest', lead: 'Santosh', members: ['Ganesh', 'Vedant', 'Nikita', 'Nakul', 'Prerna', 'Ashutosh', 'Swapnil', 'Nandini'], color: '#9A7BFF' },
-  { id: 'funday', name: 'Fun Day', lead: 'Nikita', members: ['Deepavali', 'Prerna'], color: '#00E5FF' },
-  { id: 'demoday', name: 'Demo Day', lead: 'Deepavali', members: ['Prerna'], color: '#00E5FF' },
-  { id: 'learningtime', name: 'Learning Time', lead: 'Vedant', members: [], color: '#4FC3F7' },
-  { id: 'premises', name: 'Premises', lead: 'Deepavali', members: ['Prem'], color: '#00E5FF' },
-];
-
+const PROJECTS = []; // populated from API
 const U5_LEADS = ['Deepavali', 'Santosh', 'Debaditya', 'Swapnil', 'Ganesh', 'Nikita'];
-
-const ALL_TASKS = [
-  { id:1,  projectId:'mindspace',   title:'Implement user onboarding flow',    lead:'Ganesh',    assignedTo:'Vedant',   duration:3,   deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:2,  projectId:'mindspace',   title:'Fix session timeout bug',            lead:'Ganesh',    assignedTo:'Nakul',    duration:1,   deadline:'2026-08-16', priority:1, status:'completed',   rating:null,          points:0  },
-  { id:3,  projectId:'mindspace',   title:'Design dashboard wireframes',        lead:'Ganesh',    assignedTo:'Nandini',  duration:4,   deadline:'2026-08-18', priority:2, status:'rated',       rating:'exceeds',     points:8  },
-  { id:4,  projectId:'neurovi',     title:'Train classification model v2',      lead:'Ganesh',    assignedTo:'Ashutosh', duration:6,   deadline:'2026-08-22', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:5,  projectId:'neurovi',     title:'Write model evaluation report',      lead:'Ganesh',    assignedTo:'Vedant',   duration:2,   deadline:'2026-08-19', priority:2, status:'pending',     rating:null,          points:0  },
-  { id:6,  projectId:'nutrisure',   title:'Build nutrition tracking API',       lead:'Deepavali', assignedTo:'Prem',     duration:5,   deadline:'2026-08-21', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:7,  projectId:'nutrisure',   title:'Create meal recommendation logic',   lead:'Deepavali', assignedTo:'Vishal',   duration:3,   deadline:'2026-08-17', priority:2, status:'rated',       rating:'meets',       points:5  },
-  { id:8,  projectId:'solobeauty',  title:'Product catalogue UI',               lead:'Santosh',   assignedTo:'Prem',     duration:4,   deadline:'2026-08-20', priority:2, status:'pending',     rating:null,          points:0  },
-  { id:9,  projectId:'skillsense',  title:'Course module drag-and-drop',        lead:'Swapnil',   assignedTo:'Komal',    duration:3,   deadline:'2026-08-18', priority:1, status:'completed',   rating:null,          points:0  },
-  { id:10, projectId:'skillsense',  title:'Integrate payment gateway',          lead:'Swapnil',   assignedTo:'Ashutosh', duration:2,   deadline:'2026-08-23', priority:1, status:'pending',     rating:null,          points:0  },
-  { id:11, projectId:'lms',         title:'Student progress dashboard',         lead:'Swapnil',   assignedTo:'Shreya',   duration:4,   deadline:'2026-08-19', priority:2, status:'rated',       rating:'needs_revision', points:3 },
-  { id:12, projectId:'website',     title:'SEO meta tags for all pages',        lead:'Debaditya', assignedTo:'Suraj',    duration:1,   deadline:'2026-08-16', priority:2, status:'completed',   rating:null,          points:0  },
-  { id:13, projectId:'website',     title:'Contact form backend integration',   lead:'Debaditya', assignedTo:'Ashutosh', duration:2,   deadline:'2026-08-20', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:14, projectId:'socialmedia', title:'Draft 4 LinkedIn posts for August',  lead:'Debaditya', assignedTo:'Suraj',    duration:2,   deadline:'2026-08-17', priority:2, status:'rated',       rating:'exceeds',     points:8  },
-  { id:15, projectId:'ezest',       title:'Workshop logistics planning',         lead:'Santosh',   assignedTo:'Prerna',   duration:3,   deadline:'2026-08-22', priority:2, status:'pending',     rating:null,          points:0  },
-  { id:16, projectId:'funday',      title:'Finalize venue and schedule',        lead:'Nikita',    assignedTo:'Deepavali',duration:1,   deadline:'2026-08-18', priority:1, status:'in_progress', rating:null,          points:0  },
-  { id:17, projectId:'demoday',     title:'Prepare stakeholder presentations',  lead:'Deepavali', assignedTo:'Prerna',   duration:5,   deadline:'2026-08-25', priority:1, status:'pending',     rating:null,          points:0  },
-  { id:18, projectId:'premises',    title:'Test attendance sync feature',       lead:'Deepavali', assignedTo:'Prem',     duration:2,   deadline:'2026-08-19', priority:1, status:'completed',   rating:null,          points:0  },
-  { id:19, projectId:'mindspace',   title:'Setup analytics tracking dashboard', lead:'Ganesh',    assignedTo:'Krishna',  duration:2,   deadline:'2026-08-21', priority:2, status:'in_progress', rating:null,          points:0  },
-  { id:20, projectId:'website',     title:'Update laboratory documentation',    lead:'Debaditya', assignedTo:'Umesh',    duration:3,   deadline:'2026-08-22', priority:2, status:'pending',     rating:null,          points:0  },
-];
+let ALL_TASKS = [];
+let ALL_PROJECTS = [];
 
 document.getElementById('collapseBtn')?.addEventListener('click', () => {
   const sb = document.getElementById('sidebar');
@@ -278,36 +252,75 @@ function showToast(msg, type = 'info') {
 }
 
 
+function adaptTask(t) {
+  return {
+    id:         t.id,
+    projectId:  t.project_id,
+    title:      t.title,
+    lead:       t.project_lead_name || t.assigned_by_name,
+    assignedTo: t.assigned_to_name,
+    duration:   t.duration_hrs,
+    deadline:   t.deadline ? t.deadline.slice(0, 10) : null,
+    priority:   t.priority,
+    status:     t.status,
+    rating:     t.rating,
+    points:     t.points_awarded || 0,
+  };
+}
+
 const params = new URLSearchParams(window.location.search);
 const memberName = decodeURIComponent(params.get('name') || '');
-const memberTasks = ALL_TASKS.filter(t => t.assignedTo === memberName);
-const isU5 = U5_LEADS.includes(memberName);
 
-if(memberTasks.length === 0) {
-  document.getElementById('mainContent').style.display = 'none';
-  document.getElementById('errorState').style.display = 'block';
-  document.getElementById('pt-name').innerText = memberName || 'UNKNOWN';
-} else {
+async function loadProfile() {
+  try {
+    const [member, rawTasks, rawProjects] = await Promise.all([
+      fetch(`http://localhost:8000/members/by-name/${encodeURIComponent(memberName)}`).then(r => r.ok ? r.json() : null),
+      fetch(`http://localhost:8000/tasks?assigned_to=${encodeURIComponent(memberName)}`).then(r => r.json()),
+      fetch('http://localhost:8000/projects').then(r => r.json()),
+    ]);
+
+    ALL_TASKS    = rawTasks.map(adaptTask);
+    ALL_PROJECTS = rawProjects;
+
+    renderProfile(member);
+  } catch (e) {
+    console.error('[Hunter] load failed:', e);
+    renderProfile(null);
+  }
+}
+
+function renderProfile(member) {
+  const memberTasks = ALL_TASKS.filter(t => t.assignedTo === memberName);
+  const isU5 = U5_LEADS.includes(memberName);
+
+  if (!member && memberTasks.length === 0) {
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('errorState').style.display = 'block';
+    document.getElementById('pt-name').innerText = memberName || 'UNKNOWN';
+    return;
+  }
+
   document.getElementById('pt-name').innerText = memberName;
   document.getElementById('p-name').innerText = memberName;
   document.getElementById('p-av').innerText = memberName.charAt(0);
   document.getElementById('p-role').innerText = isU5 ? 'U5 Coordinator' : 'Team Member';
   
   const compTasks = memberTasks.filter(t => t.status==='completed' || t.status==='rated');
-  const ratTasks = memberTasks.filter(t => t.rating);
-  const totPts = ratTasks.reduce((sum, t) => sum + t.points, 0);
+  const ratTasks  = memberTasks.filter(t => t.rating);
+  const totPts    = ratTasks.reduce((sum, t) => sum + t.points, 0);
   
-  document.getElementById('ps-ass').innerText = memberTasks.length;
+  document.getElementById('ps-ass').innerText  = memberTasks.length;
   document.getElementById('ps-comp').innerText = compTasks.length;
-  document.getElementById('ps-rat').innerText = ratTasks.length;
-  document.getElementById('ps-pts').innerText = totPts;
+  document.getElementById('ps-rat').innerText  = ratTasks.length;
+  document.getElementById('ps-pts').innerText  = totPts;
   
   // Projects
-  const uProjs = [...new Set(memberTasks.map(t=>t.projectId))];
+  const uProjs = [...new Set(memberTasks.map(t => t.projectId))];
   const pRow = document.getElementById('projRow');
+  pRow.innerHTML = '';
   uProjs.forEach(pid => {
-    const p = PROJECTS.find(x => x.id === pid);
-    if(p) {
+    const p = ALL_PROJECTS.find(x => x.id === pid);
+    if (p) {
       pRow.innerHTML += `<div class="proj-pill" style="background:${p.color}26; border-color:${p.color}" onclick="window.location.href='project.html?id=${pid}'">
         <span class="pp-name" style="color:${p.color}">${p.name}</span>
         <span class="pp-lead" style="color:${p.color}">Lead: ${p.lead}</span>
@@ -322,7 +335,7 @@ if(memberTasks.length === 0) {
     const filtered = currentTab === 'all' ? memberTasks : memberTasks.filter(t => t.status === currentTab || (currentTab==='completed' && t.status==='rated'));
     
     tbody.innerHTML = filtered.map((t, idx) => {
-      const p = PROJECTS.find(pr => pr.id === t.projectId);
+      const p = ALL_PROJECTS.find(pr => pr.id === t.projectId);
       
       let prioHtml = '';
       if(t.priority===1) prioHtml = `<span class="chip chip-high">High</span>`;
@@ -345,12 +358,16 @@ if(memberTasks.length === 0) {
       let ptsHtml = '<span style="color:var(--text3)">—</span>';
       if(t.rating) ptsHtml = `<span style="color:var(--teal);font-weight:700;">+${t.points}</span>`;
       
+      const pColor = p ? p.color : '#4FC3F7';
+      const pName  = p ? p.name  : t.projectId;
+      const pId    = p ? p.id    : t.projectId;
+
       return `<tr>
         <td style="text-align:center;color:var(--text2)">${idx + 1}</td>
         <td style="font-weight:bold">${t.title}</td>
-        <td><div class="pill-proj" style="background:${p.color}26; color:${p.color}; border-color:${p.color}; font-size:10px; padding:2px 8px;" onclick="window.location.href='project.html?id=${p.id}'">${p.name}</div></td>
+        <td><div class="pill-proj" style="background:${pColor}26; color:${pColor}; border-color:${pColor}; font-size:10px; padding:2px 8px;" onclick="window.location.href='project.html?id=${pId}'">${pName}</div></td>
         <td style="color:var(--text2)">${t.lead}</td>
-        <td>${new Date(t.deadline).toLocaleDateString('en-GB', {day:'numeric', month:'short'})}</td>
+        <td>${t.deadline ? new Date(t.deadline).toLocaleDateString('en-GB', {day:'numeric', month:'short'}) : '—'}</td>
         <td>${prioHtml}</td>
         <td>${statHtml}</td>
         <td>${ratHtml}</td>
@@ -375,9 +392,11 @@ if(memberTasks.length === 0) {
   const me = ratTasks.filter(t=>t.rating==='meets').length;
   const nr = ratTasks.filter(t=>t.rating==='needs_revision').length;
   
-  document.getElementById('pc-tit').innerText = `Points earned from tasks this member: ${totPts}`;
+  document.getElementById('pc-tit').innerText  = `Points earned from tasks this member: ${totPts}`;
   document.getElementById('pc-desc').innerText = `Breakdown: Exceeds ×${ex} (+8 each) | Meets ×${me} (+5 each) | Needs Revision ×${nr} (+3 each)`;
 }
+
+loadProfile();
 </script>
 </body>
 </html>

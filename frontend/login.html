@@ -538,6 +538,7 @@
     </div>
   </div>
 
+  <script src="js/api.js"></script>
   <script>
     // ── Eye toggle ──────────────────────────────────────────
     const eyeBtn = document.getElementById('eyeBtn');
@@ -571,15 +572,7 @@
       errorMsg.classList.remove('visible');
 
       try {
-        const res = await fetch('http://localhost:8000/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
-
-        if (!res.ok) throw new Error('Invalid credentials');
-
-        const data = await res.json();
+        const data = await api.login(username, password);
 
         // Store JWT in localStorage
         localStorage.setItem('vv_token', data.access_token);

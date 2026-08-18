@@ -1633,58 +1633,57 @@
 
   </div>
 
+  <script src="../js/api.js"></script>
   <script>
     const TODAY = new Date().toISOString().split('T')[0];
 
-    // ─── SHARED MOCK DATA (same arrays used across all pages) ───
-    const MEMBERS = [
-      { name: 'Ganesh', init: 'GA', pts_week: 70, pts_month: 320, streak: 4, rank: 's', warnings: 0, status: 'active' },
-      { name: 'Debaditya', init: 'DE', pts_week: 65, pts_month: 298, streak: 3, rank: 'a', warnings: 0, status: 'active' },
-      { name: 'Deepavali', init: 'DW', pts_week: 58, pts_month: 260, streak: 3, rank: 'a', warnings: 0, status: 'active' },
-      { name: 'Nandini', init: 'NA', pts_week: 55, pts_month: 245, streak: 3, rank: 'b', warnings: 0, status: 'active' },
-      { name: 'Swapnil', init: 'SW', pts_week: 48, pts_month: 220, streak: 2, rank: 'b', warnings: 0, status: 'active' },
-      { name: 'Suraj', init: 'SU', pts_week: 45, pts_month: 210, streak: 2, rank: 'b', warnings: 0, status: 'active' },
-      { name: 'Santosh', init: 'SA', pts_week: 40, pts_month: 195, streak: 2, rank: 'c', warnings: 1, status: 'active' },
-      { name: 'Nikita', init: 'NK', pts_week: 38, pts_month: 185, streak: 2, rank: 'c', warnings: 0, status: 'active' },
-      { name: 'Vedant', init: 'VE', pts_week: 35, pts_month: 170, streak: 2, rank: 'c', warnings: 0, status: 'active' },
-      { name: 'Nakul', init: 'NC', pts_week: 30, pts_month: 155, streak: 1, rank: 'c', warnings: 0, status: 'active' },
-      { name: 'Ashutosh', init: 'AS', pts_week: 28, pts_month: 140, streak: 1, rank: 'd', warnings: 1, status: 'active' },
-      { name: 'Vishal', init: 'VS', pts_week: 25, pts_month: 130, streak: 1, rank: 'd', warnings: 0, status: 'active' },
-      { name: 'Komal', init: 'KO', pts_week: 22, pts_month: 118, streak: 1, rank: 'd', warnings: 0, status: 'active' },
-      { name: 'Prerna', init: 'PR', pts_week: 20, pts_month: 110, streak: 1, rank: 'd', warnings: 2, status: 'active' },
-      { name: 'Shreya', init: 'SH', pts_week: 18, pts_month: 100, streak: 0, rank: 'd', warnings: 0, status: 'active' },
-      { name: 'Prem', init: 'PM', pts_week: 15, pts_month: 88, streak: 0, rank: 'e', warnings: 0, status: 'active' },
-      { name: 'Krishna', init: 'KR', pts_week: 12, pts_month: 72, streak: 0, rank: 'e', warnings: 2, status: 'active' },
-      { name: 'Umesh', init: 'UM', pts_week: 8, pts_month: 45, streak: 0, rank: 'e', warnings: 0, status: 'active' },
-    ];
+    // ─── DATA STORE ───
+    let MEMBERS = [];
+    let ALL_TASKS = [];
 
     const RANK_COLORS = {
       ss: '#9A7BFF', s: '#00E5FF', a: '#FFD700',
       b: '#4FC3F7', c: '#B0B0B0', d: '#CD7F32', e: '#8A93A8'
     };
 
-    const ALL_TASKS = [
-      { id: 1, projectId: 'mindspace', title: 'Implement user onboarding flow', lead: 'Ganesh', assignedTo: 'Vedant', deadline: '2026-08-20', priority: 1, status: 'in_progress', rating: null, points: 0 },
-      { id: 2, projectId: 'mindspace', title: 'Fix session timeout bug', lead: 'Ganesh', assignedTo: 'Nakul', deadline: '2026-08-16', priority: 1, status: 'completed', rating: null, points: 0 },
-      { id: 3, projectId: 'mindspace', title: 'Design dashboard wireframes', lead: 'Ganesh', assignedTo: 'Nandini', deadline: '2026-08-18', priority: 2, status: 'rated', rating: 'exceeds', points: 8 },
-      { id: 4, projectId: 'neurovi', title: 'Train classification model v2', lead: 'Ganesh', assignedTo: 'Ashutosh', deadline: '2026-08-22', priority: 1, status: 'in_progress', rating: null, points: 0 },
-      { id: 5, projectId: 'neurovi', title: 'Write model evaluation report', lead: 'Ganesh', assignedTo: 'Vedant', deadline: '2026-08-19', priority: 2, status: 'pending', rating: null, points: 0 },
-      { id: 6, projectId: 'nutrisure', title: 'Build nutrition tracking API', lead: 'Deepavali', assignedTo: 'Prem', deadline: '2026-08-21', priority: 1, status: 'in_progress', rating: null, points: 0 },
-      { id: 7, projectId: 'nutrisure', title: 'Create meal recommendation logic', lead: 'Deepavali', assignedTo: 'Vishal', deadline: '2026-08-17', priority: 2, status: 'rated', rating: 'meets', points: 5 },
-      { id: 8, projectId: 'solobeauty', title: 'Product catalogue UI', lead: 'Santosh', assignedTo: 'Prem', deadline: '2026-08-20', priority: 2, status: 'pending', rating: null, points: 0 },
-      { id: 9, projectId: 'skillsense', title: 'Course module drag-and-drop', lead: 'Swapnil', assignedTo: 'Komal', deadline: '2026-08-18', priority: 1, status: 'completed', rating: null, points: 0 },
-      { id: 10, projectId: 'skillsense', title: 'Integrate payment gateway', lead: 'Swapnil', assignedTo: 'Ashutosh', deadline: '2026-08-23', priority: 1, status: 'pending', rating: null, points: 0 },
-      { id: 11, projectId: 'lms', title: 'Student progress dashboard', lead: 'Swapnil', assignedTo: 'Shreya', deadline: '2026-08-19', priority: 2, status: 'rated', rating: 'needs_revision', points: 3 },
-      { id: 12, projectId: 'website', title: 'SEO meta tags for all pages', lead: 'Debaditya', assignedTo: 'Suraj', deadline: '2026-08-16', priority: 2, status: 'completed', rating: null, points: 0 },
-      { id: 13, projectId: 'website', title: 'Contact form backend integration', lead: 'Debaditya', assignedTo: 'Ashutosh', deadline: '2026-08-20', priority: 1, status: 'in_progress', rating: null, points: 0 },
-      { id: 14, projectId: 'socialmedia', title: 'Draft 4 LinkedIn posts for August', lead: 'Debaditya', assignedTo: 'Suraj', deadline: '2026-08-17', priority: 2, status: 'rated', rating: 'exceeds', points: 8 },
-      { id: 15, projectId: 'ezest', title: 'Workshop logistics planning', lead: 'Santosh', assignedTo: 'Prerna', deadline: '2026-08-22', priority: 2, status: 'pending', rating: null, points: 0 },
-      { id: 16, projectId: 'funday', title: 'Finalize venue and schedule', lead: 'Nikita', assignedTo: 'Deepavali', deadline: '2026-08-18', priority: 1, status: 'in_progress', rating: null, points: 0 },
-      { id: 17, projectId: 'demoday', title: 'Prepare stakeholder presentations', lead: 'Deepavali', assignedTo: 'Prerna', deadline: '2026-08-25', priority: 1, status: 'pending', rating: null, points: 0 },
-      { id: 18, projectId: 'premises', title: 'Test attendance sync feature', lead: 'Deepavali', assignedTo: 'Prem', deadline: '2026-08-19', priority: 1, status: 'completed', rating: null, points: 0 },
-      { id: 19, projectId: 'mindspace', title: 'Setup analytics tracking dashboard', lead: 'Ganesh', assignedTo: 'Krishna', deadline: '2026-08-21', priority: 2, status: 'in_progress', rating: null, points: 0 },
-      { id: 20, projectId: 'website', title: 'Update laboratory documentation', lead: 'Debaditya', assignedTo: 'Umesh', deadline: '2026-08-22', priority: 2, status: 'pending', rating: null, points: 0 },
-    ];
+    function adaptMember(m) {
+      m.init = m.name.substring(0, 2).toUpperCase();
+      return m;
+    }
+
+    function adaptTask(t) {
+      return {
+        id:         t.id,
+        projectId:  t.project_id,
+        title:      t.title,
+        lead:       t.project_lead_name || t.assigned_by_name,
+        assignedTo: t.assigned_to_name,
+        duration:   t.duration_hrs,
+        deadline:   t.deadline ? t.deadline.slice(0, 10) : null,
+        priority:   t.priority,
+        status:     t.status,
+        rating:     t.rating,
+        points:     t.points_awarded || 0,
+      };
+    }
+
+    async function loadData() {
+      try {
+        if (!isLoggedIn()) {
+          window.location.href = '../login.html';
+          return;
+        }
+        const [rawMembers, rawTasks] = await Promise.all([
+          api.getMembers(),
+          api.getTasks()
+        ]);
+        MEMBERS = rawMembers.map(adaptMember);
+        ALL_TASKS = rawTasks.map(adaptTask);
+        init();
+      } catch (e) {
+        showApiError(e);
+      }
+    }
 
     // ─── TOAST (same pattern used across the app) ───
     function showToast(msg, type = 'info') {
@@ -1758,9 +1757,9 @@
           <td>${warnDisplay}</td>
           <td>
             <div class="actions-cell">
-              <button class="btn-pts-pos" onclick="openPoints('${m.name}','earn')">+ Pts</button>
-              <button class="btn-pts-neg" onclick="openPoints('${m.name}','deduct')">− Pts</button>
-              <button class="btn-warn" onclick="openWarn('${m.name}')">Warn</button>
+              <button class="btn-pts-pos" onclick="openPoints('${m.id}','earn')">+ Pts</button>
+              <button class="btn-pts-neg" onclick="openPoints('${m.id}','deduct')">− Pts</button>
+              <button class="btn-warn" onclick="openWarn('${m.id}')">Warn</button>
             </div>
           </td>
         </tr>`;
@@ -1877,9 +1876,9 @@
     }
 
     function openPointsModal(memberName, type = 'earn') {
-      if (memberName) {
+      if (memberId) {
         const sel = document.getElementById('fMember');
-        if (sel) sel.value = memberName;
+        if (sel) sel.value = memberId;
       }
       const typeEl = document.getElementById('fType');
       if (typeEl) typeEl.value = type;
@@ -1887,9 +1886,9 @@
     }
 
     function openWarnModal(memberName) {
-      if (memberName) {
+      if (memberId) {
         const sel = document.getElementById('fWarnMember');
-        if (sel) sel.value = memberName;
+        if (sel) sel.value = memberId;
       }
       openModal('modalWarn');
     }
@@ -1901,90 +1900,88 @@
 
     function populateMemberDropdowns() {
       const options = '<option value="" disabled selected>Select member</option>' +
-        MEMBERS.map(m => `<option value="${m.name}">${m.name}</option>`).join('');
+        MEMBERS.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
       ['#fMember', '#fWarnMember'].forEach(sel => {
         const el = document.querySelector(sel);
         if (el) el.innerHTML = options;
       });
     }
 
-    function createHunterFromModal() {
+    async function createHunterFromModal() {
       const name = document.getElementById('fAddName').value.trim();
       const username = document.getElementById('fAddUsername').value.trim();
       const role = document.getElementById('fAddRole').value;
+      const password = document.getElementById('fAddPassword').value;
 
-      if (!name) {
-        showToast('Please enter full name.', 'error');
+      if (!name || !username || !password) {
+        showToast('Name, username and password required.', 'error');
         return;
       }
 
-      const init = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'HU';
-      const newMember = {
-        name: name,
-        init: init,
-        pts_week: 0,
-        pts_month: 100,
-        streak: 0,
-        rank: 'd',
-        warnings: 0,
-        status: 'active'
-      };
-
-      MEMBERS.unshift(newMember);
-      renderStats();
-      renderTeamTable();
-      renderAlerts();
-      populateMemberDropdowns();
-      closeAllModals();
-      showToast(`Hunter "${name}" created successfully!`, 'success');
+      try {
+        await api.createMember({
+          name,
+          username,
+          role,
+          password
+        });
+        showToast(`Hunter "${name}" created successfully!`, 'success');
+        closeAllModals();
+        loadData();
+      } catch (err) {
+        showApiError(err);
+      }
     }
 
-    function logPoints() {
-      const member = document.getElementById('fMember').value;
+    async function logPoints() {
+      const memberId = document.getElementById('fMember').value;
       const type = document.getElementById('fType').value;
       const category = document.getElementById('fCategory').value;
       const ptsVal = document.getElementById('fPoints').value;
       const reason = document.getElementById('fReason').value;
 
-      if (!member || !type || !category || !ptsVal || !reason) {
+      if (!memberId || !type || !category || !ptsVal || !reason) {
         showToast('Please fill all fields before logging points.', 'error');
         return;
       }
 
       const pts = parseInt(ptsVal);
-      const m = MEMBERS.find(x => x.name === member);
-      if (m) {
-        const delta = type === 'earn' ? Math.abs(pts) : -Math.abs(pts);
-        m.pts_month = Math.max(0, m.pts_month + delta);
-        if (delta > 0) m.pts_week += delta;
-      }
+      const points = type === 'earn' ? Math.abs(pts) : -Math.abs(pts);
 
-      renderStats();
-      renderTeamTable();
-      renderAlerts();
-      renderHeroes();
-      closeAllModals();
-      showToast(`Points logged for ${member} (${type === 'earn' ? '+' : '-'}${Math.abs(pts)} pts).`, 'success');
+      try {
+        await api.logPoints({
+          member_id: parseInt(memberId),
+          category: category,
+          points: points,
+          reason: reason
+        });
+        showToast(`Points logged successfully.`, 'success');
+        closeAllModals();
+        loadData();
+      } catch (err) {
+        showApiError(err);
+      }
     }
 
-    function issueWarning() {
-      const member = document.getElementById('fWarnMember').value;
+    async function issueWarning() {
+      const memberId = document.getElementById('fWarnMember').value;
       const reason = document.getElementById('fWarnReason').value;
-      if (!member || !reason) {
+      if (!memberId || !reason) {
         showToast('Please select a member and enter a reason.', 'error');
         return;
       }
 
-      const m = MEMBERS.find(x => x.name === member);
-      if (m) {
-        m.warnings += 1;
+      try {
+        await api.issueWarning({
+          member_id: parseInt(memberId),
+          reason: reason
+        });
+        showToast(`Warning issued successfully.`, 'warning');
+        closeAllModals();
+        loadData();
+      } catch (err) {
+        showApiError(err);
       }
-
-      renderStats();
-      renderTeamTable();
-      renderAlerts();
-      closeAllModals();
-      showToast(`Warning issued to ${member}.`, 'warning');
     }
 
     function openPoints(memberName, type) {
@@ -1996,17 +1993,24 @@
     }
 
     // ─── SECTION 8: HERO CONFIRM BUTTONS ───
-    function confirmHero(type) {
-      if (type === 'week') {
-        const hw = [...MEMBERS].sort((a, b) => b.pts_week - a.pts_week)[0];
-        showToast(`Hero of Week confirmed: ${hw.name} (${hw.pts_week} pts). Will notify in next phase.`, 'success');
-      } else {
-        const hm = MEMBERS.filter(m => m.pts_month >= 300);
-        if (hm.length === 0) {
-          showToast('No members have reached 300 pts this month yet.', 'info');
+    async function confirmHero(type) {
+      try {
+        if (type === 'week') {
+          const hw = [...MEMBERS].sort((a, b) => b.pts_week - a.pts_week)[0];
+          if (!hw) return;
+          await api.confirmHeroWeek(hw.id, 'Confirmed by Admin via Dashboard');
+          showToast(`Hero of Week confirmed: ${hw.name} (${hw.pts_week} pts).`, 'success');
         } else {
-          showToast(`Hero of Month confirmed: ${hm.map(m => m.name).join(', ')}. Will notify in next phase.`, 'success');
+          const hm = [...MEMBERS].sort((a, b) => b.pts_month - a.pts_month)[0];
+          if (!hm || hm.pts_month < 300) {
+            showToast('No member has reached 300 pts this month yet.', 'info');
+            return;
+          }
+          await api.confirmHeroMonth(hm.id, 'Confirmed by Admin via Dashboard');
+          showToast(`Hero of Month confirmed: ${hm.name}.`, 'success');
         }
+      } catch (err) {
+        showApiError(err);
       }
     }
 
@@ -2027,7 +2031,7 @@
       populateMemberDropdowns();
     }
 
-    init();
+    loadData();
   </script>
 </body>
 

@@ -312,26 +312,9 @@ td.td-pos { font-family:'Bebas Neue',sans-serif; font-size:16px; color:var(--tex
 </div><!-- /shell -->
 
 <script>
-const MEMBERS = [
-  { name: 'Ganesh', init: 'GA', pts_week: 70, pts_month: 320, streak: 4, rank: 's', warnings: 0, status: 'active' },
-  { name: 'Debaditya', init: 'DE', pts_week: 65, pts_month: 298, streak: 3, rank: 'a', warnings: 0, status: 'active' },
-  { name: 'Deepavali', init: 'DW', pts_week: 58, pts_month: 260, streak: 3, rank: 'a', warnings: 0, status: 'active' },
-  { name: 'Nandini', init: 'NA', pts_week: 55, pts_month: 245, streak: 3, rank: 'b', warnings: 0, status: 'active' },
-  { name: 'Swapnil', init: 'SW', pts_week: 48, pts_month: 220, streak: 2, rank: 'b', warnings: 0, status: 'active' },
-  { name: 'Suraj', init: 'SU', pts_week: 45, pts_month: 210, streak: 2, rank: 'b', warnings: 0, status: 'active' },
-  { name: 'Santosh', init: 'SA', pts_week: 40, pts_month: 195, streak: 2, rank: 'c', warnings: 1, status: 'active' },
-  { name: 'Nikita', init: 'NK', pts_week: 38, pts_month: 185, streak: 2, rank: 'c', warnings: 0, status: 'active' },
-  { name: 'Vedant', init: 'VE', pts_week: 35, pts_month: 170, streak: 2, rank: 'c', warnings: 0, status: 'active' },
-  { name: 'Nakul', init: 'NC', pts_week: 30, pts_month: 155, streak: 1, rank: 'c', warnings: 0, status: 'active' },
-  { name: 'Ashutosh', init: 'AS', pts_week: 28, pts_month: 140, streak: 1, rank: 'd', warnings: 1, status: 'active' },
-  { name: 'Vishal', init: 'VS', pts_week: 25, pts_month: 130, streak: 1, rank: 'd', warnings: 0, status: 'active' },
-  { name: 'Komal', init: 'KO', pts_week: 22, pts_month: 118, streak: 1, rank: 'd', warnings: 0, status: 'active' },
-  { name: 'Prerna', init: 'PR', pts_week: 20, pts_month: 110, streak: 1, rank: 'd', warnings: 2, status: 'active' },
-  { name: 'Shreya', init: 'SH', pts_week: 18, pts_month: 100, streak: 0, rank: 'd', warnings: 0, status: 'active' },
-  { name: 'Prem', init: 'PM', pts_week: 15, pts_month: 88, streak: 0, rank: 'e', warnings: 0, status: 'active' },
-  { name: 'Krishna', init: 'KR', pts_week: 12, pts_month: 72, streak: 0, rank: 'e', warnings: 2, status: 'active' },
-  { name: 'Umesh', init: 'UM', pts_week: 8, pts_month: 45, streak: 0, rank: 'e', warnings: 0, status: 'active' },
-];
+let MEMBERS = [];
+let weeklyData = [];
+let monthlyData = [];
 
 const RANK_COLORS = {
   ss: '#9A7BFF',
@@ -352,6 +335,19 @@ const RANK_LABELS = {
   d:  'Bronze Hunter',
   e:  'Unranked Hunter',
 };
+
+function adaptToMember(entry, ptKey) {
+  return {
+    name:      entry.name,
+    init:      entry.name.slice(0, 2).toUpperCase(),
+    pts_week:  entry.points_this_week,
+    pts_month: entry.points_this_month,
+    streak:    entry.streak_presence,
+    rank:      (entry.rank || 'd').toLowerCase(),
+    warnings:  entry.warnings_count,
+    status:    entry.status,
+  };
+}
 
 let activeTab = 'week'; // 'week' or 'month'
 
@@ -501,7 +497,28 @@ document.getElementById('collapseBtn').addEventListener('click', () => {
     : '<rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><polyline points="16 15 13 12 16 9"/>';
 });
 
-render();
+// Load real data from API
+async function loadData() {
+  try {
+    const [weekly, monthly] = await Promise.all([
+      fetch('http://localhost:8000/leaderboard/weekly').then(r => r.json()),
+      fetch('http://localhost:8000/leaderboard/monthly').then(r => r.json()),
+    ]);
+    // Build MEMBERS from weekly list (contains all fields)
+    MEMBERS = weekly.map(m => adaptToMember(m, 'week'));
+    // Update monthly pts from monthly list
+    monthly.forEach(m => {
+      const existing = MEMBERS.find(x => x.name === m.name);
+      if (existing) existing.pts_month = m.points_this_month;
+    });
+    render();
+  } catch (e) {
+    console.error('[Leaderboard] API load failed:', e);
+    render();
+  }
+}
+
+loadData();
 </script>
 </body>
 </html>

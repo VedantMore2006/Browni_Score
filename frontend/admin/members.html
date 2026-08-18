@@ -569,32 +569,34 @@ td { padding: 12px 16px; vertical-align: middle; }
   <span id="toastMsg">Action completed successfully.</span>
 </div>
 
+<script src="../js/api.js"></script>
 <script>
 const RANK_COLORS = { e:'#8A93A8', d:'#CD7F32', c:'#B0B0B0', b:'#4FC3F7', a:'#FFD700', s:'#00E5FF', ss:'#9A7BFF' };
 
-let HUNTERS = [
-  { initials:'GA', name:'Ganesh',    username:'ganesh@vitals.lab',    domain:'Full Stack', role:'coordinator', rank:'s',  pts:16000, status:'active' },
-  { initials:'DE', name:'Debaditya', username:'debaditya@vitals.lab', domain:'AI/ML',      role:'coordinator', rank:'a',  pts:14900, status:'active' },
-  { initials:'DW', name:'Deepavali', username:'deepavali@vitals.lab', domain:'UI/UX',      role:'coordinator', rank:'a',  pts:13000, status:'active' },
-  { initials:'NA', name:'Nandini',   username:'nandini@vitals.lab',   domain:'Content',    role:'member',      rank:'b',  pts:12250, status:'active' },
-  { initials:'SW', name:'Swapnil',   username:'swapnil@vitals.lab',   domain:'Full Stack', role:'member',      rank:'b',  pts:11000, status:'active' },
-  { initials:'SU', name:'Suraj',     username:'suraj@vitals.lab',     domain:'Operations', role:'member',      rank:'b',  pts:10500, status:'active' },
-  { initials:'SA', name:'Santosh',   username:'santosh@vitals.lab',   domain:'AI/ML',      role:'member',      rank:'c',  pts:9750,  status:'active' },
-  { initials:'NK', name:'Nikita',    username:'nikita@vitals.lab',    domain:'UI/UX',      role:'member',      rank:'c',  pts:9250,  status:'active' },
-  { initials:'VE', name:'Vedant',    username:'vedant@vitals.lab',    domain:'Full Stack', role:'member',      rank:'c',  pts:8500,  status:'active' },
-  { initials:'NC', name:'Nakul',     username:'nakul@vitals.lab',     domain:'Content',    role:'member',      rank:'c',  pts:7750,  status:'active' },
-  { initials:'AS', name:'Ashutosh',  username:'ashutosh@vitals.lab',  domain:'Operations', role:'member',      rank:'d',  pts:7000,  status:'active' },
-  { initials:'VS', name:'Vishal',    username:'vishal@vitals.lab',    domain:'AI/ML',      role:'member',      rank:'d',  pts:6500,  status:'active' },
-  { initials:'KO', name:'Komal',     username:'komal@vitals.lab',     domain:'UI/UX',      role:'member',      rank:'d',  pts:5900,  status:'active' },
-  { initials:'PR', name:'Prerna',    username:'prerna@vitals.lab',    domain:'Full Stack', role:'member',      rank:'d',  pts:5500,  status:'active' },
-  { initials:'SH', name:'Shreya',    username:'shreya@vitals.lab',    domain:'Content',    role:'member',      rank:'d',  pts:5000,  status:'active' },
-  { initials:'PM', name:'Prem',      username:'prem@vitals.lab',      domain:'Operations', role:'member',      rank:'e',  pts:4400,  status:'active' },
-  { initials:'KR', name:'Krishna',   username:'krishna@vitals.lab',   domain:'AI/ML',      role:'member',      rank:'e',  pts:3600,  status:'active' },
-  { initials:'UM', name:'Umesh',     username:'umesh@vitals.lab',     domain:'UI/UX',      role:'member',      rank:'e',  pts:2250,  status:'active' },
-];
-
+let HUNTERS = [];
 let currentPage = 1;
 const pageSize = 10;
+let currentEditId = null;
+
+function adaptHunter(h) {
+  h.initials = h.name.substring(0, 2).toUpperCase();
+  h.pts = h.pts_month || 0;
+  return h;
+}
+
+async function loadData() {
+  try {
+    if (!isLoggedIn()) {
+      window.location.href = '../login.html';
+      return;
+    }
+    const rawMembers = await api.getMembers();
+    HUNTERS = rawMembers.map(adaptHunter);
+    renderTable();
+  } catch (e) {
+    showApiError(e);
+  }
+}
 
 function domainClass(d) {
   if (d === 'AI/ML') return 'domain-aiml';
@@ -679,8 +681,8 @@ function renderTable() {
         <td>${statusChip(h.status)}</td>
         <td>
           <div class="actions-cell">
-            <button class="btn-edit" onclick="editHunter('${h.username}')">Edit</button>
-            <button class="btn-deactivate" onclick="toggleStatus('${h.username}')">${h.status === 'active' ? 'Deactivate' : 'Activate'}</button>
+            <button class="btn-edit" onclick="editHunter('${h.id}')">Edit</button>
+            <button class="btn-deactivate" onclick="toggleStatus('${h.id}')">${h.status === 'active' ? 'Deactivate' : 'Activate'}</button>
           </div>
         </td>
       </tr>`;
@@ -721,22 +723,32 @@ function nextPage() {
   if (currentPage < totalPages) { currentPage++; renderTable(); }
 }
 
-function toggleStatus(username) {
-  const h = HUNTERS.find(x => x.username === username);
+async function toggleStatus(id) {
+  const h = HUNTERS.find(x => x.id === parseInt(id));
   if (h) {
-    h.status = h.status === 'active' ? 'inactive' : 'active';
-    renderTable();
-    showToast(`${h.name} is now ${h.status.toUpperCase()}.`);
+    try {
+      if (h.status === 'active') {
+        await api.deactivateMember(h.id);
+        showToast(`${h.name} is now INACTIVE.`);
+      } else {
+        await api.updateMember(h.id, { status: 'active' });
+        showToast(`${h.name} is now ACTIVE.`);
+      }
+      loadData();
+    } catch (err) {
+      showApiError(err);
+    }
   }
 }
 
-function editHunter(username) {
-  const h = HUNTERS.find(x => x.username === username);
+function editHunter(id) {
+  const h = HUNTERS.find(x => x.id === parseInt(id));
   if (h) {
+    currentEditId = h.id;
     document.getElementById('fName').value = h.name;
     document.getElementById('fUsername').value = h.username;
     document.getElementById('fRole').value = h.role;
-    document.getElementById('fDomain').value = h.domain;
+    document.getElementById('fDomain').value = h.domain || 'Full Stack';
     document.getElementById('fRank').value = h.rank;
     document.getElementById('fPoints').value = h.pts;
     openAddMemberModal();
@@ -745,11 +757,21 @@ function editHunter(username) {
 
 /* ── MODAL POPUP LOGIC ── */
 function openAddMemberModal() {
+  if (!currentEditId) {
+    document.getElementById('fName').value = '';
+    document.getElementById('fUsername').value = '';
+    document.getElementById('fRole').selectedIndex = 0;
+    document.getElementById('fDomain').selectedIndex = 0;
+    document.getElementById('fRank').selectedIndex = 0;
+    document.getElementById('fPoints').value = '0';
+    document.getElementById('fPassword').value = '';
+  }
   document.getElementById('modalBackdrop').classList.add('active');
   document.getElementById('modalAddMember').classList.add('active');
 }
 
 function closeModalAddMember() {
+  currentEditId = null;
   document.getElementById('modalBackdrop').classList.remove('active');
   document.getElementById('modalAddMember').classList.remove('active');
 }
@@ -770,41 +792,39 @@ function togglePw() {
   pw.type = pw.type === 'password' ? 'text' : 'password';
 }
 
-function submitCreateMember() {
+async function submitCreateMember() {
   const name = document.getElementById('fName').value.trim();
   const username = document.getElementById('fUsername').value.trim();
   const role = document.getElementById('fRole').value;
   const domain = document.getElementById('fDomain').value;
   const rank = document.getElementById('fRank').value;
-  const pts = parseInt(document.getElementById('fPoints').value) || 0;
+  const password = document.getElementById('fPassword').value;
 
-  if (!name) {
-    alert('Please enter a full name for the new member.');
+  if (!name || !username) {
+    showToast('Name and username are required.');
     return;
   }
 
-  const nameParts = name.split(' ');
-  const initials = nameParts.length >= 2 ? (nameParts[0][0] + nameParts[1][0]).toUpperCase() : name.substring(0, 2).toUpperCase();
-  const userEmail = username ? (username.includes('@') ? username : `${username}@vitals.lab`) : `${name.toLowerCase().replace(/\s+/g, '.')}@vitals.lab`;
-
-  // Check if exists
-  const existingIdx = HUNTERS.findIndex(h => h.username === userEmail || h.name.toLowerCase() === name.toLowerCase());
-  if (existingIdx !== -1) {
-    HUNTERS[existingIdx] = { initials, name, username: userEmail, domain, role, rank, pts, status: 'active' };
-    showToast(`Updated member "${name}".`);
-  } else {
-    HUNTERS.unshift({ initials, name, username: userEmail, domain, role, rank, pts, status: 'active' });
-    showToast(`Member "${name}" created successfully.`);
+  try {
+    if (currentEditId) {
+      const payload = { name, username, role, domain, rank };
+      if (password) payload.password = password;
+      await api.updateMember(currentEditId, payload);
+      showToast(`Updated member "${name}".`);
+    } else {
+      if (!password) {
+        showToast('Password is required for new members.');
+        return;
+      }
+      await api.createMember({ name, username, role, domain, rank, password });
+      showToast(`Member "${name}" created successfully.`);
+    }
+    
+    closeModalAddMember();
+    loadData();
+  } catch (err) {
+    showApiError(err);
   }
-
-  closeModalAddMember();
-  // reset form
-  document.getElementById('fName').value = '';
-  document.getElementById('fUsername').value = '';
-  document.getElementById('fPassword').value = '';
-  document.getElementById('fPoints').value = '0';
-
-  filterTable();
 }
 
 function exportCSV() {
@@ -830,7 +850,7 @@ function showToast(msg) {
 
 // Auto open modal if URL params indicate action=add-member
 window.addEventListener('DOMContentLoaded', () => {
-  renderTable();
+  loadData();
   if (window.location.search.includes('action=add-member') || window.location.search.includes('openModal=add-member')) {
     openAddMemberModal();
   }
