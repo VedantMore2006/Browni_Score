@@ -1,0 +1,87 @@
+Page 1
+
+Task Management
+
+Developer / Admin:
+
+Platform
+↓
+Login
+↓
+Dashboard
+↓
+Overall Overview
+
+Projects
+Tasks
+Team Leads
+Members
+Page 2
+
+Coordinators / Team Leads:
+
+Visit Platform
+↓
+Create Account
+↓
+Approval From
+Dev/Admin
+↓
+Login
+↓
+Task Management
+↓
+Team Management
+
+Page 3
+
+Co-ordinators / Team Lead Flow
+
+Can select team members.
+Assign tasks to them.
+Able to track progress of task.
+Can see overview of either:
+Team, or
+All members
+
+Members:
+
+Create Login as Member
+↓
+Insights
+↓
+Assigned Tasks View
+↓
+Task Progress
+↓
+Ranking
+
+Page 4
+
+RBAC
+
+Developer / Admin
+↓
+Team Leads
+↓
+Members
+
+Users
+
+A — Admin
+
+Assign
+Track
+Monitor
+Approve
+
+B — Team Leads
+
+Assign task to members
+Project tracking
+
+C — Members
+
+Ranking
+Insights
+Assigned task
