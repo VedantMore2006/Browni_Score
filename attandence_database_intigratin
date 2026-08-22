@@ -1,0 +1,33 @@
+Use a JOIN — you link attendance_records.faculty_id to faculty.id (must match on organization_id too):
+Basic lookup query for your app:
+SELECT ar.id AS record_id,
+       ar.faculty_id,
+       f.full_name,
+       f.email,
+       d.name AS department,
+       ar.attendance_date,
+       ar.status,
+       ar.first_entry_time,
+       ar.last_exit_time,
+       ar.total_inside_minutes
+FROM attendance_records ar
+JOIN faculty f
+     ON f.id = ar.faculty_id
+    AND f.organization_id = ar.organization_id
+LEFT JOIN departments d ON d.id = f.department_id
+WHERE ar.attendance_date = CURRENT_DATE      -- "live" = today only
+ORDER BY ar.first_entry_time DESC;
+Variations you'll likely need:
+- Who is currently inside right now:
+... WHERE ar.attendance_date = CURRENT_DATE
+      AND ar.last_exit_time IS NULL
+- Latest activity feed (poll this every few seconds):
+... ORDER BY ar.updated_at DESC LIMIT 50
+- One specific person's history (parameterize in your code):
+... WHERE ar.faculty_id = $1
+Tips:
+- Always include the organization_id match in the join — the FK is composite, so it's both correct and faster.
+- In your app code, pass IDs as parameters ($1, or ? depending on driver), never string-concatenate.
+- Polling tip: add WHERE ar.updated_at > $1 (last poll time) to fetch only changed rows instead of everything.
+- Indexes already exist for these lookups (faculty_id, attendance_date unique index), so it'll stay fast.
+If you want, I can also create a view (e.g. v_attendance_with_names) on the VPS so your software just does SELECT * FROM v_attendance_with_names WHERE ... without writing the join everywhere. Want me to?
